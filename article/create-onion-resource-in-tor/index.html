@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Поднимаем анонимный веб-ресурс в TOR | c r y p t o p u n k s  </title>
+    <meta name="description" content="Создаём собственный сайт с минимальной потерей времени и с максимальной анонимностью" />
+    <meta property="og:title"       content= "Поднимаем анонимный веб-ресурс в TOR | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Создаём собственный сайт с минимальной потерей времени и с максимальной анонимностью"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/create-onion-resource-in-tor/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2015-08-26">26/08/2015</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#tor" title="tor">#tor</a>
+    
+    <a href="/tags/#secure" title="secure">#secure</a>
+    
+    <a href="/tags/#onion" title="onion">#onion</a>
+    
+    <a href="/tags/#hosting" title="hosting">#hosting</a>
+    
+    <a href="/tags/#forward" title="forward">#forward</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Поднимаем анонимный веб-ресурс в TOR</h1>
+
+        <section class="post-content">
+            <h2>Зачем вам это?</h2>
+
+<p>TOR может скрыть реальное местоположение сайта, а это значит что его не смогут отключить, а создателя - найти и наказать/устранить (при соблюдении определённых правил). Кроме того TOR-адрес в доменной зоне <strong>.onion</strong> невозможно украсть/присвоить/отозвать до тех пор пока вы не потеряете секретный ключ от этого домена (об этом чуть позже).</p>
+
+<h2>Настраиваем веб-сервер</h2>
+
+<p>Пропускаем этот раздел и переходим к разделу настройки TOR в случае если web-сервер уже настроен.</p>
+
+<h3>Однострочник на Python</h3>
+
+<p>Если у вас статические html-файлы с сайтом (идеальный вариант для безопасности) и не очень много ресурсов, то можно просто запустить однострочник на Python, который будет отдавать пользователю контент.<br>
+Для этого перейдите в каталог с html-файлами и запустите следующую команду:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ cd /var/www/site1
+$ python -m SimpleHTTPServer 80
+</code></pre></figure>
+<p>Можно параллельно запустить несколько сайтов, поменяв лишь каталог назначения и порт. Например:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ cd /var/www/site2
+$ python -m SimpleHTTPServer 81
+</code></pre></figure>
+<h3>Nginx</h3>
+
+<p>Если сайт более сложный и ресурсов хватает - можно настроить nginx.</p>
+
+<p>Ставим:</p>
+
+<p><code>$ sudo apt-get install nginx</code></p>
+
+<p>Рекомендуется в файле <strong>/etc/nginx/nginx.conf</strong> поменять следующие значения:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">http {
+
+...
+
+        # не предоставляем версию используемого софта
+        server_tokens off;
+        # отключаем ведение логов
+        #access_log /var/log/nginx/access.log;
+        #error_log /var/log/nginx/error.log;
+
+        error_log /dev/null crit;
+...
+</code></pre></figure>
+<p>Далее создаём файл нового виртуалхоста:</p>
+
+<p><strong>/etc/nginx/sites-available/site1</strong></p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">server {
+        listen 127.0.0.1:80 default_server;
+        server_name localhost;
+
+        root /var/www/site1;
+        index index.html index.htm;
+
+        location / {
+                allow 127.0.0.1;
+                deny all;
+
+        }
+}
+</code></pre></figure>
+<p>Включаем его:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ cd /etc/nginx/sites-enabled
+$ sudo ln -s ../sites-available/site1 .
+
+</code></pre></figure>
+<p>Перезапускаем nginx и добавляем его в автозагрузку:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo service nginx restart
+$ sudo update-rc.d enable nginx
+</code></pre></figure>
+<p>Создаём каталог с будущим сайтом:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo mkdir /var/www/site1
+</code></pre></figure>
+<p>Кладём туда необходимые файлы и сменяем владельца:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo chown -R www-data:www-data /var/www/site1
+
+</code></pre></figure>
+<h3>Настройка TOR</h3>
+
+<p>Настройка TOR сводится лишь к его установке и добавлению 2 строчек в конфиг.</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo apt-get install tor
+</code></pre></figure>
+<p>Открываем <strong>/etc/tor/torrc</strong>:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">HiddenServiceDir /var/lib/tor/site1 # каталог создаётся автоматически
+HiddenServicePort 80 127.0.0.1:80
+</code></pre></figure>
+<p>Перезапускаем TOR:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo /etc/init.d/tor restart
+</code></pre></figure>
+<p>Первая строчка в конфиге указывает путь к закрытому ключу, который создаётся автоматически TOR&#39;ом при первом запуске после модификации конфига и играет роль onion-домена. Давайте посмотрим на содержимое каталога для большего понимания:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo ls /var/lib/tor/site1
+hostname  private_key
+</code></pre></figure>
+<p>Файл <strong>hostname</strong> содержит адрес домена сгенерированного на базе хеша ключа <strong>private_key</strong>, который в свою очередь сгенерировался случайным образом при первом запуске.</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">pigf5kfufjz63s5z.onion
+</code></pre></figure>
+<p>удаление/модификация файла <strong>hostname</strong> не влечёт никаких последствий, при следующем перезапуске TOR он вновь создаётся на основе ключа. Это скорее файл-подсказка для вас.<br><br>
+А вот ключ <strong>private_key</strong> необходимо держать в секрете. До тех пор пока вы являетесь единственным владельцем этого файла - ваш домен никто и никогда не украдёт.<br>
+Ключ имеет стандартный вид:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCiwfOmTC3c02kaz/BGftIXLafz4z6sTbufBpM/usaQAFdbW072
+xZ0ds2ZEVbQNOjewU9QihrtA25v20ZblbEZfrLkPytKzb/ghCIEQN/mbSsnBcJ9b
+JJa0OzhUy+V9uuXrO0afpk7eCB/EPNdwugfKu/G9JaBirWrRMkkAozhKjwIDAQAB
+AoGBAJlFVwMzWDlN6fvy+E4a3hQvzauSRBIVPevbUE3CwX0YpSuGSE2B+Zzfth4C
+K4YNXiYyO2KsSKkiZrS/2X+CQJ4WLy87VCkoF2TF5C4MKF3SOhGPorO4TCtxkhnN
+7tprZFIlT7/cP45XretG+i6ZuksZtv2Oje0r1oCwxv0F4V5BAkEA0rVve2Q0x5EG
+nZrBPFgsdPm6ikutuMUBFbNxv71ILbh3f+qePpH6wZIjgQ7FJXGXarC1DcyaPT52
+QQWWnhGCYQJBAMW97zxTD+9klPBisZ7ClFWh88VBCPVeyz5AS2oQdNtRaJeKyiiS
+JhtNIq5yPabCZ/JecqbtCoMY/pdJeJNs0u8CQFyAgG+YHz+ZYGEiRkDaqLG1zHnY
+HWznN8GyJHa7fwtrVzLV6iCn74C5SlLnDA+THZkd+G4Va4UFfd6vuF6uayECQD9Q
+aWFvVxLXqbiuYSDsPIKOsHbgM/YcvAban0r+qevvTQX4snH7Gah0Mj6Y5ZSXeqDo
+DN3V2B/RyPK325uYpJECQQCs/Ko0Z2LIk+fDaHRsWI00DbflRK8jptnjArVTrabs
+0Os5jX+UFum0kGRlNKQPV8suucP/5y6FanlmTs3RFwpt
+-----END RSA PRIVATE KEY-----
+</code></pre></figure>
+<p>Рекомендуется сделать копию ключа, предварительно зашифровав например GPG, используя криптостойкий пароль (либо ваш ключ) и куда-нибудь скопировать:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo gpg -c /var/lib/tor/site1/private_key
+</code></pre></figure>
+<p>Если очистить каталог  <strong>/var/lib/tor/site1</strong> от ключа, то при следующем перезапуске TOR сгенерирует новый ключ с новым случайным onion-адресом.</p>
+
+<p>Вернёмся к конфигу. Вторая строчка (<code>HiddenServicePort 80 127.0.0.1:80</code>) задаёт какой порт будет у onion-ресурса и какой адрес и порт будем форвардить на него. В нашем случае мы берём адрес/порт 127.0.0.1:80 и форвардим его на pigf5kfufjz63s5z.onion:80.<br>Давайте проверим так ли это. Откройте в <a href="https://www.torproject.org/projects/torbrowser.html.en" target="_blank">tor-browser</a>, либо в любом другом браузере, но <a href="/article/forward+all+the+traffic+to+tor/" target="_blank">с настроенным TOR</a> и введите адрес <a href="http://pigf5kfufjz63s5z.onion" target="_blank"><a href="http://pigf5kfufjz63s5z.onion">http://pigf5kfufjz63s5z.onion</a></a>. Должна открыться страница что висит на 127.0.0.1:80.<br><br>
+Если сайтов нестолько, то в конфиг дописываем, например:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">HiddenServiceDir /var/lib/tor/site2
+HiddenServicePort 80 127.0.0.1:81
+
+HiddenServiceDir /var/lib/tor/site3
+HiddenServicePort 80 127.0.0.1:82
+</code></pre></figure>
+<p>перезапускаем TOR, после чего создаются ключи в соответствующих каталогах.
+<br><br>
+Не смотря на то что адреса генерируются случайным образом - их можно подбирать. Об этом поговорим в отдельной статье.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Поднимаем анонимный веб-ресурс в TOR&amp;url=https://cryptopunks.org/article/create-onion-resource-in-tor/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/create-onion-resource-in-tor/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://cryptopunks.org/article/create-onion-resource-in-tor/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

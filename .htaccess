@@ -1,0 +1,22 @@
+#Redirect 301 /article/ /
+<IfModule mod_rewrite.c>
+Options +FollowSymLinks
+RewriteEngine on
+
+# article redirect
+RewriteRule   ^article/$ http://cryptopunks.org
+
+# WWW redirect
+RewriteCond %{HTTP_HOST} ^www\.cryptopunks\.org$ [NC]
+RewriteRule ^(.*)$ http://cryptopunks.org/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^(.*)\.enchee\.com$ [NC]
+RewriteRule ^(.*)$ http://cryptopunks.org/$1 [R=301,L]
+</IfModule>
+
+ErrorDocument 404 http://cryptopunks.org/404.html
+
+Redirect 301 /2014/09/13/git-create-repo-ssh-non-standart-port.html /article/git+create+repo+ssh+non+standart+port/
+Redirect 301 /ssh/security/2014/09/14/secure+and+comfortable+ssh.html /article/secure+and+comfortable+ssh/
+Redirect 301 /tags.html /tags/
+Redirect 301 /article/secure+irc /article/directing+the+insecure+service+through+tor+and+ssh/

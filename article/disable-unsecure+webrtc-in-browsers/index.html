@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Отключение небезопасного WebRTC в браузере | c r y p t o p u n k s  </title>
+    <meta name="description" content="Звонилки от Mozilla/Google хороши, но довольно опасны - отключаем их" />
+    <meta property="og:title"       content= "Отключение небезопасного WebRTC в браузере | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Звонилки от Mozilla/Google хороши, но довольно опасны - отключаем их"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/disable-unsecure+webrtc-in-browsers/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2015-02-26">26/02/2015</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#firefox" title="firefox">#firefox</a>
+    
+    <a href="/tags/#chromium" title="chromium">#chromium</a>
+    
+    <a href="/tags/#webrtc" title="webrtc">#webrtc</a>
+    
+    <a href="/tags/#p2p" title="p2p">#p2p</a>
+    
+    <a href="/tags/#disable" title="disable">#disable</a>
+    
+    <a href="/tags/#detect" title="detect">#detect</a>
+    
+    <a href="/tags/#ip" title="ip">#ip</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Отключение небезопасного WebRTC в браузере</h1>
+
+        <section class="post-content">
+            <h2>Краткая информация</h2>
+
+<p><strong>WebRTC</strong> (Web Real-Time Communication) - технология с открытым исходным кодом, позволяющая передавать потоковые данные между браузерами по технологии &quot;точка-точка&quot; (p2p).</p>
+
+<p>WebRTC встроен по умолчанию в последних версиях Firefox, Chrome/Chromium, Opera и позволяет производить соединение между двумя и более браузерами для видео/аудио-звонков и не только.</p>
+
+<h2>Почему не безопасно?</h2>
+
+<p>Дело в том, что для соединения по принципу p2p необходимо знать реальный IP-адрес и WebRTC эту информацию бесстыдно сливает. Даже если вы сидите под <strong>TOR</strong>/<strong>VPN</strong> то не составит особого труда узнать ваш локальный IP-адрес в сети и на стороне, например, VPN-сервера. А с использованием уязвимостей можно определить ваш реальный IP, за которым вы скрываетесь.</p>
+
+<h2>Как проверить</h2>
+
+<p>Для проверки локального IP используйте страницу: <a href="https://diafygi.github.io/webrtc-ips/" target="_blank"><a href="https://diafygi.github.io/webrtc-ips/">https://diafygi.github.io/webrtc-ips/</a></a></p>
+
+<p>JavaScript-код и описание доступны на следующей странице: <a href="https://github.com/diafygi/webrtc-ips" target="_blank"><a href="https://github.com/diafygi/webrtc-ips">https://github.com/diafygi/webrtc-ips</a></a></p>
+
+<p>Проверить включенность камеры, звука, захвата экрана и т.д. в браузере можно по ссылке: <a href="https://www.browserleaks.com/webrtc" target="_blank"><a href="https://www.browserleaks.com/webrtc">https://www.browserleaks.com/webrtc</a></a></p>
+
+<h2>Как отключить</h2>
+
+<h3>Firefox</h3>
+
+<p>Вызываем скрытые настройки по <code>about:config</code> в адресной строке, ищем параметр <code>media.peerconnection.enabled</code>, выставляем его в <code>false</code>.</p>
+
+<h3>Chrome/Chromium</h3>
+
+<p>Отключается лишь установкой небольшого расширения: <a href="https://chrome.google.com/webstore/detail/webrtc-leak-prevent/eiadekoaikejlgdbkbdfeijglgfdalml?hl=en-US" target="_blank">WebRTC Leak Prevent</a>.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Отключение небезопасного WebRTC в браузере&amp;url=https://cryptopunks.org/article/disable-unsecure+webrtc-in-browsers/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/disable-unsecure+webrtc-in-browsers/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://cryptopunks.org/article/disable-unsecure+webrtc-in-browsers/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

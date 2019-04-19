@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Заворачиваем в TOR и SSH любой сервис на примере IRC-сервера | c r y p t o p u n k s  </title>
+    <meta name="description" content="Инструкция по быстрому поднятию любого сервиса с использованием SSH и TOR для авторизации и анонимизации" />
+    <meta property="og:title"       content= "Заворачиваем в TOR и SSH любой сервис на примере IRC-сервера | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Инструкция по быстрому поднятию любого сервиса с использованием SSH и TOR для авторизации и анонимизации"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/directing+the+insecure+service+through+tor+and+ssh/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2017-01-18">18/01/2017</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#linux" title="linux">#linux</a>
+    
+    <a href="/tags/#ssh" title="ssh">#ssh</a>
+    
+    <a href="/tags/#irc" title="irc">#irc</a>
+    
+    <a href="/tags/#miniircd" title="miniircd">#miniircd</a>
+    
+    <a href="/tags/#tor" title="tor">#tor</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Заворачиваем в TOR и SSH любой сервис на примере IRC-сервера</h1>
+
+        <section class="post-content">
+            <p>Данная статья – пример того, как в TOR и SSH можно &quot;завернуть&quot; любой сервис. Рассмотрим сей процесс на примере простого IRC-сервера.</p>
+
+<p>В последнее время развелось огромное кол-во мессенджеров (читайте &quot;программ&quot; - сюда подойдёт почти всё), позиционирующие себя как надёжные и безопасные. Но, как известно, чем программный продукт сложнее, тем больше в нём ошибок. А порой и специально допущенных опечаток в коде, которые довольно сложно заметить и которыми, в свою очередь, могут пользоваться те кто про них в курсе. Поэтому следует это понимать и правильно расставлять приоритеты: удобство, функциональность, или безопасность. Поэтому всё что светит портами во внешний мир по определению не может быть безопасным.</p>
+
+<p>Предлагаю следующее решение: простой IRC-сервер, запущенный с открытыми портами лишь на 127.0.0.1 сервера и форвардингом портов средствами SSH и TOR.</p>
+
+<p>TOR в данной связке поможет:</p>
+
+<ol>
+<li>дополнительно зашифровать трафик SSH</li>
+<li>скрыть местоположение сервера</li>
+<li>обойти NAT&#39;ы (если они имеются)</li>
+<li>анонимизировать пользователей</li>
+</ol>
+
+<p>А SSH обеспечит безопасную авторизацию (желательно её организовать <a href="/article/secure+and+comfortable+ssh/">по ключам</a>).</p>
+
+<h2>Разворачиваем IRC-сервер</h2>
+
+<p>Программных решений для IRC-серверов огромное кол-во. Но я решил выбрать максимально легковесное и простое в настройке решение. А именно - <a href="https://github.com/jrosdahl/miniircd" target="_blank">miniircd</a>.</p>
+
+<p>Качаем:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ git clone https://github.com/jrosdahl/miniircd &amp;&amp; cd miniircd
+</code></pre></figure>
+<p>Это скрипт на python с рядом аргументов командной строки без каких-либо конфигурационных файлов:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ./miniircd --help
+Usage: miniircd [options]
+
+miniircd is a small and limited IRC server.
+
+Options:
+  --version             show program&#39;s version number and exit
+  -h, --help            show this help message and exit
+  --channel-log-dir=X   store channel log in directory X
+  -d, --daemon          fork and become a daemon
+  --debug               print debug messages to stdout
+  --listen=X            listen on specific IP address X
+  --log-count=X         keep X log files; default: 10
+  --log-file=X          store log in file X
+  --log-max-size=X      set maximum log file size to X MiB; default: 10 MiB
+  --motd=X              display file X as message of the day
+  --pid-file=X          write PID to file X
+  -p X, --password=X    require connection password X; default: no password
+  --password-file=X     require connection password stored in file X; default:
+                        no password
+  --ports=X             listen to ports X (a list separated by comma or
+                        whitespace); default: 6667 or 6697 if SSL is enabled
+  -s FILE, --ssl-pem-file=FILE
+                        enable SSL and use FILE as the .pem certificate+key
+  --state-dir=X         save persistent channel state (topic, key) in
+                        directory X
+  --verbose             be verbose (print some progress messages to stdout)
+  --chroot=X            change filesystem root to directory X after startup
+                        (requires root)
+  --setuid=U[:G]        change process user (and optionally group) after
+                        startup (requires root)
+</code></pre></figure>
+<p>Можно запустить его с одним-единственным аргументом:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ./miniircd --listen=localhost
+</code></pre></figure>
+<p>Таким образом он запускается на локалхосте сервера и снаружи никаких открытых портов не оставляет.</p>
+
+<p>По необходимости можно добавить при запуске <strong>miniircd</strong> дополнительные ключи, например <code>--channel-log-dir</code>. Чтобы логи со всех каналов писались в необходимую директорию. Только имейте в виду, что логи чатов пишутся в открытом виде, и к ним можно получить доступ, если вскроют сервер. Поэтому рекомендую писать их на крипто-раздел, либо вообще не вести, а оставить локальное сохранение логов в irc-клиенте для удобства.</p>
+
+<h2>Работа с SSH</h2>
+
+<h3>Настройка прав доступа</h3>
+
+<p>Создаём в конфиге sshd группу, которой разрешим лишь форвардить необходимый порт. Для этого добавим в конец конфига <strong>/etc/ssh/sshd_config</strong>:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">Match Group securechat
+   AllowTcpForwarding yes
+   X11Forwarding no
+   PermitTunnel no
+   GatewayPorts no
+   AllowAgentForwarding no
+   PermitOpen localhost:6667
+   ForceCommand echo &#39;This account can only be used for IRC&#39;
+</code></pre></figure>
+<p>Перезапустим демон sshd:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo /etc/ssh/sshd restart
+</code></pre></figure>
+<p>Создадим новую группу:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo addgroup securechat
+</code></pre></figure>
+<h3>Создание новых пользователей для чата</h3>
+
+<p>Создадим пользователя, которому будет решено пробрасывать лишь порт irc-демона, включив его в группу <strong>securechat</strong>:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo useradd -G securechat имя_пользователя
+</code></pre></figure>
+<p>Зададим ему пароль:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo passwd имя_пользователя
+</code></pre></figure>
+<p>но лучше настроить всё с использованием <a href="/article/secure+and+comfortable+ssh/">авторизации по ключу</a>.</p>
+
+<h3>Проброс порта</h3>
+
+<p>У себя на компьютере выполняем:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ssh -f -N -L 6667:localhost:6667 user@remote_host
+</code></pre></figure>
+<p>где <strong>user</strong> это пользователь которого создали выше, а <strong>remote_host</strong> - IP-адрес сервера с IRC. Теперь можем коннектиться любым IRC-клиентом (например, <a href="https://hexchat.github.io/" target="_blank">hexchat</a>) на <strong>localhost/6667</strong> (если вдруг <strong>remote_host</strong> без cтатического IP, либо за NAT - смотрим статью дальше до места про TOR).</p>
+
+<h2>Дополнительная прослойка безопасности</h2>
+
+<p>Для большей безопасности можно запустить <strong>miniircd</strong> под отдельным пользователем, добавить использование ssl-сертификата и завернуть весь трафик в TOR.</p>
+
+<p>Добавляем пользователя:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo useradd -m securechat
+</code></pre></figure>
+<p>Переносим туда скрипт:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo su securechat
+$ cd ~/ &amp;&amp; git clone https://github.com/jrosdahl/miniircd &amp;&amp; cd miniircd
+</code></pre></figure>
+<p>Создаём сертификат:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+$ cat cert.pem key.pem &gt;server.pem
+$ shred key.pem cert.pem &amp;&amp; rm -f key.pem cert.pem
+$ chmod 600 server.pem
+</code></pre></figure>
+<p>Создаём скрипт запуска <strong>/root/run_securechat.sh</strong>:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">#!/bin/sh
+su - securechat -c &#39;cd /home/securechat/miniircd &amp;&amp; ./miniircd --listen=localhost --ssl-pem-file=server.pem&#39;
+</code></pre></figure>
+<p>После чего <a href="/article/create-onion-resource-in-tor/">заворачиваем весь SSH-трафик в TOR</a> (подзаголовок <strong>Настройка TOR</strong>).<br>
+В этом случае даже выделенный IP не потребуется, достаточно будет лишь на клиенской машине запустить TOR и пробросить порт SSH следующим образом (обратите внимание, порт <strong>6667</strong> сменился на <strong>6697</strong>, т.к. мы добавили использование ssl в <strong>miniircd</strong>, в этом случае нужно поменять порт ещё и в <strong>/etc/ssh/sshd_config</strong> для группы <strong>securechat</strong>):</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo apt install tor
+$ sudo /etc/init.d/tor start
+$ torify ssh -f -N -L 6697:localhost:6697 crptpnkdgddolfag.onion
+</code></pre></figure>
+<p>где <strong>crptpnkdgddolfag.onion</strong> - адрес, который сгенерировался при настройке TOR <a href="/article/create-onion-resource-in-tor/">по статье приведённой выше</a>.</p>
+
+<p>Ну и поскольку SSL-сертификат у вас самоподписанный, то скорее всего в клиенте IRC придётся указать игнорирование проверки подлинности сертификата.</p>
+
+<p>Кроме того неплохо бы закрыть фаерволлом все порты кроме порта SSH, чтобы случайно не запустить <strong>miniircd</strong> без <code>--listen=localhost</code>. Например, про то как это сделать средствами UFW можно почитать <a href="/article/ufw+firewall/">здесь</a>.</p>
+
+<h2>В заключениe</h2>
+
+<p>По такому принципу можно запускать и использовать почти любой сервис, пуская его на локальном порту (запрещая внешний) и организовывая авторизацию средством форвардинга портов SSH, используя дополнительную прослоку через TOR для обхода NAT&#39;ов, скрытия нахождения и анонимизации использования.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Заворачиваем в TOR и SSH любой сервис на примере IRC-сервера&amp;url=https://cryptopunks.org/article/directing+the+insecure+service+through+tor+and+ssh/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/directing+the+insecure+service+through+tor+and+ssh/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://cryptopunks.org/article/directing+the+insecure+service+through+tor+and+ssh/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

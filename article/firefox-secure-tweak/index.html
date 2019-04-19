@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Рекомендуемые настройки безопасности для Firefox | c r y p t o p u n k s  </title>
+    <meta name="description" content="По-умолчанию настройки Firefox имеют серьёзные дыры для безопасности поэтому исправляем это" />
+    <meta property="og:title"       content= "Рекомендуемые настройки безопасности для Firefox | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "По-умолчанию настройки Firefox имеют серьёзные дыры для безопасности поэтому исправляем это"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/firefox-secure-tweak/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2015-02-26">26/02/2015</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#firefox" title="firefox">#firefox</a>
+    
+    <a href="/tags/#tweaks" title="tweaks">#tweaks</a>
+    
+    <a href="/tags/#secure" title="secure">#secure</a>
+    
+    <a href="/tags/#webrtc" title="webrtc">#webrtc</a>
+    
+    <a href="/tags/#pgpru" title="pgpru">#pgpru</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Рекомендуемые настройки безопасности для Firefox</h1>
+
+        <section class="post-content">
+            <h2>О документе</h2>
+
+<p>Данный документ взят с сайта <a href="http://pgpru.com" target="_blank">pgpru.com</a>. По каким-то причинам данная статья исчезла на сайте и нашлась лишь в кеше гугла.</p>
+
+<p>Внимание, некоторые переменные <code>about:config</code> могут быть устаревшими в новых версиях Firefox, но большинство параметров до сих пор доступно и их следует поменять для вашей безопасности.</p>
+
+<h2>Рекомендуемые настройки</h2>
+
+<p>Если вы видите, что какая-то опция стоит в нужном вам значении, помните: поставить ее могло и дополнение. Даже если она стоит по умолчанию, в очередной версии Firefox вполне могут поменяться опции по умолчанию.</p>
+
+<p>Открыть страницу настроек Firefox можно набрав в адресной строке: <code>about:config</code>.</p>
+
+<p>Далее в фильтре нужно набирать название опций и менять их значение. Если опции не существует, то нужно создать опцию с таким же, как в описании названием и типом значения: строка, целое, булевское (кликнуть правой клавишей мыши и выбрать нужный пункт контекстного меню).</p>
+
+<p><strong>Помните!</strong> Блокировка некоторых опций позволяет выделить вас из массы пользователей путем отслеживания реакций браузера. Поэтому изменять их при использовании TorBrowser или другой подобной сборки нужно обдуманно и с пониманием.</p>
+
+<p>Если нужно отредактировать большое количество настроек и использовать их на других компьютерах, то удобнее использовать файл user.js. Подробнее: <a href="http://kb.mozillazine.org/User.js_file" target="_blank">тут</a>.</p>
+
+<p><strong>Примечание:</strong> Существуют &quot;скрытые&quot; настройки, если вы введете имя такой настройки в фильтре страницы about:config ничего не отобразится, хотя такая настройка может существовать. Чтобы её изменить нужно создать её из контекстного меню страницы about:config.</p>
+
+<h3>Обновление списков неблагонадежных сайтов</h3>
+
+<p>Если эта защита не нужна, ее можно отключить через &quot;Настройки&quot; -&gt; &quot;Защита&quot; -&gt; &quot;Информировать, не подозревается ли посещаемый веб-сайт в имитации другого веб-сайта&quot; и &quot;Информировать, не подозревается ли посещаемый веб-сайт в атаках на компьютеры&quot;.</p>
+
+<p>Так же это можно сделать через страницу настроек:</p>
+
+<p><code>browser.safebrowsing.enabled</code></p>
+
+<p>и</p>
+
+<p><code>browser.safebrowsing.malware.enabled</code></p>
+
+<p>в about:config должны иметь значение <code>false</code>.</p>
+
+<h3>Отключение встроенной проверки обновлений</h3>
+
+<p>Firefox также периодически проверяет наличие обновлений для самого себя, установленных дополнений и поисковых плагинов.</p>
+
+<p>Проверку обновлений можно отключить через &quot;Настройки&quot; &gt; &quot;Дополнительно&quot; &gt; &quot;Обновления&quot;.</p>
+
+<p>Дополнительный канал потребления/генерации трафика — это окно поиска дополнений.
+Убрать пункт &quot;Получить дополнения&quot; можно с помощью стилей.</p>
+
+<p>Стиль:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">/* Скрывает пункт &quot;Получить дополнения&quot; в меню дополнений (расширений) */
+
+/* Применять стиль к интерфейсу браузера */
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+/* Скрыть пункт &quot;Получить дополнения&quot; в меню дополнений (расширений)*/
+#category-discover {
+    display:none !important;
+}
+</code></pre></figure>
+<h3>Отключение автоподстановки поисковых запросов в окне поиска</h3>
+
+<p><code>browser.search.suggest.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>Показывать (не показывать) пароль при использовании альтернативного URL</h3>
+
+<p>Т.е. при введении адреса:</p>
+
+<p><strong><a href="http://user:password@website">http://user:password@website</a></strong> показывать (значение <code>true</code>) — <strong><a href="http://user:password@(prefix)website(suffix)">http://user:password@(prefix)website(suffix)</a></strong></p>
+
+<p>или (значение <code>false</code>) — <strong><a href="http://user@(prefix)website(suffix)">http://user@(prefix)website(suffix)</a></strong></p>
+
+<p><code>browser.fixup.hide_user_pass</code> установить значение в <code>false</code> или <code>true</code>, на ваше усмотрение.</p>
+
+<h3>Отключение автозавершение нестандартных адресов (авто подстановки суффиксов/префиксов)</h3>
+
+<p>Предотвращение случайного набора неправильного адреса.</p>
+
+<p><code>browser.fixup.alternate.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>Отключение проверки закачиваемых файлов антивирусом</h3>
+
+<p><code>browser.download.manager.scanWhenDone</code> установить значение в <code>false</code>.</p>
+
+<h3>Отключение поиска из строки адреса</h3>
+
+<p><code>keyword.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>Отключение геолокации</h3>
+
+<p>Найдите при помощи опции «Фильтр», а затем отредактируйте следующую строку:</p>
+
+<p><code>geo.enabled</code> установить значение в <code>false</code> [нажмите на строке правой кнопкой и выберите «переключить»]</p>
+
+<h3>Принудительное транслирование dns-запросов через прокси</h3>
+
+<p>Полезно, например при работе с TOR, чтобы обойти обращения к DNS провайдера.</p>
+
+<p><code>network.proxy.socks_remote_dns</code> установить значение в <code>true</code>.</p>
+
+<h3>Отключение пинг-трэкинга</h3>
+
+<p>Пинг-трэкинг позволяет серверу легко отслеживать действия пользователя.</p>
+
+<p>В спецификации HTML5 введен новый атрибут тега <a>, ping. Атрибут может содержать один (или больше) адрес для пинга (отправки POST запроса к) после клика по ссылке. Атрибут может использоваться для отслеживания действий посетителей. Подробнее: <a href="http://kb.mozillazine.org/Browser.send_pings" target="_blank"><a href="http://kb.mozillazine.org/Browser.send_pings">http://kb.mozillazine.org/Browser.send_pings</a></a></p>
+
+<p>Отправлять POST запросы или игнорировать атрибут ping (значения <code>true</code> и <code>false</code> соответственно):</p>
+
+<p><code>browser.send_pings</code> установить значение в <code>false</code></p>
+
+<h3>Отключение предзагрузки ресурсов</h3>
+
+<p>Если включена эта опция, ресурсы, помеченные <code>rel=&quot;prefetch&quot;</code>, браузер автоматически предзагружает и кэширует после окончания загрузки текущей страницы. Можно также отправить заголовок <code>Link: &lt;http://example.com&gt;; rel=prefetch</code> или сделать то же самое через meta-тег: <code>&lt;meta http-equiv=&quot;Link&quot; content=&quot;&lt;http://example.com&gt;; rel=prefetch&quot;&gt;</code></p>
+
+<p>Рекомендуется отключить для предотвращения утечки трафика, также, возможно, имеется угроза атаки.</p>
+
+<p>Значение <code>false</code> – отключение предзагрузки.</p>
+
+<p><code>network.prefetch-next</code> установить значение в <code>false</code>.</p>
+
+<p>Так-же полезно отключить предзагрузку при использовании строки поиска.</p>
+
+<p><code>network.http.speculative-parallel-limit</code> установить значение в <code>0</code>.</p>
+
+<h3>Обновление списка заблокированных дополнений</h3>
+
+<p><strong>Внимание!</strong> Эту опцию не рекомендуется отключать. Эта опция описана в целях ознакомления, чтобы исключить вопросы по утечки трафика. В Firefox и некоторые другие продукты Mozilla встроен черный список для вредоносных и неисправных дополнений. Обновляется он автоматически, с серверов Mozilla.</p>
+
+<p>Существует два варианта уменьшить потребление трафика:</p>
+
+<ol>
+<li>Выключить функцию (отрицательно для безопасности): поменять значение ключа <code>extensions.blocklist.enabled</code> установить значение в <code>false</code>.</li>
+<li>Увеличить интервал обновления: установить большее значение ключа <code>extensions.blocklist.interval</code> (в секундах).</li>
+</ol>
+
+<h3>Отключение упреждающего чтения DNS</h3>
+
+<p>Эта опция позволяет Firefox запрашивать DNS для каждой ссылки на странице (на всякий случай, если вы решите ее нажать).</p>
+
+<p><code>network.dns.disablePrefetch</code> установить значение в <code>true</code></p>
+
+<p>Существует опция <code>network.dns.disablePrefetchFromHTTPS</code> по умолчанию она отключена (установлена в <code>true</code>).</p>
+
+<h3>Загрузка шрифтов</h3>
+
+<p>css правило @font-face позволяет определить настройки шрифтов, а также загрузить специфичный шрифт на компьютер пользователя.</p>
+
+<p>Существует вероятность отличить пользователя по загрузке/не загрузке шрифтов. За загрузку шрифтов отвечают опции:</p>
+
+<p><code>browser.display.use_document_fonts
+gfx.downloadable_fonts.enabled
+gfx.downloadable_fonts.fallback_delay
+gfx.downloadable_fonts.sanitize</code></p>
+
+<p><strong>Внимание:</strong> Если вы имеете описание какой-то из этих опций, просьба поделиться.</p>
+
+<p><strong>Внимание:</strong> Отключение/включение <code>gfx.downloadable_fonts.enabled</code> не имеет особого значения, так как и по отключению, и по включению можно получить некоторые данные о пользователе. Установите их на свое усмотрение и по ситуации.</p>
+
+<p><strong>Примечание:</strong> Удобный контроль возможен с помощью дополнения <a href="https://addons.mozilla.org/ru/firefox/addon/noscript/" target="_blank">NoScript</a>.</p>
+
+<h3>Блокировка загрузки незащищённого содержимого на HTTPS-страницах</h3>
+
+<p>(Осторожно. Может нарушиться функционал страницы)</p>
+
+<p>Появилась в Firefox 18 и выше. Отключённая по умолчанию. Для её включения установите параметры:</p>
+
+<p><code>security.mixed_content.block_active_content</code></p>
+
+<p>и</p>
+
+<p><code>security.mixed_content.block_display_content</code></p>
+
+<p>в <code>true</code>.</p>
+
+<h3>API (application programming interfaces)</h3>
+
+<p>API – набор функций браузера которые можно вызывать кодом страницы.</p>
+
+<h3>Отключение Network API</h3>
+
+<p>Позволяет определить параметры соединение пользователя с сетью.</p>
+
+<p><code>dom.network.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>Отключение Battery API</h3>
+
+<p>Позволяет отслеживать состояние батареи и тем самым получать информацию.</p>
+
+<p><code>dom.battery.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>Отключение Social API</h3>
+
+<p>API для интеграции социальных сетей с Firefox.</p>
+
+<p><code>social.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>Отключение Vibration API</h3>
+
+<p>Позволяет использовать вибрацию, если на устройстве установлен вибромотор. Звук или вибрация от него может привлечь внимание.</p>
+
+<p><code>dom.vibrator.enabled</code> установить значение в <code>false</code>.</p>
+
+<h3>JavaScript</h3>
+
+<p>Кроме описанного ниже дополнительные настройки есть в меню &quot;Инструменты&quot; (или &quot;Правка&quot; для linux) -&gt; &quot;Настройка&quot; -&gt; &quot;Содержимое&quot; -&gt; &quot;Дополнительно&quot;.</p>
+
+<p>Описаны только опции, которые могут повлиять на безопасность.</p>
+
+<p>Значения соответствуют:</p>
+
+<p><code>true</code> — да.
+<code>false</code> — нет.</p>
+
+<p>Если параметра нет, то создать (для <code>true</code> / <code>false</code> тип создаваемого значения — логический (boolean)). Значение <code>true</code> / <code>false</code>, если не указано дополнительно.</p>
+
+<h3>Разрешать ли скриптам закрывать окна?</h3>
+
+<p><code>dom.allow_scripts_to_close_windows</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам сворачивать/разворачивать окна?</h3>
+
+<p><code>dom.disable_window_flip</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам изменять размер окон или перемещать их?</h3>
+
+<p>(предположительно название в новых версиях Firefox изменилось c 1. на 2.)
+1. <code>dom.disable_move_resize</code> = <code>true</code>
+2. <code>dom.disable_window_move_resize</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам отключать кнопку close (закрыть) у окон?</h3>
+
+<p><code>dom.disable_window_open_feature.close</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам открывать/закрывать панель закладок?</h3>
+
+<p><code>dom.disable_window_open_feature.directories</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам отключать строку адреса?</h3>
+
+<p><code>dom.disable_window_open_feature.location</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам скрывать панель меню?</h3>
+
+<p><code>dom.disable_window_open_feature.menubar</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам отключать кнопку minimize (свернуть) у окон?</h3>
+
+<p><code>dom.disable_window_open_feature.minimizable</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам скрывать персональные панели инструментов окна?</h3>
+
+<p>(иначе, например, дополнения могут самовольно использовать это)</p>
+
+<p><code>dom.disable_window_open_feature.personalbar</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам отключать возможность изменения размера окна?</h3>
+
+<p><code>dom.disable_window_open_feature.resizable</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам скрывать полосы прокрутки?</h3>
+
+<p><code>dom.disable_window_open_feature.scrollbars</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам скрывать панель состояния?</h3>
+
+<p><code>dom.disable_window_open_feature.status</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам скрывать заголовок окна?</h3>
+
+<p><code>dom.disable_window_open_feature.titlebar</code> = <code>true</code></p>
+
+<h3>Запрещать ли менять текст в панели состояния?</h3>
+
+<p><code>dom.disable_window_status_change</code> = <code>true</code></p>
+
+<h3>Запрещать ли скриптам скрывать панель инструментов?</h3>
+
+<p><code>dom.disable_window_open_feature.toolbar</code> = <code>true</code></p>
+
+<h3>Разрешать ли скриптам доступ к событию контекстного меню?</h3>
+
+<p>(отключение может нарушить функционал online редакторов, например)</p>
+
+<p><code>dom.event.contextmenu.enabled</code> = <code>true</code></p>
+
+<h3>Разрешать ли скриптам доступ к буферу обмена? (изменять скопированный текст, блокировать копирование)</h3>
+
+<p><code>dom.event.clipboardevents.enabled</code> = <code>true</code></p>
+
+<h4>Запрещать ли изменять скриптам имя хоста в строке адреса?</h4>
+
+<p>(сейчас многие flash-сайты используют эту функцию, для навигации по сайту)</p>
+
+<p><code>dom.disable_location.hostname.set</code> = <code>true</code></p>
+
+<h3>Отключить изменение стиля посещенных ссылок</h3>
+
+<p>Наблюдатель может увидеть изменения ссылок, кроме того возможно существование скрипта или других возможностей &quot;прочитать стиль CSS&quot; и понять куда входил пользователь.</p>
+
+<p><code>layout.css.visited_links_enabled</code> поставить в <code>false</code></p>
+
+<p>Ранее существовал баг, закрыт теперь <a href="http://www.opennet.ru/opennews/art.shtml?num=26038" target="_blank"><a href="http://www.opennet.ru/opennews/art.shtml?num=26038">http://www.opennet.ru/opennews/art.shtml?num=26038</a></a></p>
+
+<p>Но <strong>возможно</strong> отключение этой опции будет актуально для других аттак:
+<a href="http://www.xakep.ru/post/61044/" target="_blank"><a href="http://www.xakep.ru/post/61044/">http://www.xakep.ru/post/61044/</a></a><br>
+<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=711043" target="_blank"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=711043">https://bugzilla.mozilla.org/show_bug.cgi?id=711043</a></a> — описание бага.</p>
+
+<h3>Отключение WebRTC</h3>
+
+<p><a href="https://ru.wikipedia.org/wiki/WebRTC" target="_blank">WebRTC</a> позволяет просмотреть <strong>внутренний IP</strong> за <strong>NAT</strong> или <strong>VPN</strong>. Для отключения:</p>
+
+<p><code>media.peerconnection.enabled</code> установить значение в <code>false</code>.</p>
+
+<p>Подробнее:<br>
+<a href="/article/disable-unsecure+webrtc-in-browsers/" target="_blank">/article/disable-unsecure+webrtc-in-browsers/</a><br>
+<a href="https://hacks.mozilla.org/2013/02/hello-chrome-its-firefox-calling/" target="_blank"><a href="https://hacks.mozilla.org/2013/02/hello-chrome-its-firefox-calling/">https://hacks.mozilla.org/2013/02/hello-chrome-its-firefox-calling/</a></a><br>
+<a href="https://wiki.mozilla.org/Media/WebRTC" target="_blank"><a href="https://wiki.mozilla.org/Media/WebRTC">https://wiki.mozilla.org/Media/WebRTC</a></a></p>
+
+<h3>Отключение предупреждений о закрытии нескольких вкладок</h3>
+
+<p>Предупреждение может замедлить экстренный выход из Firefox.</p>
+
+<p><code>browser.tabs.warnOnClose</code> в <code>false</code> — предупреждение при закрытии вкладок.
+<code>browser.warnOnQuit</code> в <code>false</code> — предупреждение при закрытии окна.</p>
+
+<h3>Отключение SPDY</h3>
+
+<p>SPDY может хранить идентификатор и держит экстремально долгое открытое соединение.</p>
+
+<p><code>network.http.spdy.enabled</code> в <code>false</code>.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Рекомендуемые настройки безопасности для Firefox&amp;url=https://cryptopunks.org/article/firefox-secure-tweak/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/firefox-secure-tweak/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=https://cryptopunks.org/article/firefox-secure-tweak/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>
