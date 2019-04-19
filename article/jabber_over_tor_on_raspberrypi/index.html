@@ -221,7 +221,7 @@ $ sudo systemctl tor restart
 
 <h2>Напоследок несколько важных нюансов</h2>
 
-<p>Не забываем на малинке поменять пароль для <strong>pi</strong>, <strong>root</strong>, настроить <a href="/secure+and+comfortable+ssh/">соответствующим образом ssh</a>, запустить <code>netstat -tulpan</code> и убедиться что никаких левых сервисов не запущено (как правило светят наружу ненужные ntpd, avahi-daemon, dhcpcd — всё лишнее удаляем через <code>apt purge имя_пакета</code>), либо вообще запрещаем все порты кроме 9050 фаерволлом (об этом можно почитать, например, <a href="/ufw+firewall/">тут</a>. Ещё можно поставить и минимально настроить <strong>fail2ban</strong> и <a href="/article/enabling+automatic+updates+in+debian/">включить автоматические обновления ОС</a>.</p>
+<p>Не забываем на малинке поменять пароль для <strong>pi</strong>, <strong>root</strong>, настроить <a href="/article/secure+and+comfortable+ssh/">соответствующим образом ssh</a>, запустить <code>netstat -tulpan</code> и убедиться что никаких левых сервисов не запущено (как правило светят наружу ненужные ntpd, avahi-daemon, dhcpcd — всё лишнее удаляем через <code>apt purge имя_пакета</code>), либо вообще запрещаем все порты кроме 9050 фаерволлом (об этом можно почитать, например, <a href="/article/ufw+firewall/">тут</a>. Ещё можно поставить и минимально настроить <strong>fail2ban</strong> и <a href="/article/enabling+automatic+updates+in+debian/">включить автоматические обновления ОС</a>.</p>
 
 <p>Кстати, если в вашей стране TOR блокируется, то поможет вот <a href="/article/tor+blocking+bypass/">эта статья</a>.</p>
 
