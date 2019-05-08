@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Настройка TOR на OpenWRT | c r y p t o p u n k s  </title>
+    <meta name="description" content="Настройка и использование сети TOR на прошивке для роутеров OpenWRT" />
+    <meta property="og:title"       content= "Настройка TOR на OpenWRT | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Настройка и использование сети TOR на прошивке для роутеров OpenWRT"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/openwrt+tor/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2016-11-06">06/11/2016</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#openwrt" title="openwrt">#openwrt</a>
+    
+    <a href="/tags/#tor" title="tor">#tor</a>
+    
+    <a href="/tags/#router" title="router">#router</a>
+    
+    <a href="/tags/#iptables" title="iptables">#iptables</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Настройка TOR на OpenWRT</h1>
+
+        <section class="post-content">
+            <p><a href="https://openwrt.org/">OpenWRT</a> - встроенная операционная система, основанная на ядре Linux, и предназначенная, в первую очередь, для домашних маршрутизаторов. Является альтернативой проприетарных прошивок, поддерживает ограниченный список устройств число которых постоянно растёт. Ознакомиться со списком можно <a href="https://wiki.openwrt.org/toh/start">тут</a>.</p>
+
+<h2>Подготовка и установка TOR</h2>
+
+<p>Поменяем пароль root через telnet:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ telnet 192.168.1.1
+$ passwd
+  новый_пароль
+</code></pre></figure>
+<p>Далее обновим пакеты введя команду:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ opkg update
+</code></pre></figure>
+<p>Если у вас менее 4МБ места на ПЗУ роутера, то вам понадобится флеш-карта (для этого в маршруторизаторе должен быть USB-порт!).<br>
+Монтируем флешку с помощью block-mount. Устанавливаем TOR:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ opkg install tor
+</code></pre></figure>
+<h2>Перед настройкой</h2>
+
+<p>Обязательные шаги после установки пакета TOR:</p>
+
+<ol>
+<li><p>Настройте и синхронизируйте время чеpез ntp. Неправильная дата может привести к проблемам при старте tor или к его некорректной работе.</p></li>
+<li><p>При установке пакета tor система должна создать пользователя и группу tor, но при создании группы инсталлятор может допустить ошибку и в файле <strong>/etc/group</strong> не поставить перенос строки для группы tor, поэтому есть смысл лишний раз это перепроверить</p></li>
+<li><p>Проверьте все права на файлы необходимые tor они должны иметь маску <strong>755</strong> и принадлежать <strong>tor:tor</strong></p></li>
+</ol>
+
+<h2>Настройка TOR</h2>
+
+<p>Открываем конфигурационный файл <strong>/etc/tor/torrc</strong> и правим его.</p>
+
+<p>Если необходимо чтобы все компьютеры подключенные к роутеру (неважно по кабелю или wifi) имели возможность получить доступ к TOR через SOCKS-proxy необходимо раскоментировать строчку:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">SocksListenAddress 192.168.120.1:9100 # listen on this IP:port also
+</code></pre></figure>
+<p>Где <strong>192.168.120.1</strong> – ip адрес вашего роутера для локальной сети, а <strong>9100</strong> – порт на котором будет socks-сервер с tor.</p>
+
+<p>Опциями <strong>SocksPolicy</strong> можно явно указать какие ip адреса будут иметь (или не иметь) доступ к socks серверу. В файле конфигурации эти опции закомментированы – рекомендуется их раскомментировать и настроить под себя.</p>
+
+<p>Если по каким то причинам tor не стартует - воспользуйтесь опцией Log для выяснения проблемы.</p>
+
+<h2>Запуск TOR</h2>
+
+<p>Запускаем тор следующей командой:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ /etc/init.d/tor start
+</code></pre></figure>
+<p>Если tor уже запущен либо при старте возникают ошибки вида:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">[warn] Could not bind to 127.0.0.1:9050: Address already in use. Is Tor already running?
+</code></pre></figure>
+<p>необходимо остановить его:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ killall -9 tor
+</code></pre></figure>
+<p>и запустить заново как написано выше.</p>
+
+<p>Если лог включен, то признаком успешного запуска и подключения к сети tor будет строка:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">Feb 21 19:12:17.034 [notice] Tor has successfully opened a circuit. Looks like client functionality is working.
+Feb 21 19:12:17.035 [notice] Bootstrapped 100%: Done.
+</code></pre></figure>
+<p>Далее достаточно прописать адрес и порт указанный опцией <strong>SocksListenAddress</strong> как-socks сервер в браузере или любой другой программе на вашем ПК.</p>
+
+<p>Однако есть ряд программ которые не умеют работать с socks протоколом. Эту проблему можно решить средствами tor+iptables. Для этого необходимо включить в TOR режим прозрачного проксирования. В таком случае на подключенных к роутеру машинах вообще не нужно будет ничего настраивать, весь трафик будет идти через сеть TOR.</p>
+
+<h2>Использование прозрачного прокси TOR</h2>
+
+<p>Для этого в конфигурационный файл <strong>/etc/tor/torrc</strong> добавляем:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">AutomapHostsOnResolve 1
+TransPort 9040
+DNSPort 53
+</code></pre></figure>
+<p>тем самым прозрачный прокси будет слушать порт 9040.</p>
+
+<p>Перезапускаем tor:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ killall -9 tor
+$ /etc/init.d/tor start
+</code></pre></figure>
+<h3>Настройка iptables</h3>
+
+<p>Далее необходимо весь трафик завернуть на порт 9040. Для этого необходимо использовать iptables с опцией <strong>REDIRECT –to-port</strong>. Для использования этой опции необходимо дополнительно собрать и установить пакет <strong>iptables-mod-nat-extra</strong>. В противном случае вы получите ошибку вида:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">iptables v1.4.6: unknown option `--to-ports&#39;
+</code></pre></figure>
+<p>Установливаем пакет:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ opkg install kmod-ipt-nat-extra
+</code></pre></figure>
+<p>А можно собрать в своем репозитории или включить этот пакет сразу в прошивку. В конфигураторе OpenWrt этот пакет находится в</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">-&gt; Network
+-&gt; iptables
+&lt;M&gt; iptables-mod-nat-extra
+</code></pre></figure>
+<p>После установки пакета необходимо &quot;завернуть&quot; трафик на прозрачный прокси сервер:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ iptables -t nat -A PREROUTING -p tcp -d ! 192.168.120.1 --dport 80 -j REDIRECT --to-ports 9040
+</code></pre></figure>
+<p>Что означает – перебрасывать весь трафик идущий с 80-го порта (и не адресованый для 192.168.120.1) на порт 9040, на котором как раз и находится прозрачный прокси.</p>
+
+<p>Тоже самое делаем и для dns запросов:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+</code></pre></figure>
+<p>Остальной udp трафик прийдётся либо пропускать без анонимизации, либо резать.</p>
+
+<p>Собственно всё. Весь трафик приходящий на роутер будет перенаправлен в сеть TOR без каких-либо настроек на компьютерах в вашей локальной сети и все действия в сети будут анонимны (при правильном использовании!).</p>
+
+<p>Работоспособность можно проверить по стандартной ссылке: <a href="https://check.torproject.org/?lang=ru">https://check.torproject.org/?lang=ru</a></p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Настройка TOR на OpenWRT&amp;url=https://cryptopunks.org/article/openwrt+tor/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/openwrt+tor/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="https://cryptopunks.github.io">cryptopunks.github.io</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Генерируем произвольный адрес onion-домена в TOR | c r y p t o p u n k s  </title>
+    <meta name="description" content="Подбираем необходимые варианты из случайностей для будущего onion-ресурса и подсчитываем приблизительные временные затраты" />
+    <meta property="og:title"       content= "Генерируем произвольный адрес onion-домена в TOR | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Подбираем необходимые варианты из случайностей для будущего onion-ресурса и подсчитываем приблизительные временные затраты"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/generate+custom+onion+address/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2015-09-01">01/09/2015</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#tor" title="tor">#tor</a>
+    
+    <a href="/tags/#secure" title="secure">#secure</a>
+    
+    <a href="/tags/#onion" title="onion">#onion</a>
+    
+    <a href="/tags/#hosting" title="hosting">#hosting</a>
+    
+    <a href="/tags/#forward" title="forward">#forward</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Генерируем произвольный адрес onion-домена в TOR</h1>
+
+        <section class="post-content">
+            <h2>Борьба со &quot;страшными&quot; адресами TOR</h2>
+
+<p>При <a href="/article/create-onion-resource-in-tor/" target="_blank">создании ресурсов в сети TOR</a> генерируется хеш на базе случайносозданного ключа, который лежит в директории указанной в параметре <strong>HiddenServiceDir</strong> конфига <strong>torrc</strong> и служит доменом ресурса, имея довольно неприятный вид вроде <strong>2rdccn3g5pz3vy7s.onion</strong>. Эту проблему можно по крайней мере частично решить, сгенерировав нужную комбинацию символов, выбирая варианты из случайностей.</p>
+
+<h2>Примерное время</h2>
+
+<p>При сегодняшних средних мощностях процессоров первые 1/2/3/4/5/6-символов подбираются довольно быстро (от миллисекунд до получаса).<br>
+Вот таблица соответствий для процессора 1.5Гц:</p>
+
+<table><thead>
+<tr>
+<th style="text-align: center">символы</th>
+<th style="text-align: center">примерное время</th>
+</tr>
+</thead><tbody>
+<tr>
+<td style="text-align: center">1</td>
+<td style="text-align: center">менее 1 секунды</td>
+</tr>
+<tr>
+<td style="text-align: center">2</td>
+<td style="text-align: center">менее 1 секунды</td>
+</tr>
+<tr>
+<td style="text-align: center">3</td>
+<td style="text-align: center">менее 1 секунды</td>
+</tr>
+<tr>
+<td style="text-align: center">4</td>
+<td style="text-align: center">2 секунды</td>
+</tr>
+<tr>
+<td style="text-align: center">5</td>
+<td style="text-align: center">1 минута</td>
+</tr>
+<tr>
+<td style="text-align: center">6</td>
+<td style="text-align: center">30 минут</td>
+</tr>
+<tr>
+<td style="text-align: center">7</td>
+<td style="text-align: center">1 день</td>
+</tr>
+<tr>
+<td style="text-align: center">8</td>
+<td style="text-align: center">25 дней</td>
+</tr>
+<tr>
+<td style="text-align: center">9</td>
+<td style="text-align: center">2.5 года</td>
+</tr>
+<tr>
+<td style="text-align: center">10</td>
+<td style="text-align: center">40 лет</td>
+</tr>
+<tr>
+<td style="text-align: center">11</td>
+<td style="text-align: center">640 лет</td>
+</tr>
+<tr>
+<td style="text-align: center">12</td>
+<td style="text-align: center">10 тыс. лет</td>
+</tr>
+<tr>
+<td style="text-align: center">13</td>
+<td style="text-align: center">160 тыс. лет</td>
+</tr>
+<tr>
+<td style="text-align: center">14</td>
+<td style="text-align: center">2.6 млн. лет</td>
+</tr>
+</tbody></table>
+
+<h2>Использование eschalot</h2>
+
+<p>Получаем последнюю версию:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ git clone https://github.com/ReclaimYourPrivacy/eschalot
+</code></pre></figure>
+<p>Собираем:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ cd eschalot
+$ make
+</code></pre></figure>
+<p>Далее запускаем <code>./eschalot</code> без аргументов чтобы ознакомиться со справкой по аргументам (более подробная на странице проекта).<br><br></p>
+
+<p>Например найдём ключ с хешем &quot;crypt&quot; в начале адреса:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ./eschalot -t4 -r &quot;^test&quot;
+----------------------------------------------------------------
+cryptll6ahbkealh.onion
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDGDXVrSOdNFsua8tdERD+gcUMMjuGwpamV/p/+6dFBCwVJkO1H
+syBmgitGPDztMVYhuos0HYooR+NFMuenbQN6UCdn6IzZU970IJDxRtvqvUg5DU3e
+U/R1EKGxGI3OFkpou6QUen5u8PC4A3IqTAEmXlD8mwu9n4248XtNt2ZB+QIEAQqU
+jwKBgDAu2g3kDsP2vnGjbs7VC3FMY8hpSQ4C30BbNJahzshOE959/oLC3Kg4vic/
+ZDJ2rzozyJPhsyVxFWZJhMFRlUT2+l7Yu0VXFLSaf2Y6iCfjPirq0es5Wrc5NxZj
+Vv+ggk5dHu1DvtWi6pAoEivoIV8iVhUybMWWzB03az2/7LjHAkEA+BM8P8+S41DI
+/Xq5aKdcEkQKUTlAY2QD3tBbsahANELWOK8Pn1xyOAFQA4bymoIPDmu07NPp3fR6
+VmPMUVgPdQJBAMxhIzWjJU8A/TMLw0i4PQdITxfr/D8Ph5NUUFfGDl9aLxWtFsDp
+mM2uJcIbNZ7H7F/hnq69SBAd9s16ZYHhu/UCQQCJHT5H6c0rdYxV4o4alT8lY64U
+SvxVaMbj9kKLHx90OBEt0ocV/dteF9w4Me7GTc74W1aI+UcAPs+goX7ZGrKjAkBn
+GZA9nRfz9QdLhvVmC2049+Ucc4EsmoOPmbj5LCXWOBzmS1mr82EsgDZpYJcQt+03
+fbCf8PHq55w07DjWooHjAkB2ax9z6aOJ3mTLqzVr7P3oCxLQ90bZJrbsbKhZKCjS
+Wx+eQQr4ZsSx5DB/7bsOLiC8EAl3gK/5LBouyuoJadm3
+-----END RSA PRIVATE KEY-----
+</code></pre></figure>
+<p>или &quot;punk&quot; в конце:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ./eschalot -t4 -r &quot;punk$&quot;
+----------------------------------------------------------------
+ghb6lbhn3v6zpunk.onion
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCmD/2NmwEf2r8oJbTOhsmo1vetaoS0RTGiNqpph+rWR4rPbph/
+3ACoHbznp9HEEWkiURZ9dmctZnc3PNfUl0laZA1TIKHXKASORhx4n4HqDk17TyU8
+DdL9d5992SwJbFwrJRqI1SOjJUNeZrBU7p6rfSYbWtKUL/QtEOFDNyiFWwIEAQGC
+XwKBgEDe1ENmpSEyVmuG4mkucKewTiIJLKbhUiuQjdWdEmWD4MVwKphZa8p3C0B1
+Iq5cTLbyXkOCpj08bVsjTn3mr02XmryG/bEjvIcyx6eVGpWOLV4GqWB7kq6y76EO
+QRDEH8Fn0E29HUn9i5h3QbiwW+MDDrFjK5iOcGn+Ci2C9FRTAkEA1X7vNiv77To9
+VhMj/PrW4z/y6+QQCr+6zdVfwtLKByd3372tMhIrkeMLa2aED6zQV9mLI0CBzPvQ
+WLk53V44NQJBAMcfjvhapiOPwI3wi+BBCnck06rorj/SnsOEAoBy0w560OCLqk7g
+XgOlz9vUxaGpP3olNFb+TTrM+Rn0tMg4GU8CQH3ACezJRD3Ayh2hTAK+yrjENRjy
+njNOJcROb8RQ2UZw7zdFFQOk9brO9+2EihLfRwKHws9sjwAHQaQQt0BCIIcCQEgE
+z5qPSiFwN6ihvfq88DQsaK8SdkBSiDNgd5zptKcWJ94C74X1gXRLT51suQKSuxzN
+ePhjmBcJOkYnqDe96OcCQQCrmMvqOnAIQrrs5RhOCWSyJDruDbFcpYGNh3SU5lYW
+aBumHPUzqi6rEgYaTJPp2e93puOasc3SH0Q1JWdDRDUM
+-----END RSA PRIVATE KEY-----
+</code></pre></figure>
+<p>Работают все регулярные выражения.</p>
+
+<p>Ключ <code>-c</code> позволяет выводить бесконечное кол-во результатов до завершения выполнения по Ctrl+c. Удобно перенаправить в файл и потом выбрать лучшие варианты.<br>
+Помимо этого программа умеет делать выборки по словарю.<br><br>
+Далее нам необходимо скопировать ключ понравившегося домена и заменить им основной ключ. То есть открываем к примеру <strong>/var/lib/tor/site1/private_key</strong>, стираем содержимое и вставляем:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCmD/2NmwEf2r8oJbTOhsmo1vetaoS0RTGiNqpph+rWR4rPbph/
+3ACoHbznp9HEEWkiURZ9dmctZnc3PNfUl0laZA1TIKHXKASORhx4n4HqDk17TyU8
+DdL9d5992SwJbFwrJRqI1SOjJUNeZrBU7p6rfSYbWtKUL/QtEOFDNyiFWwIEAQGC
+XwKBgEDe1ENmpSEyVmuG4mkucKewTiIJLKbhUiuQjdWdEmWD4MVwKphZa8p3C0B1
+Iq5cTLbyXkOCpj08bVsjTn3mr02XmryG/bEjvIcyx6eVGpWOLV4GqWB7kq6y76EO
+QRDEH8Fn0E29HUn9i5h3QbiwW+MDDrFjK5iOcGn+Ci2C9FRTAkEA1X7vNiv77To9
+VhMj/PrW4z/y6+QQCr+6zdVfwtLKByd3372tMhIrkeMLa2aED6zQV9mLI0CBzPvQ
+WLk53V44NQJBAMcfjvhapiOPwI3wi+BBCnck06rorj/SnsOEAoBy0w560OCLqk7g
+XgOlz9vUxaGpP3olNFb+TTrM+Rn0tMg4GU8CQH3ACezJRD3Ayh2hTAK+yrjENRjy
+njNOJcROb8RQ2UZw7zdFFQOk9brO9+2EihLfRwKHws9sjwAHQaQQt0BCIIcCQEgE
+z5qPSiFwN6ihvfq88DQsaK8SdkBSiDNgd5zptKcWJ94C74X1gXRLT51suQKSuxzN
+ePhjmBcJOkYnqDe96OcCQQCrmMvqOnAIQrrs5RhOCWSyJDruDbFcpYGNh3SU5lYW
+aBumHPUzqi6rEgYaTJPp2e93puOasc3SH0Q1JWdDRDUM
+-----END RSA PRIVATE KEY-----
+</code></pre></figure>
+<p>После чего перезапускаем TOR:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo /etc/init.d/tor restart
+</code></pre></figure>
+<p>проверяем <strong>/var/lib/tor/site1/hostname</strong>, если он поменялся на нужный адрес, значит всё прошло успешно. Если же по каким-то причинам что-то пошло не так - проверьте правильно ли скопировали ключ и верно ли выставлены права доступа к ключу. В случае проблем удалите каталог <strong>/var/lib/tor/site1/</strong>, перезапустите TOR и попробуйте ещё раз.</p>
+
+<h2>Аналоги</h2>
+
+<p>В случае если <strong>eschalot</strong> чем-то не понравился можно попробовать воспользоваться его программой-родителем - <a href="https://github.com/katmagic/Shallot" target="_blank">Shallot</a>.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Генерируем произвольный адрес onion-домена в TOR&amp;url=https://cryptopunks.org/article/generate+custom+onion+address/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/generate+custom+onion+address/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="https://cryptopunks.github.io">cryptopunks.github.io</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

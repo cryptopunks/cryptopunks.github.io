@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Лучшая альтернатива TrueCrypt под Linux | c r y p t o p u n k s  </title>
+    <meta name="description" content="Инструкция по использованию пакета cryptsetup c множеством примеров" />
+    <meta property="og:title"       content= "Лучшая альтернатива TrueCrypt под Linux | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Инструкция по использованию пакета cryptsetup c множеством примеров"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/awesome+truecrypt+alternative+for+linux/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2015-08-01">01/08/2015</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#truecrypt" title="truecrypt">#truecrypt</a>
+    
+    <a href="/tags/#luks" title="luks">#luks</a>
+    
+    <a href="/tags/#linux" title="linux">#linux</a>
+    
+    <a href="/tags/#secure" title="secure">#secure</a>
+    
+    <a href="/tags/#container" title="container">#container</a>
+    
+    <a href="/tags/#crypt" title="crypt">#crypt</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Лучшая альтернатива TrueCrypt под Linux</h1>
+
+        <section class="post-content">
+            <h2>Краткое описание</h2>
+
+<p>Существует огромное кол-во мнений по поводу небезопасности использования TrueCrypt, мы эти домыслы поддерживать не будем, но расскажем о достойной альтернативе под ОС Linux. Сегодня поговорим о технологии LUKS (Linux Unified Key Setup).<br>
+LUKS умеет шифровать как сами диски так и создавать криптоконтейнеры непосредственно в файлах. Поговорим о последнем варианте, т.к. первый обычно умеют все современные инсталляторы популярных дистрибутивов, а если вы гик и хотите сделать всё сами, то вероятнее всего найдёте необходимый мануал самостоятельно.<br>
+К слову: LUKS поддерживает огромное кол-во шифров и шустрее TrueCrypt, т.к. работает на уровне ядра ОС.</p>
+
+<h2>Необходимые шаги</h2>
+
+<p>1) Ставим пакет cryptsetup:</p>
+
+<p><code>$ sudo apt-get install cryptsetup</code></p>
+
+<p>2) Создаём пустой файл для будущего контейнера (например 200Мб):</p>
+
+<p><code>$ fallocate -l 200M /home/user/darkthrone.avi</code></p>
+
+<p>(слабая, но хоть какая-то маскировка; под видеоклип)</p>
+
+<p>3) Создаём в этом файле криптоконтейнер:</p>
+
+<p><code>$ sudo cryptsetup -y luksFormat /home/user/darkthrone.avi</code></p>
+
+<p>Отвечаем утвердительно набирая в большом регистре YES, повторив два раза пароль.</p>
+
+<p>4) Открываем контейнер:</p>
+
+<p><code>$ sudo cryptsetup luksOpen /home/user/darkthrone.avi decrypt_data</code></p>
+
+<p>5) Создаём на нём файловую систему:</p>
+
+<p><code>$ sudo mkfs.ext4 /dev/mapper/decrypt_data</code></p>
+
+<p>6) Создаём каталог для монтирования:</p>
+
+<p><code>$ sudo mkdir /mnt/data</code></p>
+
+<p>7) Монтируем расшифрованный контейнер:</p>
+
+<p><code>$ sudo mount /dev/mapper/decrypt_data /mnt/data</code></p>
+
+<p>8) Записываем необходимые файлы в <strong>/mnt/data</strong>, после чего его можно отмонтировать:</p>
+
+<p><code>$ sudo umount /mnt/data</code></p>
+
+<p>9) Извлекаем контейнер:</p>
+
+<p><code>$ sudo cryptsetup luksClose /dev/mapper/decrypt_data</code></p>
+
+<p>Копируем файл <strong>/home/user/darkthrone.avi</strong> например на флешку и повторяем шаги 4, 7 всякий раз когда хотим им воспользоваться и шагами 8, 9 чтобы затереть за собой следы.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Лучшая альтернатива TrueCrypt под Linux&amp;url=https://cryptopunks.org/article/awesome+truecrypt+alternative+for+linux/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/awesome+truecrypt+alternative+for+linux/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="https://cryptopunks.github.io">cryptopunks.github.io</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

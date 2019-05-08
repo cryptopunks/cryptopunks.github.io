@@ -1,0 +1,3210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>c r y p t o p u n k s</title>
+    <link>https://cryptopunks.org</link>
+    <description>RSS feed for c r y p t o p u n k s</description>
+    <pubDate>Sat, 20 Apr 2019 00:00:00 +0000</pubDate>
+    <item>
+      <title>Создаём статику для старых, уязвимых и неподдерживаемых более CMS</title>
+      <link>https://cryptopunks.org/article/fix_problem_for_old_and_unsecure_sites/</link>
+      <description><![CDATA[В интернете существует огромное кол-во сайтов на старых и более не поддерживаемых CMS. Обычно это самописные, или просто более не развиваемые CMS, либо это могут быть наборы плагинов, которые перестали развиваться.
+]]></description>
+      <pubDate>Sat, 20 Apr 2019 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/fix_problem_for_old_and_unsecure_sites/</guid>
+      <content:encoded><![CDATA[В интернете существует огромное кол-во сайтов на старых и более не поддерживаемых CMS. Обычно это самописные, или просто более не развиваемые CMS, либо это могут быть наборы плагинов, которые перестали развиваться.
+
+Обычно в таких местах огромное кол-во ошибок, sql-инъекций и других лазеек, которые не упускают взломщики с целью воспользоваться ресурсами взломанного сайта. <br>
+
+В итоге либо с сайта уводят ваш трафик, либо внедряют опасный код и домен в итоге попадает в бан-лист google/mozilla из которого довольно сложно потом выбраться.
+
+Поскольку поддерживать всё в актуальном состоянии иногда не представляется возможным в том числе мне, то пришлось придумать следующий хак — статика.
+
+Алгоритм примерно такой: 
+
+* разворачиваем на локалхосте уязвимый и старый сайт (например, в docker)
+* прописываем в **/etc/hosts** домен с локальным айпи
+* используем wget для скачивания статики
+* заливаем статический сайт на любой хостинг (даже без СУБД, php и прочего)
+* при необходимости меняем что необходимо на локалхосте и повторяем процедуру с перезаливкой сгенерированных статических страниц на сайт
+
+
+## Обо всём подробнее
+
+Если сайт больше не поддерживается и обновлять на нём информацию нет необходимости — первые два пункта можно пропустить и сразу приступить к третьему.
+
+На первом пункте я не буду акцентировать внимание. Не важно где будет находится CMS с сайтом, важно чтобы к ней не имел доступ никто извне. Мне самым удобным кажется docker. Разворачиваем контейнер c каким нибудь LAMP, заливаем туда скрипты с сайтом, импортируем базу, запускаем.
+
+Далее в **/etc/hosts** прописываем домен с сайтом:
+
+```
+127.0.0.1 	cryptopunks.org
+```
+
+Используем wget для генерации HTML со всеми необходимыми стилями, JS, картиками и другим контентом:
+
+```
+$ wget -r -l 7 -p -nc http://cryptopunks.org
+```
+
+Далее заливаем все файлы на хостинг вместо дырявых скриптов.
+
+Я предлагаю использовать для этого Github Pages.
+
+Плюсов у Github Pages перед другими хостингами несколько:
+
+* бесплатно, а значит и не отключат за неуплату
+* не нужно будет обслуживать никак сервер
+* сайт не будет подвержен DDOS-атакам
+* будет выдан бесплатный https-сертификат
+* будет доступна история всех изменений
+* если вдруг вы потеряете контроль над доменом — всегда будет резервный вариант работы с сайтом через *имясайта.github.io*
+* если с вами что-то случится — сайт останется и его смогу склонировать себе другие
+
+Итак, для того чтобы создать страницу с сайтом — регистрируемся на github, создаём новую организацию (например, **cryptopunks**), далее создаём репозиторий с именем **cryptopunks.github.io** (именно в таком формате: **название_организации** + **github.io**) и заливаем туда сайт. Создаём в репозитории файлик **CNAME** с названием вашего домена (например, **cryptopunks.org**), в DNS домена прописываем IP который выдаётся при:
+
+```
+$ ping cryptopunks.github.io
+```
+
+Если домена нет — используем адрес https://cryptopunks.github.io
+
+В настройках репозитория не забываем включить HTTPS. 
+
+Всё, теперь ваш сайт безопасен, автономен и не требует какого-либо обслуживания. 
+
+## Ну и напоследок
+
+Естественно необходимо учитывать, что в статическом сайте может работать далеко не всё что работало у вас в случае с динамическим. Например, по понятным причинам скорее всего не будет работать поиск, авторизация и прочие плюшки, требующие взаимодействия с сервером. Поэтому это всё надо либо предварительно отключить, либо огранизовать функционал на JS.
+
+Кроме того, полезным будет пройтись каким нибудь сервисом вроде [этого](https://www.brokenlinkcheck.com/) чтобы проверить не появилось ли на вашем сайте битых ссылок. И убедиться что старые адреса соответствуют новым, иначе можно потерять вес в поисковиковых системах. 
+
+Ещё можно предусмотреть страницу **404.html**, т.к. wget её скорее всего не создаст. Ну и карту сайта **sitemap.xml**.]]></content:encoded>
+      <dc:date>2019-04-20T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Отключение Rest API в Wordpress для неавторизированных пользователей</title>
+      <link>https://cryptopunks.org/article/rest_api_wordpress_disable_access/</link>
+      <description><![CDATA[Rest API в Wordpress — несомненно очень удобный инструмент, однако совершенно случайно я обнаружил ряд потенциально опасных лазеек, которыми могут воспользоваться хакеры при взломе вашего сайта. Одной из них я хотел бы поделиться и рассказать о том, как отключить этот функционал для неавторизированных пользователей, т.к. чаще всего Rest API либо вообще не используется, либо используется для администрирования сайта.
+]]></description>
+      <pubDate>Mon, 08 Apr 2019 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/rest_api_wordpress_disable_access/</guid>
+      <content:encoded><![CDATA[Rest API в Wordpress — несомненно очень удобный инструмент, однако совершенно случайно я обнаружил ряд потенциально опасных лазеек, которыми могут воспользоваться хакеры при взломе вашего сайта. Одной из них я хотел бы поделиться и рассказать о том, как отключить этот функционал для неавторизированных пользователей, т.к. чаще всего Rest API либо вообще не используется, либо используется для администрирования сайта.
+
+## Демонстрация одной из опасных проблем
+
+В документации к [Rest API Wordpress](https://developer.wordpress.org/rest-api/using-the-rest-api/)  есть запрос следующего вида **/wp-json/wp/v2/users**. Он позволяет получить список зарегистрированных юзеров на сайте, в том числе их логины для входа.
+
+Например, давайте получим часть логинов на xakep.ru:
+
+```
+$ curl "http://xakep.ru/wp-json/wp/v2/users"
+[{"id":64,"name":"|plaintext|","url":"","description":"","link":"https:\/\/xakep.ru\/author\/plaintext\/","slug":"plaintext","avatar_urls":{"24":"http:\/\/1.gravatar.com\/avatar\/1d2b0b979683a00ea63f7e3ab319964c?s=24&d=retro&r=g","48":"http:\/\/1.gravatar.com\/avatar\/1d2b0b979683a00ea63f7e3ab319964c?s=48&d=retro&r=g","96":"http:\/\/1.gravatar.com\/avatar\/1d2b0b979683a00ea63f7e3ab319964c?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/64"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":429154,"name":"0x25CBFC4F","url":"","description":"","link":"https:\/\/xakep.ru\/author\/0x25cbfc4f\/","slug":"0x25cbfc4f","avatar_urls":{"24":"http:\/\/1.gravatar.com\/avatar\/7f12c015398c2326135d4800f93bad20?s=24&d=retro&r=g","48":"http:\/\/1.gravatar.com\/avatar\/7f12c015398c2326135d4800f93bad20?s=48&d=retro&r=g","96":"http:\/\/1.gravatar.com\/avatar\/7f12c015398c2326135d4800f93bad20?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/429154"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":417792,"name":"0x6d696368","url":"","description":"Computer magician","link":"https:\/\/xakep.ru\/author\/0x6d696368\/","slug":"0x6d696368","avatar_urls":{"24":"https:\/\/xakep.ru\/wp-content\/uploads\/2018\/05\/author-s.jpg","48":"https:\/\/xakep.ru\/wp-content\/uploads\/2018\/05\/author-s.jpg","96":"https:\/\/xakep.ru\/wp-content\/uploads\/2018\/05\/author-s.jpg"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/417792"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":329699,"name":"84ckf1r3","url":"","description":"","link":"https:\/\/xakep.ru\/author\/84ckf1r3\/","slug":"84ckf1r3","avatar_urls":{"24":"http:\/\/0.gravatar.com\/avatar\/3b7926f0e4a268a785b8e9c97aea91be?s=24&d=retro&r=g","48":"http:\/\/0.gravatar.com\/avatar\/3b7926f0e4a268a785b8e9c97aea91be?s=48&d=retro&r=g","96":"http:\/\/0.gravatar.com\/avatar\/3b7926f0e4a268a785b8e9c97aea91be?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/329699"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":341793,"name":"8bit","url":"","description":"","link":"https:\/\/xakep.ru\/author\/8bit\/","slug":"8bit","avatar_urls":{"24":"http:\/\/0.gravatar.com\/avatar\/c50d7b552ac9909795ceacdf50fcbf38?s=24&d=retro&r=g","48":"http:\/\/0.gravatar.com\/avatar\/c50d7b552ac9909795ceacdf50fcbf38?s=48&d=retro&r=g","96":"http:\/\/0.gravatar.com\/avatar\/c50d7b552ac9909795ceacdf50fcbf38?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/341793"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":339280,"name":"Al1en","url":"","description":"","link":"https:\/\/xakep.ru","slug":"al1en","avatar_urls":{"24":"http:\/\/0.gravatar.com\/avatar\/900c621598b832a109a7659db0d42de9?s=24&d=retro&r=g","48":"http:\/\/0.gravatar.com\/avatar\/900c621598b832a109a7659db0d42de9?s=48&d=retro&r=g","96":"http:\/\/0.gravatar.com\/avatar\/900c621598b832a109a7659db0d42de9?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/339280"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":7,"name":"Alex G","url":"","description":"","link":"https:\/\/xakep.ru","slug":"fotonstep","avatar_urls":{"24":"https:\/\/xakep.ru\/wp-content\/uploads\/2016\/12\/ava-new-large.jpg","48":"https:\/\/xakep.ru\/wp-content\/uploads\/2016\/12\/ava-new-large.jpg","96":"https:\/\/xakep.ru\/wp-content\/uploads\/2016\/12\/ava-new-large.jpg"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/7"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":351044,"name":"aLLy","url":"http:\/\/russiansecurity.expert\/","description":"\u0421\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442 \u043f\u043e \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u043e\u043d\u043d\u043e\u0439 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u0438 \u0432 ONsec.\r\nResearch, ethical hacking and Photoshop.","link":"https:\/\/xakep.ru\/author\/iamsecurity\/","slug":"iamsecurity","avatar_urls":{"24":"http:\/\/1.gravatar.com\/avatar\/78da81286e3e78c6338efbb98f47680d?s=24&d=retro&r=g","48":"http:\/\/1.gravatar.com\/avatar\/78da81286e3e78c6338efbb98f47680d?s=48&d=retro&r=g","96":"http:\/\/1.gravatar.com\/avatar\/78da81286e3e78c6338efbb98f47680d?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/351044"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":337436,"name":"Anton Ostrokonskiy","url":"http:\/\/ostrokonskiy.com","description":"Penetration tester","link":"https:\/\/xakep.ru\/author\/pagliacci\/","slug":"pagliacci","avatar_urls":{"24":"https:\/\/xakep.ru\/wp-content\/uploads\/2017\/06\/b9909cefd3f7b9a34b8f85e1270ad11a.jpeg","48":"https:\/\/xakep.ru\/wp-content\/uploads\/2017\/06\/b9909cefd3f7b9a34b8f85e1270ad11a.jpeg","96":"https:\/\/xakep.ru\/wp-content\/uploads\/2017\/06\/b9909cefd3f7b9a34b8f85e1270ad11a.jpeg"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/337436"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}},{"id":51,"name":"ARNext.ru","url":"http:\/\/arnext.ru","description":"\u041a\u0440\u0443\u043f\u043d\u0435\u0439\u0448\u0438\u0439 \u0440\u0443\u0441\u0441\u043a\u043e\u044f\u0437\u044b\u0447\u043d\u044b\u0439 \u0440\u0435\u0441\u0443\u0440\u0441 \u043e \u0434\u043e\u043f\u043e\u043b\u043d\u0435\u043d\u043d\u043e\u0439, \u0432\u0438\u0440\u0442\u0443\u0430\u043b\u044c\u043d\u043e\u0439 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u0438 \u0441\u043e\u043f\u0443\u0442\u0441\u0442\u0432\u0443\u044e\u0449\u0438\u0445 \u0442\u0435\u0445\u043d\u043e\u043b\u043e\u0433\u0438\u044f\u0445.","link":"https:\/\/xakep.ru\/author\/arnext\/","slug":"arnext","avatar_urls":{"24":"http:\/\/2.gravatar.com\/avatar\/e89a0ded334cee51dc273d169c028d1f?s=24&d=retro&r=g","48":"http:\/\/2.gravatar.com\/avatar\/e89a0ded334cee51dc273d169c028d1f?s=48&d=retro&r=g","96":"http:\/\/2.gravatar.com\/avatar\/e89a0ded334cee51dc273d169c028d1f?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/51"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}}]%
+```
+
+Или можно узнать какой логин например у пользователя с **id=1** (с большой долей вероятности — администратора сайта):
+
+```
+$ curl http://xakep.ru/wp-json/wp/v2/users/1
+{"id":1,"name":"wpengine","url":"http:\/\/wpengine.com","description":"This is the \"wpengine\" admin user that our staff uses to gain access to your admin area to provide support and troubleshooting. It can only be accessed by a button in our secure log that auto generates a password and dumps that password after the staff member has logged in. We have taken extreme measures to ensure that our own user is not going to be misused to harm any of our clients sites.","link":"https:\/\/xakep.ru","slug":"wpengine","avatar_urls":{"24":"http:\/\/0.gravatar.com\/avatar\/9315f6ce3baebb09c86901c4497d57b7?s=24&d=retro&r=g","48":"http:\/\/0.gravatar.com\/avatar\/9315f6ce3baebb09c86901c4497d57b7?s=48&d=retro&r=g","96":"http:\/\/0.gravatar.com\/avatar\/9315f6ce3baebb09c86901c4497d57b7?s=96&d=retro&r=g"},"meta":[],"_links":{"self":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users\/1"}],"collection":[{"href":"https:\/\/xakep.ru\/wp-json\/wp\/v2\/users"}]}}%
+```
+
+А вот и он **wpengine**.
+
+Теперь при брутфорсинге пароля хакер может знать какой логин использовать.
+
+## Ограничиваем доступ к Rest API Wordpress
+
+А теперь давайте эту лазейку прикроем, разрешив использовать Rest API только авторизированным пользователям. Для этого необходимо в файлики, которые обчно не подвержены перезаписи (обновлению) и вызываются при каждом запросе к сайту добавить следующий код:
+
+```
+## Закрывает все маршруты REST API от публичного доступа
+add_filter( 'rest_authentication_errors', function( $result ){
+
+	if( empty( $result ) && ! current_user_can('edit_others_posts') ){
+		return new WP_Error( 'rest_forbidden', 'You are not currently logged in.', array( 'status' => 401 ) );
+	}
+
+	return $result;
+});
+```
+
+Например, можно добавить этот код в самый конец файла **wp-config.php**.
+
+## Напоследок
+
+Ну и разумеется, смысл в вышепреведённом коде есть при условии, что регистрация на вашем сайте отключена.
+В противном случае условие это необходимо немного модифицировать по ситуации.
+]]></content:encoded>
+      <dc:date>2019-04-08T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Будьте внимательны: исправление прав доступа на созданных пользователей</title>
+      <link>https://cryptopunks.org/article/adduser_security_bug/</link>
+      <description><![CDATA[Во многих дистрибутивах правила создания пользователей по умолчанию позволяют все пользователям просматривать содержимое каталогов друг-друга. Проблема кроется в том, что при создании пользователя его каталогу выставляются права 755.
+Обычно приложения в UNIX запускаются от отдельных пользователей для обеспечения, в том числе, большей безопасности. Данная проблема снижает ее уровень. И, конечно, это особо актуально, если за компьютером работает несколько пользователей.
+]]></description>
+      <pubDate>Fri, 19 Oct 2018 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/adduser_security_bug/</guid>
+      <content:encoded><![CDATA[Во многих дистрибутивах правила создания пользователей по умолчанию позволяют все пользователям просматривать содержимое каталогов друг-друга. Проблема кроется в том, что при создании пользователя его каталогу выставляются права 755.<br><br>
+Обычно приложения в UNIX запускаются от отдельных пользователей для обеспечения, в том числе, большей безопасности. Данная проблема снижает ее уровень. И, конечно, это особо актуально, если за компьютером работает несколько пользователей.
+
+## Демонстрация проблемы
+
+Давайте создадим двух пользователей:
+
+```
+# useradd -m user1
+# useradd -m user2
+```
+
+Зайдём под user1 и создадим файлик:
+
+```
+# su user1
+user1 $ echo password > ~/pass.txt
+```
+
+А теперь зайдём под юзером user2 и попробуем прочитать файл, к которому доступа иметь не должны:
+
+```
+# su user2
+user2 $ cat /home/user1/pass.txt
+password
+```
+
+Более того, вы можете просмотреть все файлы юзера не зная к ним точного пути (и просмотреть всех юзеров в /home/):
+
+```
+user2 $ ls /home/user1/
+pass.txt
+```
+
+Объяснять последствия этих настроек по умолчанию я думаю смысла нет - всё очевидно и очень печально.
+
+## Как исправить проблему
+
+На всех своих компьютерах выполните под root:
+
+```
+# chmod 750 /home/*
+```
+
+Чтобы предотвратить права 755 на каталоги будущих пользователей - необходимо произвести правку как минимум двух конфигов в системе.
+
+1) Конфиг для утилиты adduser - **/etc/adduser.conf**. <br><br>
+Меняем:
+
+```
+DIR_MODE=0755
+```
+
+На:
+
+```
+DIR_MODE=0750
+```
+
+2) Конфиг для утилиты useradd - **/etc/login.defs**<br><br>
+Меняем:
+
+```
+UMASK           022
+```
+
+На
+
+```
+UMASK           027
+```
+
+Проверяем:
+
+```
+# userdel user1
+# userdel user2
+# rm -fr /home/user1 /home/user2
+# useradd -m user1
+# adduser user2
+...
+# ls -l /home/
+drwxr-x---  2 user1    user1     4096 oct 19 16:54 user1
+drwxr-x---  2 user2    user2     4096 oct 19 16:54 user2
+```]]></content:encoded>
+      <dc:date>2018-10-19T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Пускаем на VPN-сервере весь трафик клиентов через сеть TOR</title>
+      <link>https://cryptopunks.org/article/vpn_over_tor/</link>
+      <description><![CDATA[Для большей анонимизации можно пускать трафик с VPN-сервера в сеть TOR. Такая же схема подходит для ситуаций, когда сеть TOR у вас заблокирована государством (про обход блокировок средствами TOR без участия VPN можно прочесть тут).
+]]></description>
+      <pubDate>Fri, 01 Dec 2017 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/vpn_over_tor/</guid>
+      <content:encoded><![CDATA[Для большей анонимизации можно пускать трафик с VPN-сервера в сеть TOR. Такая же схема подходит для ситуаций, когда сеть TOR у вас заблокирована государством (про обход блокировок средствами TOR без участия VPN можно прочесть <a href="/article/tor+blocking+bypass/">тут</a>).
+
+## Немного теории
+
+Существует множество схем построения сетей, но самыми популярными являются:
+
+1. Клиент -> VPN Out -> TOR -> Internet
+
+2. Клиент -> VPN In -> VPN Out -> TOR -> Internet
+
+Для обоих вариантов сначала необходимо настроить VPN-сервер.<br>Настройка первого варианта уже рассматривалась в статье <a href="/article/secure+openvpn+installer/" target="_blank">Разворачиваем за минуту OpenVPN-сервер с пользовательскими ключами</a>, второго — в статье <a href="/article/double+vpn/" target="_blank">Double VPN</a>. <br><br>
+Дальнейшие действия для обеих схем аналогичные. Вся настройка для работы с TOR производится лишь на сервере **vpn out**.
+
+## Настраиваем TOR
+
+Устанавливаем TOR и добавляем в **/etc/tor/torrc** на **vpn out** следующие строки:
+
+```
+TransPort 9040
+DNSPort 5353
+AutomapHostsOnResolve 1
+TransListenAddress 10.8.0.1
+DNSListenAddress 10.8.0.1
+```
+
+Где **10.8.0.1** —  локальный IP VPN-сервера (задаётся через опцию **server** в конфиге OpenVPN).
+
+**Внимание!** Не торопитесь перезапускать TOR, он должен запускаться лишь после запуска VPN-сервера (!), иначе он будет ругаться на отсутствие адреса 10.8.0.1.
+
+Лучше запуск TOR вовсе убрать из автозагрузки:
+
+```
+$ sudo systemctl disable tor
+```
+
+## Настройка iptables
+
+В iptables на **vpn out** помимо необходимых для работы OpenVPN правил (освещено в статьях приведённых выше) необходимо добавить 2 следующих правила:
+
+```
+$ sudo iptables -A PREROUTING -s 10.8.0.0/24 -p udp -m udp --dport 53 -j REDIRECT --to-ports 5353
+$ sudo iptables -A PREROUTING -s 10.8.0.0/24 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
+```
+
+Первое правило задаёт использование DNS через сеть TOR, второе перенаправляет весь трафик из подсети 10.8.0.0 на порт 9040 демона tor.<br><br>
+Не забудьте добавить восстановление правил iptables в автозагрузку!
+
+## Настройка OpenVPN
+
+Каких-либо изменений в конфигурации OpenVPN (как сервера, так и клиента) для работы с TOR производить не нужно! В том числе ничего не нужно менять на сервере с **vpn in** (если он используется).
+
+
+## Запуск и тестирование
+
+Поскольку запуск TOR на **vpn out** необходимо производить в данном случае лишь после запуска OpenVPN — не забываем после каждой перезагрузки сначала запускать OpenVPN, а потом уже TOR.<br>
+Например, так:
+
+```
+$ sudo systemctl start openvpn
+$ sudo systemctl start tor
+```
+
+## Полезный лайфхак
+
+Не всегда хочется использовать VPN для работы через TOR по ряду причин (медленное соединение, бан в ряде сайтов, капчи), поэтому предлагаю на **vpn out** поднять сразу два сервера OpenVPN на разных портах. Первый порт (например, 443) будет ходить сразу в интернет, второй же (например, 344) — через TOR.
+]]></content:encoded>
+      <dc:date>2017-12-01T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Защищаем Wordpress от brutforce и других атак средствами fail2ban</title>
+      <link>https://cryptopunks.org/article/wordpress_block_brutforce_attack_by_fail2ban/</link>
+      <description><![CDATA[Wordpress — самая популярная CMS. Следовательно, и самая востребованная в плане осуществления атак. Достаточно появиться очередному сайту на wordpress, как тут же в логах побегут сообщения вроде:
+]]></description>
+      <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/wordpress_block_brutforce_attack_by_fail2ban/</guid>
+      <content:encoded><![CDATA[<a href="https://wordpress.org/" target="_blank">Wordpress</a> — самая популярная CMS. Следовательно, и самая востребованная в плане осуществления атак. Достаточно появиться очередному сайту на wordpress, как тут же в логах побегут сообщения вроде:
+
+```
+91.200.12.28 - - [27/Sep/2017:00:33:33 +0300] "POST /wp-login.php HTTP/1.1" 200 3824 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
+91.200.12.28 - - [27/Sep/2017:00:33:33 +0300] "POST /wp-login.php HTTP/1.1" 200 3824 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
+91.200.12.28 - - [27/Sep/2017:00:33:33 +0300] "POST /wp-login.php HTTP/1.1" 200 3824 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
+91.200.12.28 - - [27/Sep/2017:00:33:34 +0300] "POST /wp-login.php HTTP/1.1" 200 3824 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
+91.200.12.28 - - [27/Sep/2017:00:33:36 +0300] "POST /wp-login.php HTTP/1.1" 200 3824 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
+```
+
+И даже если поставить хороший пароль на админку и попытки залогиниться бесконечное кол-во раз никак не ограничить, то как минимум сайт начнёт со временем висеть от большого кол-ва ботнетов, пробующих подобрать пароль на сайт.
+
+Под Wordpress существует огромное кол-во плагинов для защиты от хакерских атак. Но во-первых, эти средства будут работать с правами от которых работает wordpress. Во-вторых, это загромождает wordpress (а это сказывается на скорости и безопасности). В-третьих, такие плагины вряд ли будут гибко настраиваться.
+
+Но плюсы плагинов в том, что обычно они начинают работать сразу при их активации (минимум мозговых и физических действий), плюс они спасут вас, если на сервере вы не имеете root-доступа.
+
+Поговорим о защите, которая находится на более низком уровне, нежели wordpress.
+
+
+## Использование fail2ban
+
+<a href="https://www.fail2ban.org/" target="_blank">fail2ban</a> — программа, позволяющая анализировать логи на определённые вхождения и задавать правила относительно того, что делать в случаях, когда лимиты с конкретного IP исчерпываются.
+
+Для fail2ban существует огромное кол-во готовых правил, которые можно активировать через **/etc/fail2ban/filter.d**, скачать с оф. сайта, либо написать самостоятельно.
+
+Ставим:
+
+```
+sudo apt install fail2ban
+sudo systemctl enable fail2ban
+```
+
+Создаём файл **/etc/fail2ban/filter.d/wordpress.conf** с правилами для поиска вхождений:
+
+```
+[Definition]
+failregex = ^<HOST> .* "POST .*wp-login.php
+            ^<HOST> .* "POST .*xmlrpc.php
+ignoreregex =
+```
+
+И файл **/etc/fail2ban/jail.d/wordpress.conf**:
+
+```
+[wordpress]
+enabled = true
+port = http,https
+filter = wordpress
+action = iptables-multiport[name=wordpress, port="http,https", protocol=tcp]
+logpath = /var/log/httpd/access_log
+          /var/log/apache2/access*log
+          /var/log/nginx/*log
+maxretry = 10
+findtime = 600
+```
+
+где в **logpath** прописываем пути к логам веб-сервера (в том числе можно несколько и по маске), а **maxretry** — кол-во допустимых попыток.
+
+Перезапускаем fail2ban:
+
+```
+sudo systemctl restart fail2ban
+```
+
+Всё, теперь если кто-то попробует брутфорсить админку, или сканить xmlrpc на наличие уязвимостей — попадёт в бан.
+
+## В заключение
+
+Точно таким же способом можно проанализировать логи веб-сервера и написать с десяток других правил, направленных на поиск уязвимых мест в wordpress, поставив лимит и блокировку по IP, дабы вас не сканировали и не расходовали ценные ресурсы вашего сервера/wps, предоставив их пользователям ваших сайтов.
+]]></content:encoded>
+      <dc:date>2017-09-28T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Анонимный jabber средствами TOR на rapsberry pi</title>
+      <link>https://cryptopunks.org/article/jabber_over_tor_on_raspberrypi/</link>
+      <description><![CDATA[Задача вроде довольно банальная и очевидная, но меня постоянно заваливают письмами об анонимном мессенджере и вопросами вроде &quot;какого анонимного хостера знаешь, нужен анонимный жаббер&quot;, поэтому решил вместо тысячи ответов давать линк на одну статью.
+]]></description>
+      <pubDate>Thu, 11 May 2017 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/jabber_over_tor_on_raspberrypi/</guid>
+      <content:encoded><![CDATA[Задача вроде довольно банальная и очевидная, но меня постоянно заваливают письмами об анонимном мессенджере и вопросами вроде "какого анонимного хостера знаешь, нужен анонимный жаббер", поэтому решил вместо тысячи ответов давать линк на одну статью.
+
+У схемы **jabber** + **tor** + **rapsberry pi** есть ряд плюсов:
+
+1. не придётся покупать доменное имя
+   * не нужно ничего оплачивать ежегодно
+   * никто не отследит по денежным транзакциям кто владелец
+   * домен не угонят (естественно всё относительно, ведь могут украсть ключи) и никто не забанит и не отключит домен
+2. не придётся искать и покупать анонимного хостера, а если он и анонимный, то нет гарантии в отказе слива информации о вас. Плюс их услуги довольно дорогие и часто отсуствует качество предоставляемых услуг, потому как довольно маленькая конкуренция
+3. дешёвое обслуживание (всего 4Вт)
+4. отсутствие левых владельцев, которым следует верить, что у них всё "на самом деле отключено и ничего не сливается третьим лицам".
+5. rapsberry pi может находиться за кучей натов и ей не нужно пробрасывание портов и тем более выделенный IP
+6. местонахождение сервера будет никому не известно, кроме владельца
+
+(почти все перечисленные преимущества — TOR)
+
+
+## Установка необходимых пакетов
+
+Процесс установки опустим, т.к. по этому шагу написана не одна тысяча материалов, скажу лишь, что лучше ставить [Raspbian Lite](https://downloads.raspberrypi.org/raspbian_lite_latest), т.к. чем меньше у нас будет изначально пакетов, тем лучше.
+
+Далее необходимо определиться с jabber-сервером. Тут варинтов не очень много, мы выберем в этой роли prosody, он молод и интенсивно развиваем.
+
+Ставим необходимые пакеты:
+
+```
+$ sudo apt install tor prosody
+```
+
+## Генерация домена
+
+Более подброно про генерацию доменов в TOR можно в статье, [написанной ранее](/article/generate+custom+onion+address/), но если кратко:
+
+```
+$ printf "HiddenServiceDir /var/lib/tor/jabber\nHiddenServicePort 5222 127.0.0.1:5222\n" | sudo tee /etc/tor/torrc
+$ sudo systemctl tor restart
+$ sudo cat /var/lib/tor/jabber/hostname
+pigf5kfufjz63s5z.onion
+```
+
+**pigf5kfufjz63s5z.onion** — домен, который мы будем использовать в jabber-сервере.
+
+Далее создаём конфиг **/etc/prosody/prosody.cfg.lua** с примерно таким содержанием:
+
+```
+admins = { "root@nsltzcvhmzfa7ypr.onion" }
+modules_enabled = {
+
+	-- Generally required
+		"roster"; -- Allow users to have a roster. Recommended ;)
+		"saslauth"; -- Authentication for clients and servers. Recommended if you want to log in.
+		"tls"; -- Add support for secure TLS on c2s/s2s connections
+		-- "dialback"; -- s2s dialback support
+		-- "disco"; -- Service discovery
+
+	-- Not essential, but recommended
+		"private"; -- Private XML storage (for room bookmarks, etc.)
+		"vcard"; -- Allow users to set vCards
+	
+	-- These are commented by default as they have a performance impact
+		--"privacy"; -- Support privacy lists
+		--"compression"; -- Stream compression (Debian: requires lua-zlib module to work)
+
+	-- Nice to have
+		"version"; -- Replies to server version requests
+		"uptime"; -- Report how long server has been running
+		"time"; -- Let others know the time here on this server
+		"ping"; -- Replies to XMPP pings with pongs
+		"pep"; -- Enables users to publish their mood, activity, playing music and more
+		-- "register"; -- Allow users to register on this server using a client and change passwords
+
+	-- Admin interfaces
+		-- "admin_adhoc"; -- Allows administration via an XMPP client that supports ad-hoc commands
+		--"admin_telnet"; -- Opens telnet console interface on localhost port 5582
+	
+	-- HTTP modules
+		--"bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
+		--"http_files"; -- Serve static files from a directory over HTTP
+
+	-- Other specific functionality
+		"posix"; -- POSIX functionality, sends server to background, enables syslog, etc.
+		--"groups"; -- Shared roster support
+		--"announce"; -- Send announcement to all online users
+		--"welcome"; -- Welcome users who register accounts
+		--"watchregistrations"; -- Alert admins of registrations
+		--"motd"; -- Send a message to users when they log in
+		--"legacyauth"; -- Legacy authentication. Only used by some old clients and bots.
+};
+
+modules_disabled = {
+	-- "offline"; -- Store offline messages
+	-- "c2s"; -- Handle client connections
+	"s2s"; -- Handle server-to-server connections
+};
+
+allow_registration = true;
+
+daemonize = true;
+
+pidfile = "/var/run/prosody/prosody.pid";
+
+c2s_require_encryption = true 
+
+authentication = "internal_hashed"
+
+log = {
+	-- Log files (change 'info' to 'debug' for debug logs):
+	info = "/dev/null";
+	error = "/dev/null";
+	-- Syslog:
+	{ levels = { "error" }; to = "syslog";  };
+}
+
+VirtualHost "nsltzcvhmzfa7ypr.onion"
+	enabled = true -- Remove this line to enable this host
+
+	ssl = {
+		key = "/etc/prosody/certs/host.key";
+		certificate = "/etc/prosody/certs/host.crt";
+	}
+
+
+Include "conf.d/*.cfg.lua"
+```
+
+Все вхождения **pigf5kfufjz63s5z.onion** необходимо поменять на тот домен, который сгенерировался у вас.
+
+## Создание ключей ssl
+
+```
+$ sudo openssl req -new -x509 -days 365 -nodes -out "/etc/prosody/certs/host.crt" -newkey rsa:2048 -keyout "/etc/prosody/certs/host.key"
+```
+
+После чего перезапускаем prosody:
+
+```
+$ sudo systemctl prosody restart
+```
+
+## Настройка клиентской стороны
+
+На клиентской стороне ставим и запускаем TOR:
+
+```
+$ sudo apt install tor
+$ sudo systemctl tor restart
+```
+
+А в клиенте jabber выбираем в свойствах соединения Socks5-прокси, в качестве **Host** указываем **127.0.0.1** в качестве **Port** — **9050**. Пишем логин (если логина ещё нет — регистрируемся, выбрав соответствующий пункт меню в клиенте), а в качестве хоста сервера указываем ваш свежесгенерированный onion-ресурс (в моём случае это pigf5kfufjz63s5z.onion).
+
+Регистрацию так же можно сделать закрытой (для "своих") поменяв в конфиге prosody **allow_registration** с **true** на **false**, тогда регистрировать пользователей можно из консоли:
+
+```
+$ sudo prosodyctl register имя_пользоавтеля ваш_onion_домен пароль_пользователя
+```
+
+Остальные тонкости настройки [на официальной странице](https://prosody.im/doc/configure).
+
+## Напоследок несколько важных нюансов
+
+Не забываем на малинке поменять пароль для **pi**, **root**, настроить [соответствующим образом ssh] (/article/secure+and+comfortable+ssh/), запустить `netstat -tulpan` и убедиться что никаких левых сервисов не запущено (как правило светят наружу ненужные ntpd, avahi-daemon, dhcpcd — всё лишнее удаляем через `apt purge имя_пакета`), либо вообще запрещаем все порты кроме 9050 фаерволлом (об этом можно почитать, например, [тут](/article/ufw+firewall/). Ещё можно поставить и минимально настроить **fail2ban** и [включить автоматические обновления ОС](/article/enabling+automatic+updates+in+debian/).
+
+Кстати, если в вашей стране TOR блокируется, то поможет вот [эта статья](/article/tor+blocking+bypass/).
+
+Удачной анонимной и относительно безопасной переписки на личном одноплатном сервере!
+
+<br>
+Напомню, что если наши статьи вам понравились, можно [поддержать проект материально](/donate/), либо [оставив отзыв](/contacts/) (критика тоже приветствуется).
+]]></content:encoded>
+      <dc:date>2017-05-11T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Обход блокировок TOR</title>
+      <link>https://cryptopunks.org/article/tor+blocking+bypass/</link>
+      <description><![CDATA[Существует огромное кол-во способов блокировки сети TOR, но самая популярная - когда блокируют все общественно доступные exit-ноды сети TOR. Например, именно такая блокировка существует в Республике Беларусь (и скоро по всей видимости ждёт тоже самое и жителей Российской Федерации). Но на каждый лом найдётся свой приём :)
+]]></description>
+      <pubDate>Fri, 10 Feb 2017 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/tor+blocking+bypass/</guid>
+      <content:encoded><![CDATA[Существует огромное кол-во способов блокировки сети TOR, но самая популярная - когда блокируют все общественно доступные exit-ноды сети TOR. Например, именно такая блокировка существует в Республике Беларусь (и скоро по всей видимости ждёт тоже самое и жителей Российской Федерации). Но на каждый лом найдётся свой приём :)
+
+## Использование torbrowser
+
+Если вы используете **torbrowser**, то всё вообще просто - выбираем в настройках соединения **obfs3** как представлено <a href=" https://twitter.com/torproject/status/809792947181023232?ref_src=twsrc%5Etfw" target="_blank">в инструкции</a> в официальном twitter проекта, и браузер продолжает работу без каких-либо проблем.
+
+## Использование демона tor
+
+Если планируется использовать демон tor, то необходимо получить у torproject адреса ретрансляторов <a href="https://bridges.torproject.org/bridges?transport=obfs3" target="_blank">на этой странице</a> (необходимо будет ввести капчу).
+
+После чего поставить прокси-сервер, чтобы обфусцировать (замаскировать) передаваемый трафик (скрыть, что используется сеть TOR). Например, можно использовать для этого **obfsproxy**:
+
+```
+$ sudo apt install obfsproxy
+```
+
+Далее необходимо отредактировать **torrc**, включив полученные адреса:
+
+```
+UseBridges 1
+TransPort 9040
+Exitpolicy reject *:*
+ExtORPort auto
+ClientTransportPlugin obfs3 exec /usr/bin/obfsproxy managed
+
+## тут вписываем полученные ранее на сайте адреса
+## дописав вначале каждой строки bridge (!)
+bridge obfs3 АДРЕС1:ПОРТ1 ХЕШ1
+bridge obfs3 АДРЕС2:ПОРТ2 ХЕШ2
+bridge obfs3 АДРЕС3:ПОРТ3 ХЕШ3
+...
+```
+
+Приводить свой адрес/порт с хешем я не буду, дабы они не попали со временем в блокировку. Советую и вам нигде их не светить без особой надобности. Можно прописать не 3, а ещё несколько адресов для перестраховки.
+
+
+Обычно я добавляю ещё исключение для выходных нод, чтобы "свои" не снифали трафик:
+
+```
+ExcludeExitNodes {RU},{UA},{BY}
+```
+
+Перезапускаем демон:
+
+```
+$ sudo /etc/init.d/tor restart
+```
+
+Проверяем:
+
+```
+$ torify curl -s https://check.torproject.org/ | grep -m 1 Congratulations
+
+      Congratulations. This browser is configured to use Tor.
+```
+
+Не забываем так же про синхронизацию часов, если они сильно отстают, или спешат, то tor откажется работать. Помним и про лог **/var/log/tor/log**, он обычно подробно сигнализирует о каких-либо проблемах подключения.
+
+## Проблемы и замечания
+
+Если вы столкнулись с какой-либо другой проблемой, или у вас есть ещё какие-либо сведения о блокировке тор и способах обхода - просьба [сообщить об этом](/contacts), и в ближайшее время мы попробуем пополнить статью дополнительными советами.
+]]></content:encoded>
+      <dc:date>2017-02-10T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Заворачиваем в TOR и SSH любой сервис на примере IRC-сервера</title>
+      <link>https://cryptopunks.org/article/directing+the+insecure+service+through+tor+and+ssh/</link>
+      <description><![CDATA[Данная статья – пример того, как в TOR и SSH можно &quot;завернуть&quot; любой сервис. Рассмотрим сей процесс на примере простого IRC-сервера.
+]]></description>
+      <pubDate>Wed, 18 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/directing+the+insecure+service+through+tor+and+ssh/</guid>
+      <content:encoded><![CDATA[Данная статья – пример того, как в TOR и SSH можно "завернуть" любой сервис. Рассмотрим сей процесс на примере простого IRC-сервера.
+
+В последнее время развелось огромное кол-во мессенджеров (читайте "программ" - сюда подойдёт почти всё), позиционирующие себя как надёжные и безопасные. Но, как известно, чем программный продукт сложнее, тем больше в нём ошибок. А порой и специально допущенных опечаток в коде, которые довольно сложно заметить и которыми, в свою очередь, могут пользоваться те кто про них в курсе. Поэтому следует это понимать и правильно расставлять приоритеты: удобство, функциональность, или безопасность. Поэтому всё что светит портами во внешний мир по определению не может быть безопасным.
+
+Предлагаю следующее решение: простой IRC-сервер, запущенный с открытыми портами лишь на 127.0.0.1 сервера и форвардингом портов средствами SSH и TOR.
+
+TOR в данной связке поможет:
+
+1. дополнительно зашифровать трафик SSH
+2. скрыть местоположение сервера
+3. обойти NAT'ы (если они имеются)
+4. анонимизировать пользователей
+
+А SSH обеспечит безопасную авторизацию (желательно её организовать [по ключам](/article/secure+and+comfortable+ssh/)).
+
+## Разворачиваем IRC-сервер
+
+Программных решений для IRC-серверов огромное кол-во. Но я решил выбрать максимально легковесное и простое в настройке решение. А именно - <a href="https://github.com/jrosdahl/miniircd" target="_blank">miniircd</a>.
+
+Качаем:
+
+```
+$ git clone https://github.com/jrosdahl/miniircd && cd miniircd
+```
+
+Это скрипт на python с рядом аргументов командной строки без каких-либо конфигурационных файлов:
+
+```
+$ ./miniircd --help
+Usage: miniircd [options]
+
+miniircd is a small and limited IRC server.
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  --channel-log-dir=X   store channel log in directory X
+  -d, --daemon          fork and become a daemon
+  --debug               print debug messages to stdout
+  --listen=X            listen on specific IP address X
+  --log-count=X         keep X log files; default: 10
+  --log-file=X          store log in file X
+  --log-max-size=X      set maximum log file size to X MiB; default: 10 MiB
+  --motd=X              display file X as message of the day
+  --pid-file=X          write PID to file X
+  -p X, --password=X    require connection password X; default: no password
+  --password-file=X     require connection password stored in file X; default:
+                        no password
+  --ports=X             listen to ports X (a list separated by comma or
+                        whitespace); default: 6667 or 6697 if SSL is enabled
+  -s FILE, --ssl-pem-file=FILE
+                        enable SSL and use FILE as the .pem certificate+key
+  --state-dir=X         save persistent channel state (topic, key) in
+                        directory X
+  --verbose             be verbose (print some progress messages to stdout)
+  --chroot=X            change filesystem root to directory X after startup
+                        (requires root)
+  --setuid=U[:G]        change process user (and optionally group) after
+                        startup (requires root)
+```
+
+Можно запустить его с одним-единственным аргументом:
+
+```
+$ ./miniircd --listen=localhost
+```
+
+Таким образом он запускается на локалхосте сервера и снаружи никаких открытых портов не оставляет.
+
+По необходимости можно добавить при запуске **miniircd** дополнительные ключи, например `--channel-log-dir`. Чтобы логи со всех каналов писались в необходимую директорию. Только имейте в виду, что логи чатов пишутся в открытом виде, и к ним можно получить доступ, если вскроют сервер. Поэтому рекомендую писать их на крипто-раздел, либо вообще не вести, а оставить локальное сохранение логов в irc-клиенте для удобства.
+
+## Работа с SSH
+
+### Настройка прав доступа
+
+Создаём в конфиге sshd группу, которой разрешим лишь форвардить необходимый порт. Для этого добавим в конец конфига **/etc/ssh/sshd_config**:
+
+```
+Match Group securechat
+   AllowTcpForwarding yes
+   X11Forwarding no
+   PermitTunnel no
+   GatewayPorts no
+   AllowAgentForwarding no
+   PermitOpen localhost:6667
+   ForceCommand echo 'This account can only be used for IRC'
+```
+
+Перезапустим демон sshd:
+
+```
+$ sudo /etc/ssh/sshd restart
+```
+
+Создадим новую группу:
+
+```
+$ sudo addgroup securechat
+```
+
+### Создание новых пользователей для чата
+
+Создадим пользователя, которому будет решено пробрасывать лишь порт irc-демона, включив его в группу **securechat**:
+
+```
+$ sudo useradd -G securechat имя_пользователя
+```
+
+Зададим ему пароль:
+
+```
+$ sudo passwd имя_пользователя
+```
+
+но лучше настроить всё с использованием [авторизации по ключу](/article/secure+and+comfortable+ssh/).
+
+### Проброс порта
+
+У себя на компьютере выполняем:
+
+```
+$ ssh -f -N -L 6667:localhost:6667 user@remote_host
+```
+
+где **user** это пользователь которого создали выше, а **remote_host** - IP-адрес сервера с IRC. Теперь можем коннектиться любым IRC-клиентом (например, <a href="https://hexchat.github.io/" target="_blank">hexchat</a>) на **localhost/6667** (если вдруг **remote_host** без cтатического IP, либо за NAT - смотрим статью дальше до места про TOR).
+
+
+## Дополнительная прослойка безопасности
+
+Для большей безопасности можно запустить **miniircd** под отдельным пользователем, добавить использование ssl-сертификата и завернуть весь трафик в TOR.
+
+Добавляем пользователя:
+
+```
+$ sudo useradd -m securechat
+```
+
+Переносим туда скрипт:
+
+```
+$ sudo su securechat
+$ cd ~/ && git clone https://github.com/jrosdahl/miniircd && cd miniircd
+```
+
+Создаём сертификат:
+
+```
+$ openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+$ cat cert.pem key.pem >server.pem
+$ shred key.pem cert.pem && rm -f key.pem cert.pem
+$ chmod 600 server.pem
+```
+
+Создаём скрипт запуска **/root/run_securechat.sh**:
+
+```
+#!/bin/sh
+su - securechat -c 'cd /home/securechat/miniircd && ./miniircd --listen=localhost --ssl-pem-file=server.pem'
+```
+
+После чего [заворачиваем весь SSH-трафик в TOR](/article/create-onion-resource-in-tor/) (подзаголовок **Настройка TOR**).<br>
+В этом случае даже выделенный IP не потребуется, достаточно будет лишь на клиенской машине запустить TOR и пробросить порт SSH следующим образом (обратите внимание, порт **6667** сменился на **6697**, т.к. мы добавили использование ssl в **miniircd**, в этом случае нужно поменять порт ещё и в **/etc/ssh/sshd_config** для группы **securechat**):
+
+```
+$ sudo apt install tor
+$ sudo /etc/init.d/tor start
+$ torify ssh -f -N -L 6697:localhost:6697 crptpnkdgddolfag.onion
+```
+
+где **crptpnkdgddolfag.onion** - адрес, который сгенерировался при настройке TOR [по статье приведённой выше](/article/create-onion-resource-in-tor/).
+
+Ну и поскольку SSL-сертификат у вас самоподписанный, то скорее всего в клиенте IRC придётся указать игнорирование проверки подлинности сертификата.
+
+Кроме того неплохо бы закрыть фаерволлом все порты кроме порта SSH, чтобы случайно не запустить **miniircd** без `--listen=localhost`. Например, про то как это сделать средствами UFW можно почитать [здесь](/article/ufw+firewall/).
+
+## В заключениe
+
+По такому принципу можно запускать и использовать почти любой сервис, пуская его на локальном порту (запрещая внешний) и организовывая авторизацию средством форвардинга портов SSH, используя дополнительную прослоку через TOR для обхода NAT'ов, скрытия нахождения и анонимизации использования.
+]]></content:encoded>
+      <dc:date>2017-01-18T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Межсетевой экран UFW</title>
+      <link>https://cryptopunks.org/article/ufw+firewall/</link>
+      <description><![CDATA[UFW - межсетевой экран (Firewall) для Linux, который является надстройкой над iptables. В отличии от iptables является более интуитивно понятным, т.к. по сути все правила к нему пишутся на английском языке.
+Своим синтаксисом чем-то напоминает pf (packet filter) от разработчиков OpenBSD.UFW полностью совместим с iptables и его можно совмещать с iptables при необходимости.
+UFW не является полноценной заменой iptables, очень сложные правила на нём не напишешь, но необходимый минимумом, который обычно требуется простому пользователю, он имеет.
+]]></description>
+      <pubDate>Mon, 14 Nov 2016 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/ufw+firewall/</guid>
+      <content:encoded><![CDATA[[UFW](https://help.ubuntu.com/community/UFW) - межсетевой экран (Firewall) для Linux, который является надстройкой над **iptables**. В отличии от iptables является более интуитивно понятным, т.к. по сути все правила к нему пишутся на английском языке.
+Своим синтаксисом чем-то напоминает **pf** (packet filter) от разработчиков **OpenBSD**.<br>UFW полностью совместим с iptables и его можно совмещать с iptables при необходимости.<br>
+UFW не является полноценной заменой iptables, очень сложные правила на нём не напишешь, но необходимый минимумом, который обычно требуется простому пользователю, он имеет.
+
+## Установка и включение
+
+Ставится стандартно:
+
+```
+$ sudo apt-get install ufw
+```
+
+**Внимание!** Если манипуляции производятся на удалённом сервере, то есть смысл сразу же разрешить входящий и исходящий трафик для **SSH**, иначе при включении фаервола можно потерять коннект к машине:
+
+```
+$ sudo ufw allow 22 # вместо **22** необходимо вставить ваш порт SSH (если он не стандартный)
+```
+
+Включаем **ufw** (**sudo** опустим, т.к. все команды выполнять будем от root):
+
+```
+root# ufw enable
+```
+
+Выключается он аналогично:
+
+```
+root# ufw disable
+```
+
+## Важные моменты
+
+После включения/выключения **ufw** никаких дополнительных махинаций производить не нужно. Если вы включили фаервол, то после перезагрузки он включится, если выключили - он будет выключен.<br>
+Тоже самое касается и правил. Всё что вы добавили - сохранится и будет работать после перезагрузки.
+
+По умолчанию весь трафик (входящий/исходящий) для всех портов отключен. Поэтому если ранее ничего не разрешали, то можно ничего не и запрещать. Но и разрешения по умолчанию настраивается, обычно в файле **/etc/default/ufw**<br>
+
+Все пользовательские настройки **ufw** хранятся в каталоге **/etc/ufw**. Поэтому периодически можно делать резервную копию этого каталога для бэкапа правил (либо **sudo iptables-save > iptables.rules**).
+
+UFW обладает весьма внушительным функционалом, ознакомиться с которым можно выполнив ``ufw help``, либо ``man ufw``.
+
+## Примеры настройки
+
+Откроем входящий и исходящий tcp/udp трафик для порта 80:
+
+```
+root# ufw allow 80
+```
+
+Если нужен **только tcp**, а udp нет, тогда правило модифицируется так:
+
+```
+root# ufw deny 80/tcp
+```
+
+Открываем порт **3000** на компьютере для определённого IP (127.0.0.1):
+
+```
+root# ufw allow from 127.0.0.1 to any port 3000
+```
+
+Открыть все порты для IP-адреса **192.168.1.6**:
+
+```
+root# ufw allow from 192.168.1.6 to any
+```
+
+Аналогичным образом закрываются все порты от неугодного IP-адреса (например, бота который брутфорсит вам SSH):
+
+```
+root# ufw deny from 23.96.52.53 to any
+```
+
+Просмотреть существующие правила можно выполнив:
+
+```
+root# ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+443                        ALLOW       Anywhere                  
+80                         ALLOW       Anywhere                  
+22                         ALLOW       Anywhere                  
+666                        ALLOW       Anywhere                  
+81/tcp                     ALLOW       127.0.0.1                 
+81/udp                     ALLOW       127.0.0.1                 
+3000                       ALLOW       127.0.0.1                 
+666/udp                    ALLOW       Anywhere                  
+443 (v6)                   ALLOW       Anywhere (v6)             
+80 (v6)                    ALLOW       Anywhere (v6)             
+22 (v6)                    ALLOW       Anywhere (v6)             
+666 (v6)                   ALLOW       Anywhere (v6)             
+666/udp (v6)               ALLOW       Anywhere (v6)
+```
+
+Удалять правила можно несколькими способами:
+
+1.) Указывая непосредственно введённое правило:
+
+```
+root# ufw delete allow 22
+```
+
+2.) Предварительно выводя на экран нумерованный список правил:
+
+```
+root# ufw status numbered
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 443                        ALLOW IN    Anywhere                  
+[ 2] 80                         ALLOW IN    Anywhere                  
+[ 3] 22                         ALLOW IN    Anywhere                  
+[ 4] 666                        ALLOW IN    Anywhere                  
+[ 5] 81/tcp                     ALLOW IN    127.0.0.1  
+...
+```
+
+и удаляя по номеру строки:
+
+```
+root# ufw delete НОМЕР_СТРОКИ
+```
+
+3.) Либо можно удалить вообще все правила:
+
+```
+root# ufw reset
+```
+
+## В заключение
+
+Обязательно используйте межсетевой экран везде где это возможно. Лучше при установке очередной софтины добавить одной строчкой дополнительное правило, чем быть поломанным через какой-нибудь левый сервис, который открыл порт наружу на вашем компьютере не спросив разрешения у вас.
+]]></content:encoded>
+      <dc:date>2016-11-14T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Настройка TOR на OpenWRT</title>
+      <link>https://cryptopunks.org/article/openwrt+tor/</link>
+      <description><![CDATA[OpenWRT - встроенная операционная система, основанная на ядре Linux, и предназначенная, в первую очередь, для домашних маршрутизаторов. Является альтернативой проприетарных прошивок, поддерживает ограниченный список устройств число которых постоянно растёт. Ознакомиться со списком можно тут.
+]]></description>
+      <pubDate>Sun, 06 Nov 2016 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/openwrt+tor/</guid>
+      <content:encoded><![CDATA[[OpenWRT](https://openwrt.org/) - встроенная операционная система, основанная на ядре Linux, и предназначенная, в первую очередь, для домашних маршрутизаторов. Является альтернативой проприетарных прошивок, поддерживает ограниченный список устройств число которых постоянно растёт. Ознакомиться со списком можно [тут](https://wiki.openwrt.org/toh/start).
+
+## Подготовка и установка TOR
+
+Поменяем пароль root через telnet:
+
+```
+$ telnet 192.168.1.1
+$ passwd
+  новый_пароль
+```
+
+Далее обновим пакеты введя команду:
+
+```
+$ opkg update
+```
+
+Если у вас менее 4МБ места на ПЗУ роутера, то вам понадобится флеш-карта (для этого в маршруторизаторе должен быть USB-порт!).<br>
+Монтируем флешку с помощью block-mount. Устанавливаем TOR:
+
+```
+$ opkg install tor
+```
+
+## Перед настройкой
+
+Обязательные шаги после установки пакета TOR:
+
+1. Настройте и синхронизируйте время чеpез ntp. Неправильная дата может привести к проблемам при старте tor или к его некорректной работе.
+
+2. При установке пакета tor система должна создать пользователя и группу tor, но при создании группы инсталлятор может допустить ошибку и в файле **/etc/group** не поставить перенос строки для группы tor, поэтому есть смысл лишний раз это перепроверить
+
+3. Проверьте все права на файлы необходимые tor они должны иметь маску **755** и принадлежать **tor:tor**
+
+## Настройка TOR
+
+Открываем конфигурационный файл **/etc/tor/torrc** и правим его.
+
+Если необходимо чтобы все компьютеры подключенные к роутеру (неважно по кабелю или wifi) имели возможность получить доступ к TOR через SOCKS-proxy необходимо раскоментировать строчку:
+
+```
+SocksListenAddress 192.168.120.1:9100 # listen on this IP:port also
+```
+
+Где **192.168.120.1** – ip адрес вашего роутера для локальной сети, а **9100** – порт на котором будет socks-сервер с tor.
+
+Опциями **SocksPolicy** можно явно указать какие ip адреса будут иметь (или не иметь) доступ к socks серверу. В файле конфигурации эти опции закомментированы – рекомендуется их раскомментировать и настроить под себя.
+
+Если по каким то причинам tor не стартует - воспользуйтесь опцией Log для выяснения проблемы.
+
+## Запуск TOR
+
+Запускаем тор следующей командой:
+
+```
+$ /etc/init.d/tor start
+```
+
+Если tor уже запущен либо при старте возникают ошибки вида:
+
+```
+[warn] Could not bind to 127.0.0.1:9050: Address already in use. Is Tor already running?
+```
+
+необходимо остановить его:
+
+```
+$ killall -9 tor
+```
+
+и запустить заново как написано выше.
+
+Если лог включен, то признаком успешного запуска и подключения к сети tor будет строка:
+
+```
+Feb 21 19:12:17.034 [notice] Tor has successfully opened a circuit. Looks like client functionality is working.
+Feb 21 19:12:17.035 [notice] Bootstrapped 100%: Done.
+```
+
+Далее достаточно прописать адрес и порт указанный опцией **SocksListenAddress** как-socks сервер в браузере или любой другой программе на вашем ПК.
+
+Однако есть ряд программ которые не умеют работать с socks протоколом. Эту проблему можно решить средствами tor+iptables. Для этого необходимо включить в TOR режим прозрачного проксирования. В таком случае на подключенных к роутеру машинах вообще не нужно будет ничего настраивать, весь трафик будет идти через сеть TOR.
+
+## Использование прозрачного прокси TOR
+
+Для этого в конфигурационный файл **/etc/tor/torrc** добавляем:
+
+```
+AutomapHostsOnResolve 1
+TransPort 9040
+DNSPort 53
+```
+
+тем самым прозрачный прокси будет слушать порт 9040.
+
+Перезапускаем tor:
+
+```
+$ killall -9 tor
+$ /etc/init.d/tor start
+```
+
+### Настройка iptables
+
+Далее необходимо весь трафик завернуть на порт 9040. Для этого необходимо использовать iptables с опцией **REDIRECT –to-port**. Для использования этой опции необходимо дополнительно собрать и установить пакет **iptables-mod-nat-extra**. В противном случае вы получите ошибку вида:
+
+```
+iptables v1.4.6: unknown option `--to-ports'
+```
+
+Установливаем пакет:
+
+```
+$ opkg install kmod-ipt-nat-extra
+```
+
+А можно собрать в своем репозитории или включить этот пакет сразу в прошивку. В конфигураторе OpenWrt этот пакет находится в
+
+```
+-> Network
+-> iptables
+<M> iptables-mod-nat-extra
+```
+
+После установки пакета необходимо "завернуть" трафик на прозрачный прокси сервер:
+
+```
+$ iptables -t nat -A PREROUTING -p tcp -d ! 192.168.120.1 --dport 80 -j REDIRECT --to-ports 9040
+```
+
+Что означает – перебрасывать весь трафик идущий с 80-го порта (и не адресованый для 192.168.120.1) на порт 9040, на котором как раз и находится прозрачный прокси.
+
+Тоже самое делаем и для dns запросов:
+
+```
+$ iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53
+```
+
+Остальной udp трафик прийдётся либо пропускать без анонимизации, либо резать.
+
+Собственно всё. Весь трафик приходящий на роутер будет перенаправлен в сеть TOR без каких-либо настроек на компьютерах в вашей локальной сети и все действия в сети будут анонимны (при правильном использовании!).
+
+Работоспособность можно проверить по стандартной ссылке: https://check.torproject.org/?lang=ru
+]]></content:encoded>
+      <dc:date>2016-11-06T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Double VPN</title>
+      <link>https://cryptopunks.org/article/double+vpn/</link>
+      <description><![CDATA[Теория
+]]></description>
+      <pubDate>Sat, 27 Aug 2016 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/double+vpn/</guid>
+      <content:encoded><![CDATA[## Теория
+
+Про настройку OpenVPN мы [уже рассказывали](https://cryptopunks.org/article/secure+openvpn+installer/). Сегодня речь пойдёт о двойном VPN (он же **double vpn**).<br>
+Двойной VPN это принцип когда ты обращаешься к серверу *А*, а он в свою очередь перенаправляет весь трафик на сервер *Б* и сервер *Б* перенаправляет пакеты уже в интернет. Вычислив сервер *Б* его могут взломать и не увидеть в логах ничего кроме адреса на сервер *А*. Его конечно тоже можно взломать, либо конфисковать, но речь лишь о том как этот процесс усложнить. Сервер *А* будем называть *vpn-in*, а сервер *Б* - *vpn-out*.<br>
+VPS-ки для *vpn-in* и *vpn-out* следует выбирать у разных хостеров и желательно в разных странах (желательно ещё и "воинствующих").
+
+## Подготовка vpn-in
+
+Весь трафик будем перенаправлять на *vpn-out* средставми OpenSSH.<br>
+Генерируем связку ключей:
+
+```
+# ssh-keygen -b 4096
+```
+
+Создаём скрипт **/root/forward_vpn.sh**:
+
+```
+#!/bin/sh
+
+PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin
+
+VPN_IN_IP='XXX.XXX.XXX.XXX'
+VPN_OUT_LOCAL_IP="YYY.YYY.YYY"
+VPN_OUT_IP='vpn@ZZZ.ZZZ.ZZZ.ZZZ'
+VPN_IN_LOCAL_PORT='XXX'
+VPN_OUT_REMOTE_PORT='XXX'
+
+ident=`ps ax | grep ssh | grep $VPN_OUT_IP | grep $VPN_OUT_REMOTE_PORT | grep -v grep`
+if [ "$ident" ]
+then
+        echo "$VPN_OUT_IP ... OK"
+else
+        command="ssh -Nf -L $VPN_IN_IP:$VPN_IN_LOCAL_PORT:$VPN_OUT_LOCAL_IP:$VPN_OUT_REMOTE_PORT $VPN_OUT_IP"
+        echo $command
+        $command
+fi
+```
+
+где **VPN_IN_IP** - внешний адрес вашего сервера *vpn_in*, **VPN_OUT_LOCAL_IP** - локальный адрес OpenVPN на *vpn_out*, **VPN_OUT_IP** - внешний адрес *vpn_out*. **VPN_IN_LOCAL_PORT**, **VPN_OUT_REMOTE_PORT** - локальный и удалённый порт vpn (чтобы не привлекать лишнего внимания - можно настроить vpn на 443 порт).
+<br><br>
+Добавляем в crontab задание:
+
+```
+# crontab -l
+* * * * * /bin/sh /root/forward_vpn.sh
+```
+
+## Подготовка vpn-out
+
+*vpn-out* настраивается точно так же как и любой openvpn-сервер, для удобства можно воспользоваться скриптом [openvpn_paranoid_installer](/article/secure+openvpn+installer/).<br>
+Кроме того необходимо создать пользователя *vpn*:
+
+```
+# useradd vpn
+```
+и добавить ему публичный ключ *vpn_in* для входа без пароля (заходим на *vpn-in* и выполняем `ssh-copy-id vpn@vpn_out`)
+
+## Общие рекомендации для vpn-in/vpn-out
+
+* заходить на *vpn-out* следует **исключительно** через сервер *vpn-in* (в том числе по ssh), иначе теряется смысл двойного vpn
+* выполнить `netstat -tulpan` и посмотреть какие порты светят наружу, удалить/выключить всё лишнее (вроде ntpd, rpcbind)
+* отключить вход по паролю для ssh
+* включить [автоматическое обновление](/article/enabling+automatic+updates+in+debian/) ОС и её компонентов на *vpn-in*/*vpn-out*
+* при генерации новых ключей с конфигами на *vpn-out* не забывать менять параметр **server** в конфиге на адрес **VPN_IN_IP**
+* на локальном компьютере запретить доступ ко всему кроме **VPN_IN_IP**
+]]></content:encoded>
+      <dc:date>2016-08-27T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Автоматическое обновление Wordpress</title>
+      <link>https://cryptopunks.org/article/wordpress+automatic+update/</link>
+      <description><![CDATA[О Wordpress
+]]></description>
+      <pubDate>Wed, 20 Jul 2016 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/wordpress+automatic+update/</guid>
+      <content:encoded><![CDATA[## О Wordpress
+
+[Wordpress](https://wordpress.org/) - самый популярный бесплатный блоговый движок и, соответственно, один из самых часто ломаемых. Для лучшей защиты его необходимо постоянно обновлять, но ещё важнее обновлять плагины, т.к. обычно именно в них находят серьёзные уязвимости.<br>
+Если сайт один, то особых сложностей ручное обновление не вызовет, но если сайтов много, то логиниться каждый раз в админку каждого из сайтов и производить монотонные действия - сомнительное удовольствие.
+
+## Инструмент wp-cli
+
+[wp-cli](http://wp-cli.org/) - инструмент, который позволяет управлять Wordpress из консоли.
+А именно:
+
+* Скачивать свежую версию Wordpress
+* Устанавливать плагины/темы
+* Активировать/деактивировать плагины/темы
+* Обновлять ядро Wordpress/плагинов/тем
+* Создавать запросы к БД
+* Производить бекап БД/файлов Wordpress
+* Управлять записями/пользователями
+* ...и многое другое (весь список доступных команд по `wp help`)
+
+Но сегодня поговорим лишь об обновлении CMS и установленных в ней плагинов.
+
+## Установка wp-cli
+
+```
+$ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+$ chmod +x wp-cli.phar
+$ sudo mv wp-cli.phar /usr/local/bin/wp
+```
+
+## Автоматизация обновления Wordpress и плагинов
+
+Переходим в каталог с установленным Wordpress:
+
+`$ cd /home/site1/wordpress/`
+
+Обновляем ядро WP:
+
+`$ wp core update`
+
+Обновляем БД, если требуется:
+
+`$ wp core update-db`
+
+Обновляем все установленные плагины:
+
+`$ wp plugin update --all`
+
+Если всё выполнилось без ошибок, то формируем скрипт **/root/wordpress_update.sh**:
+
+```
+#!/bin/sh
+
+SITES="/home/site1/wordpress /home/site2/wordpress /home/site3/wordpress"
+
+for site in $SITES; do
+  cd $site
+  wp core update
+  wp core update-db
+  wp plugin update --all
+done
+```
+
+Запускаем и если ошибок не возникло - формируем crontab-правило следующего содержания:
+
+```
+$ crontab -l
+@daily /root/wordpress_update.sh
+```
+
+Теперь все установленные вордпрессы и плагины будут обновляться ежедневно.
+]]></content:encoded>
+      <dc:date>2016-07-20T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Децентрализованный мессенджер BitMessage</title>
+      <link>https://cryptopunks.org/article/decentralized+encrypted+peer-to-peer+protocol+bitmessage/</link>
+      <description><![CDATA[Описание и принцип работы
+]]></description>
+      <pubDate>Thu, 05 May 2016 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/decentralized+encrypted+peer-to-peer+protocol+bitmessage/</guid>
+      <content:encoded><![CDATA[## Описание и принцип работы
+
+**BitMessage** - протокол обмена текстовыми сообщениями средствами распределённой криптографической сети.<br>
+Как и в случае с Bitcoin в роли серверов хранения и распределения информации выступают сами участники сети. Это значит, что никто не может удалить "неугодные", или "запрещённые" материалы, т.к. не известно кто их создал, в каком именно месте они лежат и кому они предназначаются.
+
+Основные принципы работы **BitMessage**:
+
+* Каждому сообщению необходимо указать таймер самоуничтожения (на момент написания статьи он ограничивался максимальными 28 днями);
+* Каждый участник может выступать в качестве и клиента и сервера, либо только клиента (ограничив на фаерволе входящие подключения);
+* Система рассылает все исходящие сообщения абсолютно всем участникам сети (имеется в виду кто разрешил входящие сообщения) и они хранятся определённое время у каждого на компьютере;
+* Используются длинные имена вида **BM-2cTKJ8nNez9dkYuSqTfVfmGuqa7AYXHC18**, которые можно создавать локально в неограниченном кол-ве;
+* Используются алгоритмы шифрования с открытым ключом, это значит что сообщения написанные определённому человеку, либо группе лиц сможет прочитать лишь тот кому они предназначались;
+* Отправляемое сообщение не содержит адреса получателя (!), каждый участник сети пытается расшифровать все непрочитанные сообщения и прочитать только то что получилось расшифровать (то есть то что предназначалось ему);
+* В системе используются подробные статусы о каждом сообщении (ожидается публичный ключ от собеседника, сообщение отправляется, сообщение отправлено и расшифровано участником), то есть всегда можно узнать получил ли ваш собеседник сообщение, или он вообще не открывал BitMessage;
+* Используется Proof-of-work для защиты от спама;
+* Можно привязать адрес к домену Namecoin.
+
+С недавнего времени в **BitMessage** появилась поддержка анонимных групп общения (chan). Основные отличия от обычных email-рассылок:
+
+* внутри chan не известен ни адрес получателя, ни адрес отправителя;
+* chan невозможно отключить благодаря полной децентрализованности сети;
+* chan невозможно подвергнуть цензуре (удалять и редактировать сообщения пользователей);
+* любой пользователь зная имя рассылки (chan) может анонимно слать и читать сообщения из этой рассылки;
+* любой пользователь может создать свою рассылку и общаться в ней с теми, кому передал название этой рассылки.
+
+## Установка
+
+На странице проекта <a href="https://bitmessage.org/">https://bitmessage.org/</a> можно скачать клиент под Windows/MacOS, установив его одним нажатием. Пользователям Linux необходимо поставить зависимости и скачать последнюю версию клиента из github (подробная инструкция для ряда дистрибутивов <a href="https://bitmessage.org/wiki/Compiling_instructions">тут</a>):
+
+```
+$ sudo apt-get install python openssl git python-qt4
+$ git clone https://github.com/Bitmessage/PyBitmessage $HOME/PyBitmessage
+```
+
+Непосредственно сам запуск:
+
+```
+$ ~/PyBitmessage/src/bitmessagemain.py
+```
+
+Обновление осуществляется следующим образом:
+
+```
+$ cd $HOME/PyBitmessage
+$ git pull
+```
+
+## Использование
+
+При первом запуске программа предложит произвести подключение, либо настроить подключение через дополнительную цепочку (например, TOR).<br>
+Далее необходимо довольно продолжительное время, чтобы скачать базу. Следить за статусом можно на соответствующей вкладке (Network Status).<br>
+Тем временем можно создавать свои ключи/адреса в любом кол-ве. Можно создать ключи используя пароли, в этом случае никаких резервных копий ключей делать не придётся, необходимо лишь запомнить пароль и версию используемого протокола.<br><br>
+Отправляя сообщение собеседнику следует дождаться пока оно обработается (зашифруется, отправится). Статус каждого сообщения можно посмотреть в папке Sent. <br><br>
+Для получения сообщений необходимо отправить один из своих публичных адресов (ключей) собеседнику.<br><br>
+То же самое касается chan (каналов). Сначала создаётся (вкладка Chans), далее рассылается необходимым участникам его BM-адрес.
+
+Отдельно следует упомянуть, что значок в правом нижнем углу говорит о том в каком режиме подключен **BitMessage**:
+
+* <font color="#B40404">Красный</font> - нет соединения;
+* <font color="#868A08">Жёлтый</font> - программа работает в режиме клиента (входящие подключения закрыты);
+* <font color="#298A08">Зелёный</font> - установлено соединение с другими участниками сети (программа работает в режиме клиент-сервер и база с сообщениями раздаётся всем участникам сети).
+
+Во втором и третьем случае всё будет работать успешно. Зелёный значок сигнализирует о том, что вы помогаете сети своими ресурсами, следовательно сеть будет работать быстрее.
+
+## Запуск сервера BitMessage без GUI
+
+Для обычного пользования программы этот метод не нужен, но если вы хотите поспособствовать улучшению качества сети, то можете на одном из ваших серверов произвести следующие действия (пакет **python-qt4** с завимостями в этом случае не нужен):
+
+```
+$ apt-get install python openssl git tmux
+$ git clone https://github.com/Bitmessage/PyBitmessage $HOME/PyBitmessage
+$ cd ~/PyBitmessage/src
+$ ./bitmessagemain.py
+```
+
+Запускаем разово для создания конфигов ждём пару секунд, прерываем по Ctrl+c. Открываем конфиг **~/.config/PyBitmessage/keys.dat** и добавляем параметр:
+
+```
+[bitmessagesettings]
+...
+daemon = true
+...
+```
+
+Не забываем разрешить входящие соединения, если они закрыты и повторно запускаем BitMessage для работы в фоне:
+
+```
+$ tmux new-session -d 'cd ~/PyBitmessage/src/; ./bitmessagemain.py'
+```
+]]></content:encoded>
+      <dc:date>2016-05-05T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Безопасный и минималистичный менеджер wifi-подключений</title>
+      <link>https://cryptopunks.org/article/small+and+secure+wifi+manager/</link>
+      <description><![CDATA[Описание проблемы
+]]></description>
+      <pubDate>Sun, 15 Nov 2015 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/small+and+secure+wifi+manager/</guid>
+      <content:encoded><![CDATA[# Описание проблемы
+
+Под Linux существует довольно скудное кол-во готовых решений по управлению Wifi-соединениями. Самые популярные из них - **Network-manager** и **Wicd**. Первый вариант обладает огромным функционалом, который не всегда нужен и иногда довольно непредсказуемо себя ведёт; второй более минималистичен, но обделён жизненно необходимыми функциями (нет поддержки VPN, весьма странно ведёт себя реконнект). <br>
+Однако существует огромное кол-во консольных вариантов с минимальными зависимостями, которые в связке работают весьма неплохо, но ими не всегда удобно управлять по отдельности. Именно поэтому эта проблема решилась написанием небольшого скрипта, который объединяет всё воедино.
+
+Перед каждым новым соединением с wifi-точкой скрипт <a href="https://github.com/cryptopunks/minsecwifi" target="_blank">minsecwifi</a> меняет MAC-адрес wifi-устройства на случайный, активирует устройство, пробует подключиться к указанным в конфиге точкам доступа, получает по DHCP IP-адрес, прописывает указанные в конфиге адреса DNS-серверов и соединяется с VPN-сервером.
+
+# Установка
+
+Для запуска скрипта необходимо поставить следующие пакеты, скачать репозиторий со скриптом и запустить инсталлер (если нет необходимости ставить скрипт в систему глобально, то запуск **install.sh** нужно опустить):
+
+```
+$ apt-get install openvpn wpasupplicant macchanger rfkill
+$ git clone https://github.com/cryptopunks/minsecwifi && cd minsecwifi
+$ sudo ./install.sh
+```
+
+# Настройка конфига minsecwifi 
+
+На данный момент конфиг скрипта состоит из нескольких полей описывающих интерфейс устройства, путь к конфигу wps_supplicant.conf, путь к конфигу openvpn и адресам используемых DNS-серверов. Все доступные параметры приведены в файле <a href="https://github.com/cryptopunks/minsecwifi/blob/master/minsecwifi.conf.sample">minsecwifi.conf.sample</a>.
+
+Либо просмотреть их можно выполнив:
+
+```
+$ minsecwifi --example-minsecwifi
+# Wifi device (run `ifconfig -a`)
+WIFI_DEV="wlp3s0"
+# Wpa_supplicant configuration file
+WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+# DNS-servers
+DNS="nameserver 208.67.222.222\nnameserver 208.67.220.220"
+# OpenVPN configuration file (for client)
+OVPN_CONF="/etc/openvpn/client.ovpn"
+# for run to all services (argument -r)
+START_SEQUENCE="killallprocess unblock interface_down change_mac interface_up fixperm connect_hotspot get_dhcp_address rewrite_dns connect_vpn"
+```
+
+Копируем пример конфигурационного файла в систему (напомню что скриптом можно пользоваться и локально, тогда никаких **/etc/minsecwifi.conf** - конфиг должен лежать локально в директории с репозиторием `./minsecwifi --example-minsecwifi > minsecwifi.conf` ):
+
+```
+$ minsecwifi --example-minsecwifi | sudo tee --append /etc/minsecwifi.conf
+```
+
+Редактируем его командой:
+
+```
+$ sudo minsecwifi -em
+```
+
+# Настройка wpa_supplicant
+
+Настройка wpa_supplicant сводится к довольно простому конфигу вида:
+
+```
+network={
+    ssid="access point 1"
+        psk="password"
+}
+network={
+        ssid="access point 2"
+        psk="password"
+}
+```
+он обычно лежит в **/etc/wpa_supplicant/wpa_supplicant.conf**.
+
+Создать конфиг с примером можно следующей командой:
+
+```
+$ minsecwifi --example-wpasupplicant | sudo tee --append /etc/wpa_supplicant/wpa_supplicant.conf
+```
+
+Рекомендуется выставить правильные права доступа к конфигу, т.к. прочитав этот файл можно получить пароли от используемых вами wifi-точек:
+
+```
+$ sudo minsecwifi --fix-permissions
+```
+
+# Использование minsecwifi
+
+Запускаем без аргументов, чтобы ознакомиться с возможностями:
+
+```
+$ minsecwifi
+Usage:
+./minsecwifi [OPTION] 
+  -s, --scan                    scan networks
+  -r, --run                     run all services 
+                                (variable START_SEQUENCE in minsecwifi.conf)
+  -k, --killall                 kill all services
+  -ew, --edit-wpasupplicant     edit wpa_supplicant.conf
+  -em, --edit-minsecwifi        edit minsecwifi.conf
+  -ub, --unblock                unblock wifi adaptor
+  -iu, --interface-up           wifi interface down
+  -id, --interface-down         wifi interface up
+  -cm, --change-mac             change mac address
+  -ch, --connect-hotspot        connect to hotspot
+  -gd, --get-dhcp               get dhcp address
+  -rd, --rewrite-dns            rewrite dns servers
+  -cv, --connect-vpn            connect to vpn server
+  -xw, --example-wpasupplicant  show example config for wpa_supplicant
+  -xm, --example-minsecwifi     show example config for minsecwifi
+  -fp, --fix-permissions        fix permissions for wpa_supplicant.conf
+```
+
+Сканируем сети:
+
+```
+$ sudo minsecwifi -s
+```
+
+редактируем конфиг, дописав новую точку доступа и пароль к ней:
+
+```
+$ sudo minsecwifi -ew
+```
+
+Подключаемся если необходимо пошагово, либо используем ключ -r, который запускает последовательно действия описанные в переменной конфига **START_SEQUENCE**:
+
+```
+$ sudo minsecwifi -r
+```
+
+По умолчанию переменная **START_SEQUENCE** просит minsecwifi запущенным с ключом `-r` выполнить последовательно следующие действия:
+
+* убить предыдущие процессы wpa_supplicant/openvpn;
+* произвести unlock устройства;
+* выключить интерфейс;
+* поменять MAC-адрес устройства на случайный;
+* поднять интерфейс;
+* изменить права доступа к wpa_supplicant.conf;
+* подключиться к точки доступа; 
+* получить по DHCP адрес;
+* перезаписать DNS-сервера и залочить для перезаписи **/etc/resolv.conf**;
+* подключиться к vpn.
+
+# В заключении
+
+Следите за обновлениями и выполняйте периодически `git pull` в директории с проектом. Если скрипт установлен в систему глобально, то не забывайте повторно выполнять `sudo ./install.sh` для перезаписи старого скрипта новым.<br> Для удаления скрипта из системы используйте `sudo ./uninstall.sh`.
+<br>Предложения по улучшению и багрепорты <a href="/contacts/" target="_blank">принимаются</a>.
+]]></content:encoded>
+      <dc:date>2015-11-15T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Разворачиваем за минуту openvpn-сервер с пользовательскими ключами</title>
+      <link>https://cryptopunks.org/article/secure+openvpn+installer/</link>
+      <description><![CDATA[Вступление
+]]></description>
+      <pubDate>Sun, 20 Sep 2015 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/secure+openvpn+installer/</guid>
+      <content:encoded><![CDATA[## Вступление
+
+Про правильную настройку OpenVPN на пользовательском компьютере (клиенте) <a href="/article/secure+openvpn+connection/" target="_blank">мы уже писали</a>, сегодня речь пойдёт о мгновенном развёртывании OpenVPN-сервера и генерации пользовательских ключей.<br>
+Для этого можно использовать самую дохлую и дешёвую (3-5$ в год(!)) vps'ку, либо RaspberryPI.
+<br><br>
+Представленный ниже скрипт тестировался и работает на более-менее современных версиях Debian, Ubuntu, CentOS.
+
+## Установка OpenVPN на сервер 
+
+Вся установка сводится к скачиванию и запуску соответствующего скрипта (назвал его **OpenVPN Paranoid Installer**):
+
+```
+$ sudo su
+# wget https://raw.githubusercontent.com/cryptopunks/openvpn_paranoid_installer/master/openvpn_paranoid_installer.sh --no-check-certificate -O openvpn_paranoid_installer.sh; bash openvpn_paranoid_installer.sh
+```
+
+Особые параноики могут <a href="https://raw.githubusercontent.com/cryptopunks/openvpn_paranoid_installer/master/openvpn_paranoid_installer.sh" target="_blank">скачать скрипт</a> самостоятельно, ознакомится с его содержанием и лишь после запустить; это - самое правильное решение для всего что качается из интернетов и github не исключение.
+
+Инсталлятор запросит на какой из IP вешать OpenVPN, какой порт для него использовать (советую поставить нестандартный, либо 443, если он не занят https), какой DNS-сервер использовать (на выбор предоставит несколько вариантов), необходимый размер ключа, пароль (если требуется), после чего запросит имя первого клиентского файла с конфигом и ключами (их размер и пароль) и начнёт устанавливать необходимые пакеты и генерировать ключи.<br>
+При этом все необходимые sysctl-переменные и правила iptables пропишутся автоматически в автозагрузку (используются файлы **/etc/sysctl.conf** и **/etc/rc.local**).<br><br>
+Для большей безопасности можете воспользоваться советами из статьи <a href="/article/secure+storage+of+keys+openvpn+on+server/" target="_blank">Безопасное хранение ключей OpenVPN на сервере без шифрованного диска</a>.
+
+## Работа с клиентом
+
+После окончания работы скрипта в домашней директории появится файл с расширением **.ovpn** который и будет являться пользовательским конфигом (конфигом и всеми необходимыми ключами, всё-в-одном). Его необходимо скопировать на клиентскую машину и запустить: 
+
+```
+$ sudo openvpn --config client.ovpn
+```
+
+Файл этот необходимо хранить в тайне, потому как если он утечёт - можно будет расшифровать весь ваш трафик.<br><br>
+Если вы работаете в \*nix-системе, то советую скопировать его в **/etc/openvpn**, сменить владельца на root и выставить чтение/запись только root:
+
+```
+# cp client.ovpn /etc/openvpn
+# chown -R root:root /etc/openvpn
+# chmod -R 600 /etc/openvpn 
+```
+
+Ну и запускать соответственно под root:
+
+```
+$ sudo openvpn --config /etc/openvpn/client.ovpn
+```
+
+## Что ещё умеет OpenVPN Paranoid Installer 
+
+На момент написания статьи скрипт умеет при повторном запуске управлять пользовательскими ключами (создавать и отзывать их) и имеется функция удаления всего что он поставил и прописал в системе.<br>
+<br>
+Советую подписаться на репозиторий: <a href="https://github.com/cryptopunks/openvpn_paranoid_installer" target="_blank">https://github.com/cryptopunks/openvpn_paranoid_installer</a>, либо при поднятии нового VPN обращаться всегда к свежей версии, т.к. допиливаться сей инструмент планируется. 
+<br><br>
+Свои пожелания и предложения по улучшению можете отправлять <a href="/contacts/" target="_blank">на почту</a>.
+]]></content:encoded>
+      <dc:date>2015-09-20T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Удобное управление профилем браузера средствами git</title>
+      <link>https://cryptopunks.org/article/fast+reset+browser+profile/</link>
+      <description><![CDATA[Правильная привычка
+]]></description>
+      <pubDate>Thu, 03 Sep 2015 12:49:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/fast+reset+browser+profile/</guid>
+      <content:encoded><![CDATA[## Правильная привычка
+
+Браузер предоставляет сайтам колоссальные возможности по слежению за пользователями. Помимо этого существует огромное кол-во вирусов, которые попадают в профиль через заражённые сайты и большая часть из них работает на ботнеты. Поэтому правильной привычкой является регулярная чистка браузера. При чём не его стандартными средствами (через настройки), а руками, путём удаления соответствующих файлов.<br><br>
+Удалять весь профиль целиком (например **~/.mozilla**, **~/.config/chromium**) полезно, но не всегда удобно, т.к. вместе с этими каталогами сотрутся все настройки, сохранённые закладки, расширения и придётся всё ставить с нуля. Обычно по этой причине чистку профиля откладывают на "потом".<br>
+Поэтому предлагаю следующую схему.<br>
+
+## Использование git
+
+Ставим git:
+
+```
+$ sudo apt-get install git
+```
+
+Рассмотрим пример с браузером Firefox, для других браузеров шаги аналогичные за исключением путей к профилю.<br>
+Удаляем профиль браузера (предварительно экспортировав закладки и записав названия используемых расширений):
+
+```
+$ rm -fr ~/.mozilla
+```
+
+Запускаем браузер, настраиваем его минимально (можно использовать <a href="/article/firefox-secure-tweak/" target="_blank">следующие советы</a>), ставим необходимые расширения. <br><br>
+После чего переходим в каталог **~/.mozilla** и создаём там git-репозиторий с первым коммитом:
+
+```
+$ cd ~/.mozilla && git init && git add . && git commit -a -m "freedom"
+```
+
+Далее пользуемся браузером и периодически (как можно чаще в пределах разумного) откатываем всё в первоначальное состояние:
+
+```
+$ cd ~/.mozilla && rm -fr * && git reset --hard
+```
+
+## В заключении
+
+Помимо этого можно пользоваться огромным набором функций, который предоставляет git. Например - <a href="http://www.calculate-linux.org/main/ru/git" target="_blank">ветвление (branch)</a>. Допустим, создаём отдельную ветку для работы и для дома, ставим разный набор расширений/настроек, логинимся где нужно и переключаемся туда-сюда в зависимости от случая, тем самым не "палим" свою личность.
+]]></content:encoded>
+      <dc:date>2015-09-03T12:49:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Генерируем произвольный адрес onion-домена в TOR</title>
+      <link>https://cryptopunks.org/article/generate+custom+onion+address/</link>
+      <description><![CDATA[Борьба со &quot;страшными&quot; адресами TOR
+]]></description>
+      <pubDate>Tue, 01 Sep 2015 23:49:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/generate+custom+onion+address/</guid>
+      <content:encoded><![CDATA[## Борьба со "страшными" адресами TOR
+
+При <a href="/article/create-onion-resource-in-tor/" target="_blank">создании ресурсов в сети TOR</a> генерируется хеш на базе случайносозданного ключа, который лежит в директории указанной в параметре **HiddenServiceDir** конфига **torrc** и служит доменом ресурса, имея довольно неприятный вид вроде **2rdccn3g5pz3vy7s.onion**. Эту проблему можно по крайней мере частично решить, сгенерировав нужную комбинацию символов, выбирая варианты из случайностей.
+
+## Примерное время
+
+При сегодняшних средних мощностях процессоров первые 1/2/3/4/5/6-символов подбираются довольно быстро (от миллисекунд до получаса).<br>
+Вот таблица соответствий для процессора 1.5Гц:
+
+
+|  символы   |  примерное время   |
+|:----------:|:------------------:|
+|         1  |   менее 1 секунды  |
+|         2  |   менее 1 секунды  |
+|         3  |   менее 1 секунды  |
+|         4  |   2 секунды        |
+|         5  |   1 минута         |
+|         6  |   30 минут         |
+|         7  |   1 день           |
+|         8  |   25 дней          |
+|         9  |   2.5 года         |
+|        10  |   40 лет           |
+|        11  |   640 лет          |
+|        12  |   10 тыс. лет      |
+|        13  |   160 тыс. лет     |
+|        14  |   2.6 млн. лет     |
+
+
+## Использование eschalot
+
+Получаем последнюю версию:
+
+```
+$ git clone https://github.com/ReclaimYourPrivacy/eschalot
+```
+
+Собираем:
+
+```
+$ cd eschalot
+$ make
+```
+
+Далее запускаем `./eschalot` без аргументов чтобы ознакомиться со справкой по аргументам (более подробная на странице проекта).<br><br>
+
+Например найдём ключ с хешем "crypt" в начале адреса:
+
+```
+$ ./eschalot -t4 -r "^test"
+----------------------------------------------------------------
+cryptll6ahbkealh.onion
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDGDXVrSOdNFsua8tdERD+gcUMMjuGwpamV/p/+6dFBCwVJkO1H
+syBmgitGPDztMVYhuos0HYooR+NFMuenbQN6UCdn6IzZU970IJDxRtvqvUg5DU3e
+U/R1EKGxGI3OFkpou6QUen5u8PC4A3IqTAEmXlD8mwu9n4248XtNt2ZB+QIEAQqU
+jwKBgDAu2g3kDsP2vnGjbs7VC3FMY8hpSQ4C30BbNJahzshOE959/oLC3Kg4vic/
+ZDJ2rzozyJPhsyVxFWZJhMFRlUT2+l7Yu0VXFLSaf2Y6iCfjPirq0es5Wrc5NxZj
+Vv+ggk5dHu1DvtWi6pAoEivoIV8iVhUybMWWzB03az2/7LjHAkEA+BM8P8+S41DI
+/Xq5aKdcEkQKUTlAY2QD3tBbsahANELWOK8Pn1xyOAFQA4bymoIPDmu07NPp3fR6
+VmPMUVgPdQJBAMxhIzWjJU8A/TMLw0i4PQdITxfr/D8Ph5NUUFfGDl9aLxWtFsDp
+mM2uJcIbNZ7H7F/hnq69SBAd9s16ZYHhu/UCQQCJHT5H6c0rdYxV4o4alT8lY64U
+SvxVaMbj9kKLHx90OBEt0ocV/dteF9w4Me7GTc74W1aI+UcAPs+goX7ZGrKjAkBn
+GZA9nRfz9QdLhvVmC2049+Ucc4EsmoOPmbj5LCXWOBzmS1mr82EsgDZpYJcQt+03
+fbCf8PHq55w07DjWooHjAkB2ax9z6aOJ3mTLqzVr7P3oCxLQ90bZJrbsbKhZKCjS
+Wx+eQQr4ZsSx5DB/7bsOLiC8EAl3gK/5LBouyuoJadm3
+-----END RSA PRIVATE KEY-----
+```
+
+или "punk" в конце:
+
+```
+$ ./eschalot -t4 -r "punk$"
+----------------------------------------------------------------
+ghb6lbhn3v6zpunk.onion
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCmD/2NmwEf2r8oJbTOhsmo1vetaoS0RTGiNqpph+rWR4rPbph/
+3ACoHbznp9HEEWkiURZ9dmctZnc3PNfUl0laZA1TIKHXKASORhx4n4HqDk17TyU8
+DdL9d5992SwJbFwrJRqI1SOjJUNeZrBU7p6rfSYbWtKUL/QtEOFDNyiFWwIEAQGC
+XwKBgEDe1ENmpSEyVmuG4mkucKewTiIJLKbhUiuQjdWdEmWD4MVwKphZa8p3C0B1
+Iq5cTLbyXkOCpj08bVsjTn3mr02XmryG/bEjvIcyx6eVGpWOLV4GqWB7kq6y76EO
+QRDEH8Fn0E29HUn9i5h3QbiwW+MDDrFjK5iOcGn+Ci2C9FRTAkEA1X7vNiv77To9
+VhMj/PrW4z/y6+QQCr+6zdVfwtLKByd3372tMhIrkeMLa2aED6zQV9mLI0CBzPvQ
+WLk53V44NQJBAMcfjvhapiOPwI3wi+BBCnck06rorj/SnsOEAoBy0w560OCLqk7g
+XgOlz9vUxaGpP3olNFb+TTrM+Rn0tMg4GU8CQH3ACezJRD3Ayh2hTAK+yrjENRjy
+njNOJcROb8RQ2UZw7zdFFQOk9brO9+2EihLfRwKHws9sjwAHQaQQt0BCIIcCQEgE
+z5qPSiFwN6ihvfq88DQsaK8SdkBSiDNgd5zptKcWJ94C74X1gXRLT51suQKSuxzN
+ePhjmBcJOkYnqDe96OcCQQCrmMvqOnAIQrrs5RhOCWSyJDruDbFcpYGNh3SU5lYW
+aBumHPUzqi6rEgYaTJPp2e93puOasc3SH0Q1JWdDRDUM
+-----END RSA PRIVATE KEY-----
+```
+
+Работают все регулярные выражения.
+
+Ключ `-c` позволяет выводить бесконечное кол-во результатов до завершения выполнения по Ctrl+c. Удобно перенаправить в файл и потом выбрать лучшие варианты.<br>
+Помимо этого программа умеет делать выборки по словарю.<br><br>
+Далее нам необходимо скопировать ключ понравившегося домена и заменить им основной ключ. То есть открываем к примеру **/var/lib/tor/site1/private_key**, стираем содержимое и вставляем:
+
+```
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCmD/2NmwEf2r8oJbTOhsmo1vetaoS0RTGiNqpph+rWR4rPbph/
+3ACoHbznp9HEEWkiURZ9dmctZnc3PNfUl0laZA1TIKHXKASORhx4n4HqDk17TyU8
+DdL9d5992SwJbFwrJRqI1SOjJUNeZrBU7p6rfSYbWtKUL/QtEOFDNyiFWwIEAQGC
+XwKBgEDe1ENmpSEyVmuG4mkucKewTiIJLKbhUiuQjdWdEmWD4MVwKphZa8p3C0B1
+Iq5cTLbyXkOCpj08bVsjTn3mr02XmryG/bEjvIcyx6eVGpWOLV4GqWB7kq6y76EO
+QRDEH8Fn0E29HUn9i5h3QbiwW+MDDrFjK5iOcGn+Ci2C9FRTAkEA1X7vNiv77To9
+VhMj/PrW4z/y6+QQCr+6zdVfwtLKByd3372tMhIrkeMLa2aED6zQV9mLI0CBzPvQ
+WLk53V44NQJBAMcfjvhapiOPwI3wi+BBCnck06rorj/SnsOEAoBy0w560OCLqk7g
+XgOlz9vUxaGpP3olNFb+TTrM+Rn0tMg4GU8CQH3ACezJRD3Ayh2hTAK+yrjENRjy
+njNOJcROb8RQ2UZw7zdFFQOk9brO9+2EihLfRwKHws9sjwAHQaQQt0BCIIcCQEgE
+z5qPSiFwN6ihvfq88DQsaK8SdkBSiDNgd5zptKcWJ94C74X1gXRLT51suQKSuxzN
+ePhjmBcJOkYnqDe96OcCQQCrmMvqOnAIQrrs5RhOCWSyJDruDbFcpYGNh3SU5lYW
+aBumHPUzqi6rEgYaTJPp2e93puOasc3SH0Q1JWdDRDUM
+-----END RSA PRIVATE KEY-----
+```
+
+После чего перезапускаем TOR:
+
+```
+$ sudo /etc/init.d/tor restart
+```
+
+проверяем **/var/lib/tor/site1/hostname**, если он поменялся на нужный адрес, значит всё прошло успешно. Если же по каким-то причинам что-то пошло не так - проверьте правильно ли скопировали ключ и верно ли выставлены права доступа к ключу. В случае проблем удалите каталог **/var/lib/tor/site1/**, перезапустите TOR и попробуйте ещё раз.
+
+## Аналоги
+
+В случае если **eschalot** чем-то не понравился можно попробовать воспользоваться его программой-родителем - <a href="https://github.com/katmagic/Shallot" target="_blank">Shallot</a>.
+]]></content:encoded>
+      <dc:date>2015-09-01T23:49:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Поднимаем анонимный веб-ресурс в TOR</title>
+      <link>https://cryptopunks.org/article/create-onion-resource-in-tor/</link>
+      <description><![CDATA[Зачем вам это?
+]]></description>
+      <pubDate>Wed, 26 Aug 2015 12:49:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/create-onion-resource-in-tor/</guid>
+      <content:encoded><![CDATA[## Зачем вам это?
+
+TOR может скрыть реальное местоположение сайта, а это значит что его не смогут отключить, а создателя - найти и наказать/устранить (при соблюдении определённых правил). Кроме того TOR-адрес в доменной зоне **.onion** невозможно украсть/присвоить/отозвать до тех пор пока вы не потеряете секретный ключ от этого домена (об этом чуть позже).
+
+## Настраиваем веб-сервер
+
+Пропускаем этот раздел и переходим к разделу настройки TOR в случае если web-сервер уже настроен.
+
+### Однострочник на Python
+
+Если у вас статические html-файлы с сайтом (идеальный вариант для безопасности) и не очень много ресурсов, то можно просто запустить однострочник на Python, который будет отдавать пользователю контент.<br>
+Для этого перейдите в каталог с html-файлами и запустите следующую команду:
+
+```
+$ cd /var/www/site1
+$ python -m SimpleHTTPServer 80
+```
+
+Можно параллельно запустить несколько сайтов, поменяв лишь каталог назначения и порт. Например:
+
+```
+$ cd /var/www/site2
+$ python -m SimpleHTTPServer 81
+```
+
+### Nginx
+
+Если сайт более сложный и ресурсов хватает - можно настроить nginx.
+
+Ставим:
+
+`$ sudo apt-get install nginx`
+
+Рекомендуется в файле **/etc/nginx/nginx.conf** поменять следующие значения:
+
+```
+http {
+
+...
+
+        # не предоставляем версию используемого софта
+        server_tokens off;
+        # отключаем ведение логов
+        #access_log /var/log/nginx/access.log;
+        #error_log /var/log/nginx/error.log;
+
+        error_log /dev/null crit;
+...
+```
+
+Далее создаём файл нового виртуалхоста:
+
+**/etc/nginx/sites-available/site1**
+
+```
+server {
+        listen 127.0.0.1:80 default_server;
+        server_name localhost;
+
+        root /var/www/site1;
+        index index.html index.htm;
+
+        location / {
+                allow 127.0.0.1;
+                deny all;
+
+        }
+}
+```
+
+Включаем его:
+
+```
+$ cd /etc/nginx/sites-enabled
+$ sudo ln -s ../sites-available/site1 .
+
+```
+
+Перезапускаем nginx и добавляем его в автозагрузку:
+
+```
+$ sudo service nginx restart
+$ sudo update-rc.d enable nginx
+```
+
+Создаём каталог с будущим сайтом:
+
+```
+$ sudo mkdir /var/www/site1
+```
+
+Кладём туда необходимые файлы и сменяем владельца:
+
+```
+$ sudo chown -R www-data:www-data /var/www/site1
+
+```
+
+### Настройка TOR
+
+Настройка TOR сводится лишь к его установке и добавлению 2 строчек в конфиг.
+
+```
+$ sudo apt-get install tor
+```
+
+Открываем **/etc/tor/torrc**:
+
+```
+HiddenServiceDir /var/lib/tor/site1 # каталог создаётся автоматически
+HiddenServicePort 80 127.0.0.1:80
+```
+
+Перезапускаем TOR:
+
+```
+$ sudo /etc/init.d/tor restart
+```
+
+Первая строчка в конфиге указывает путь к закрытому ключу, который создаётся автоматически TOR'ом при первом запуске после модификации конфига и играет роль onion-домена. Давайте посмотрим на содержимое каталога для большего понимания:
+
+```
+$ sudo ls /var/lib/tor/site1
+hostname  private_key
+```
+
+Файл **hostname** содержит адрес домена сгенерированного на базе хеша ключа **private_key**, который в свою очередь сгенерировался случайным образом при первом запуске.
+
+```
+pigf5kfufjz63s5z.onion
+```
+
+удаление/модификация файла **hostname** не влечёт никаких последствий, при следующем перезапуске TOR он вновь создаётся на основе ключа. Это скорее файл-подсказка для вас.<br><br>
+А вот ключ **private_key** необходимо держать в секрете. До тех пор пока вы являетесь единственным владельцем этого файла - ваш домен никто и никогда не украдёт.<br>
+Ключ имеет стандартный вид:
+
+```
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCiwfOmTC3c02kaz/BGftIXLafz4z6sTbufBpM/usaQAFdbW072
+xZ0ds2ZEVbQNOjewU9QihrtA25v20ZblbEZfrLkPytKzb/ghCIEQN/mbSsnBcJ9b
+JJa0OzhUy+V9uuXrO0afpk7eCB/EPNdwugfKu/G9JaBirWrRMkkAozhKjwIDAQAB
+AoGBAJlFVwMzWDlN6fvy+E4a3hQvzauSRBIVPevbUE3CwX0YpSuGSE2B+Zzfth4C
+K4YNXiYyO2KsSKkiZrS/2X+CQJ4WLy87VCkoF2TF5C4MKF3SOhGPorO4TCtxkhnN
+7tprZFIlT7/cP45XretG+i6ZuksZtv2Oje0r1oCwxv0F4V5BAkEA0rVve2Q0x5EG
+nZrBPFgsdPm6ikutuMUBFbNxv71ILbh3f+qePpH6wZIjgQ7FJXGXarC1DcyaPT52
+QQWWnhGCYQJBAMW97zxTD+9klPBisZ7ClFWh88VBCPVeyz5AS2oQdNtRaJeKyiiS
+JhtNIq5yPabCZ/JecqbtCoMY/pdJeJNs0u8CQFyAgG+YHz+ZYGEiRkDaqLG1zHnY
+HWznN8GyJHa7fwtrVzLV6iCn74C5SlLnDA+THZkd+G4Va4UFfd6vuF6uayECQD9Q
+aWFvVxLXqbiuYSDsPIKOsHbgM/YcvAban0r+qevvTQX4snH7Gah0Mj6Y5ZSXeqDo
+DN3V2B/RyPK325uYpJECQQCs/Ko0Z2LIk+fDaHRsWI00DbflRK8jptnjArVTrabs
+0Os5jX+UFum0kGRlNKQPV8suucP/5y6FanlmTs3RFwpt
+-----END RSA PRIVATE KEY-----
+```
+
+Рекомендуется сделать копию ключа, предварительно зашифровав например GPG, используя криптостойкий пароль (либо ваш ключ) и куда-нибудь скопировать:
+
+```
+$ sudo gpg -c /var/lib/tor/site1/private_key
+```
+
+Если очистить каталог  **/var/lib/tor/site1** от ключа, то при следующем перезапуске TOR сгенерирует новый ключ с новым случайным onion-адресом.
+
+Вернёмся к конфигу. Вторая строчка (`HiddenServicePort 80 127.0.0.1:80`) задаёт какой порт будет у onion-ресурса и какой адрес и порт будем форвардить на него. В нашем случае мы берём адрес/порт 127.0.0.1:80 и форвардим его на pigf5kfufjz63s5z.onion:80.<br>Давайте проверим так ли это. Откройте в <a href="https://www.torproject.org/projects/torbrowser.html.en" target="_blank">tor-browser</a>, либо в любом другом браузере, но <a href="/article/forward+all+the+traffic+to+tor/" target="_blank">с настроенным TOR</a> и введите адрес <a href="http://pigf5kfufjz63s5z.onion" target="_blank">http://pigf5kfufjz63s5z.onion</a>. Должна открыться страница что висит на 127.0.0.1:80.<br><br>
+Если сайтов нестолько, то в конфиг дописываем, например:
+
+```
+HiddenServiceDir /var/lib/tor/site2
+HiddenServicePort 80 127.0.0.1:81
+
+HiddenServiceDir /var/lib/tor/site3
+HiddenServicePort 80 127.0.0.1:82
+```
+
+перезапускаем TOR, после чего создаются ключи в соответствующих каталогах.
+<br><br>
+Не смотря на то что адреса генерируются случайным образом - их можно подбирать. Об этом поговорим в отдельной статье.
+]]></content:encoded>
+      <dc:date>2015-08-26T12:49:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Перенаправляем весь трафик через TOR</title>
+      <link>https://cryptopunks.org/article/forward+all+the+traffic+to+tor/</link>
+      <description><![CDATA[Для чего необходимо
+]]></description>
+      <pubDate>Mon, 24 Aug 2015 12:49:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/forward+all+the+traffic+to+tor/</guid>
+      <content:encoded><![CDATA[## Для чего необходимо
+
+<p>Бывают ситуации когда необходима анонимность, но VPN под рукой нет. И VPN вряд ли можно назвать анонимным инструментом, ведь вы на него заходите как правило со своего IP (если это не двойной VPN), а значит оставляете следы, даже если не ведутся логи. Что уж говорить о VPN-услугах, которые вы покупаете у чужих людей. Они в свою очередь чаще всего ведут и логи и сниффают трафик и при любом обращении местных спецслужб эту информацию послушно предоставляют.</p>
+
+<p>TOR - неплохой инструмент для анонимности и иногда необходимо через него пропускать не только трафик из вашего браузера (что делает например tor-browser), но и вообще трафик всей системы + не все необходимые вам программы могут поддерживать socks-прокси.</p>
+
+## Установка и настройка TOR
+
+Устанавливаем:
+
+```
+$ sudo apt-get install tor
+```
+
+Для настройки используется конфиг **/etc/tor/torrc**, открываем/создаём и вписываем туда следующее:
+
+```
+VirtualAddrNetworkIPv4 10.192.0.0/10
+AutomapHostsOnResolve 1
+TransPort 9040
+DNSPort 53
+# для жителей СНГ рекомендую исключить Exit-ноды следующих стран
+ExcludeExitNodes {RU},{UA},{BY}
+```
+
+## Настройка DNS
+
+Использовать ДНС-сервера от Google, либо чьи-нибудь ещё - плохая идея, т.к. они тотчас вас деанонимизируют.
+Будем использовать локальный ДНС средствами TOR. Для выполним следующее:
+
+```
+$ sudo rm -f /etc/resolv.conf # удалим, т.к. иногда это сим-линк
+$ echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf
+```
+
+Поскольку всякие NetworkManager очень любят перезаписывать этот файл - лучше его вообще залочить на запись:
+
+```
+$ sudo chattr +i /etc/resolv.conf
+```
+
+(для анлока вместо +i используйте -i)
+
+
+## Настройка Iptables и проверка работоспособности
+
+Создаём скрипт **iptables_setup.sh**:
+
+```
+#!/bin/sh
+
+### set variables
+#destinations you don't want routed through Tor
+_non_tor="192.168.1.0/24 192.168.0.0/24"
+
+#the UID that Tor runs as (varies from system to system)
+_tor_uid="XYZ" # XYZ меняем на UID пользователя TOR (!)
+
+#Tor's TransPort
+_trans_port="9040"
+
+### flush iptables
+iptables -F
+iptables -t nat -F
+
+### set iptables *nat
+iptables -t nat -A OUTPUT -m owner --uid-owner $_tor_uid -j RETURN
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 53
+
+#allow clearnet access for hosts in $_non_tor
+for _clearnet in $_non_tor 127.0.0.0/9 127.128.0.0/10; do
+   iptables -t nat -A OUTPUT -d $_clearnet -j RETURN
+done
+
+#redirect all other output to Tor's TransPort
+iptables -t nat -A OUTPUT -p tcp --syn -j REDIRECT --to-ports $_trans_port
+
+### set iptables *filter
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#allow clearnet access for hosts in $_non_tor
+for _clearnet in $_non_tor 127.0.0.0/8; do
+   iptables -A OUTPUT -d $_clearnet -j ACCEPT
+done
+
+#allow only Tor output
+iptables -A OUTPUT -m owner --uid-owner $_tor_uid -j ACCEPT
+iptables -A OUTPUT -j REJECT
+```
+Переменную `_tor_uid` меняем на uid пользователя под которым работает tor.
+Определить это значение можно так:
+
+```
+$ grep tor /etc/passwd
+debian-tor:x:135:145::/var/lib/tor:/bin/false
+```
+
+Первая цифра, то есть 135 - uid, меняем в скрипте
+
+```
+_tor_uid="135"
+```
+
+Запускаем:
+
+```
+$ chmod +x iptables_setup.sh
+$ sudo ./iptables_setup.sh
+```
+
+Проверяем работу. Включаем tor:
+
+```
+$ sudo /etc/init.d/tor restart
+```
+
+Пробуем зайти на <a href="https://check.torproject.org/" target="_blank">https://check.torproject.org/</a>. Должны увидеть надпись "Congratulations. This browser is configured to use Tor".
+
+Теперь останавливаем TOR:
+
+```
+$ sudo /etc/init.d/tor stop
+```
+
+И повторно пробуем зайти на сайт, либо запускаем любую другую программу (например, IM-клиент), интернет не должен работать, т.к. выключен TOR.
+Если всё верно, то прописываем правила iptables в автозагрузку:
+
+```
+$ sudo iptables-save > /etc/iptables_tor
+```
+
+Открываем файл **/etc/rc.local** и перед **exit 0** вставляем:
+
+```
+iptables-restore < /etc/iptables_tor
+```
+
+Добавляем запуск TOR в автозагрузку:
+
+```
+$ sudo update-rc.d tor enable
+```
+
+## Отключение перенаправления трафика
+
+Для того чтобы привести правила iptables к девственному виду и отключить перенаправление трафика в сеть TOR можно создать скрипт со следующим содержанием:
+
+```
+#!/bin/sh
+
+echo "Stopping firewall and allowing everyone..."
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+
+```
+
+## Несколько советов
+
+* <p>Неплохим вариантом будет использование на хосте VPN, а в виртуальной машине TOR, но в некоторых случаях лучше действовать наоборот. Зависит от того, какие цели вы преследуете.</p>
+* <p>Если необходимо скрыть от местного провайдера ваше использование TOR, то запускайте TOR внутри VPN.</p>
+* <p>Если же необходима более серьёзная анонимность и постоянный IP (некоторые сайты блокируют, или не любят TOR - капчи хороший тому пример), то заведите девственно чистую виртуальную машину с <a href="/article/change+random+mac+address/" target="_blank">левым MAC-адресом сетевой платы</a>, а в ней чистый профиль браузера и под ним (ес-но тоже под TOR) зарегистрируйте либо VPS-сервер (для последующей настройки VPN), либо уже готовый VPN-сервер, пользуясь анонимной валютой (qiwi с левой симкой, либо bitcoin) и левыми ФИО и мылом (который тоже зарегайте под тором в этой виртуалке) и используйте свежезарегистрированные почту/vpn исключительно в этой виртуалке, никогда не входите под ней в свою основную почту, социальные сети и т.д. (тоже самое с свежезареганной почтой и vpn - лишь в текущей виртуалке), т.к. достаточного одного раза, чтобы ваша вторая личность была навсегда связана с основной и тогда получится что все труды были напрасны.</p>
+
+* <p>Ещё неплохой идеей будет запускать TOR в chroot-окружении. В интернете немало информации по настройке, например: <a href="https://trac.torproject.org/projects/tor/wiki/doc/TorInChroot" target="_blank">https://trac.torproject.org/projects/tor/wiki/doc/TorInChroot</a> (единственный плохой совет в статье - ставить TOR из исходников, ставьте лишь из репозитория вашего дистрибутива и регулярно обновляйте его и всю систему). Это дополнительно обезопасит вас от критических уязвимостей найденных в системе которую вы используете и в TOR. Хотя ещё лучшей идеей будет настроить TOR на отдельном роутере в chroot окружении, но это уже если у вас true-паранойя.</p>
+]]></content:encoded>
+      <dc:date>2015-08-24T12:49:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Безопасное хранение ключей OpenVPN на сервере без шифрованного диска</title>
+      <link>https://cryptopunks.org/article/secure+storage+of+keys+openvpn+on+server/</link>
+      <description><![CDATA[Описание проблемы
+]]></description>
+      <pubDate>Mon, 03 Aug 2015 12:49:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/secure+storage+of+keys+openvpn+on+server/</guid>
+      <content:encoded><![CDATA[## Описание проблемы
+
+Обычно <a href="/article/secure+openvpn+installer/" target="_blank">при создании OpenVPN-сервера</a> используется дешёвая VPS (Virtual Private Server) без какого-либо дискового шифрования. <br>
+Опасность заключается в том, что если ваш трафик писался и VPS конфисковали - расшифровать его не составит особого труда.
+Помимо этого ключи может украсть владелец сервера у которого вы купили VPS и начать "слушать" ваш трафик в реальном времени.<br>
+Поскольку дисковое шифрование в бюджетных вариантах аренды серверов недоступно - можно воспользоваться шифрованными контейнерами.
+
+Необходимо знать, что большинство vps администратор сервера может спокойно смонтировать в момент когда ваша виртуалка работает и скопировать все необходимые ключи, шифрование контейнера в данном случае ничего не решит. Поэтому дополнительно рекомендуется шифровать ключ openvpn-сервера паролем в процессе его генерации.
+
+## От теории к практике
+
+Существует множество вариантов, но лучшим является **LUKS** (как альтернатива - менее надёжный и медленный вариант **encfs**).
+
+Для начала создаём luks-контейнер по <a href="/article/awesome+truecrypt+alternative+for+linux/" target="_blank">этому мануалу</a>, должно хватить контейнера объёмом 5Мб.
+
+Монтируем его например в **/mnt/data**:
+
+```
+$ sudo cryptsetup luksOpen /root/encrypt_data decrypt_data
+$ sudo mount /dev/mapper/decrypt_data /mnt/data
+```
+
+Останавливаем **openvpn**:
+
+`$ sudo systemctl stop openvpn`
+
+Копируем содержимое **/etc/openvpn** в контейнер:
+
+`$ sudo cp -rpv /etc/openvpn /mnt/data`
+
+Чистим основной каталог:
+
+`$ sudo rm -r /etc/openvpn/*`
+
+Выключаем контейнер:
+
+```
+$ sudo umount /mnt/data
+$ sudo cryptsetup luksClose /dev/mapper/decrypt_data
+```
+
+Отключаем автостарт openvpn при загрузке:
+
+`sudo systemctl disable openvpn`
+
+Создаём скрипт **/root/run.sh** следующего содержания:
+
+```
+#!/bin/sh
+
+cryptsetup luksOpen /root/encrypt_data decrypt_data
+mount /dev/mapper/decrypt_data /mnt/data
+mount --bind /mnt/data/openvpn /etc/openvpn
+systemctl start openvpn
+```
+
+Туда же кстати можно скопировать и всякие другие секретные данные, например ключи **~/.ssh**, **~/.gnupg** и добавить в скрипт:
+
+```
+mount --bind /mnt/data/.ssh /root/.ssh
+mount --bind /mnt/data/.gnupg /root/.gnupg
+```
+
+Остаётся лишь после каждой перезагрузки VPS запускать скрипт и вводить пароль от криптоконтейнера.<br>
+Ну и конечно не забываем про бекапы, которые сейчас делать ещё проще: лишь один скрипт **run.sh** и файлик с контейнером.
+]]></content:encoded>
+      <dc:date>2015-08-03T12:49:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Лучшая альтернатива TrueCrypt под Linux</title>
+      <link>https://cryptopunks.org/article/awesome+truecrypt+alternative+for+linux/</link>
+      <description><![CDATA[Краткое описание
+]]></description>
+      <pubDate>Sat, 01 Aug 2015 01:09:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/awesome+truecrypt+alternative+for+linux/</guid>
+      <content:encoded><![CDATA[## Краткое описание
+
+Существует огромное кол-во мнений по поводу небезопасности использования TrueCrypt, мы эти домыслы поддерживать не будем, но расскажем о достойной альтернативе под ОС Linux. Сегодня поговорим о технологии LUKS (Linux Unified Key Setup).<br>
+LUKS умеет шифровать как сами диски так и создавать криптоконтейнеры непосредственно в файлах. Поговорим о последнем варианте, т.к. первый обычно умеют все современные инсталляторы популярных дистрибутивов, а если вы гик и хотите сделать всё сами, то вероятнее всего найдёте необходимый мануал самостоятельно.<br>
+К слову: LUKS поддерживает огромное кол-во шифров и шустрее TrueCrypt, т.к. работает на уровне ядра ОС.
+
+## Необходимые шаги
+
+1) Ставим пакет cryptsetup:
+
+`$ sudo apt-get install cryptsetup`
+
+2) Создаём пустой файл для будущего контейнера (например 200Мб):
+
+`$ fallocate -l 200M /home/user/darkthrone.avi`
+
+(слабая, но хоть какая-то маскировка; под видеоклип)
+
+3) Создаём в этом файле криптоконтейнер:
+
+`$ sudo cryptsetup -y luksFormat /home/user/darkthrone.avi`
+
+Отвечаем утвердительно набирая в большом регистре YES, повторив два раза пароль.
+
+4) Открываем контейнер:
+
+`$ sudo cryptsetup luksOpen /home/user/darkthrone.avi decrypt_data`
+
+5) Создаём на нём файловую систему:
+
+`$ sudo mkfs.ext4 /dev/mapper/decrypt_data`
+
+6) Создаём каталог для монтирования:
+
+`$ sudo mkdir /mnt/data`
+
+7) Монтируем расшифрованный контейнер:
+
+`$ sudo mount /dev/mapper/decrypt_data /mnt/data`
+
+8) Записываем необходимые файлы в **/mnt/data**, после чего его можно отмонтировать:
+
+`$ sudo umount /mnt/data`
+
+9) Извлекаем контейнер:
+
+`$ sudo cryptsetup luksClose /dev/mapper/decrypt_data`
+
+Копируем файл **/home/user/darkthrone.avi** например на флешку и повторяем шаги 4, 7 всякий раз когда хотим им воспользоваться и шагами 8, 9 чтобы затереть за собой следы.
+]]></content:encoded>
+      <dc:date>2015-08-01T01:09:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Действительно ли анонимен Telegram?</title>
+      <link>https://cryptopunks.org/article/is-telegram-really-secure/</link>
+      <description><![CDATA[Хотелось бы затронуть популярную в последнее время тему &quot;безопасен ли telegram?&quot;.
+Но рассматрим не узкоспециализированную техническую сторону вопроса, а вопрос об анонимности сервиса.
+]]></description>
+      <pubDate>Wed, 27 May 2015 16:09:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/is-telegram-really-secure/</guid>
+      <content:encoded><![CDATA[Хотелось бы затронуть популярную в последнее время тему "безопасен ли <a href="https://telegram.org/" target="_blank">telegram</a>?".
+Но рассматрим не узкоспециализированную техническую сторону вопроса, а вопрос об анонимности сервиса.
+
+Можно ли назвать анонимным сервис у которого имеется обязательная привязка к номеру телефона пользователя?
+
+Что бы вы предпочли: разговор под TOR в сервисе где регистрация по email (естественно не обязательно указывать свою настоящую почту), все сообщения не шифруются и идут в plain text (plain text в данном контексте приведён для большей абсурдности), или же сервисом через который можно получить ваши ФИО, номер паспорта, адрес прописки, точные географические координаты в любое время и всё шифруется AES?
+
+Именно телефонный номер несёт в себе подобного рода опасность. Ведь номер телефона как правило на кого-то зарегистрирован и эта информация совершенно не секретная, её может получить любой желающий в большинстве стран.
+А уж что говорить про спецслужбы, которым закон не писан? По требованию властей через мобильного оператора можно раскрыть вашу личность, местоположение, не говоря уже о возможности включать микрофон на телефоне абонента и слушать уже нешифрованный трафик.
+
+В данном случае Skype можно назвать менее уязвимым на прослушку и более анонимным. Главное не забывать его конечно запускать на отдельной виртуальной машине и использовать TOR/VPN для соединения :) Но лучше и этого не делать, а пользоваться каким нибудь <a href="https://tox.chat/" target="_blank">tox</a>.
+]]></content:encoded>
+      <dc:date>2015-05-27T16:09:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>USBKill - скрипт на случай криминалистической экспертизы</title>
+      <link>https://cryptopunks.org/article/usbkill-script-for-a-case-of-search-incidental-to-arrest/</link>
+      <description><![CDATA[О необходимости использования USBkill
+]]></description>
+      <pubDate>Fri, 15 May 2015 20:15:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/usbkill-script-for-a-case-of-search-incidental-to-arrest/</guid>
+      <content:encoded><![CDATA[## О необходимости использования USBkill
+
+Шифрование диска - лишь один из шагов к безопасности. Как правило спецслужбы действуют следующим образом: поджидают жертву, чтобы та не успела выключить компьютер до момента задержания. Даже lockscreen не убережёт вас, потому как ключи шифрования можно извлечь при загруженной ОС специальными устройствами из ОЗУ имея физический доступ к USB-портам.
+Эту проблему решает скрипт <a href="https://github.com/hephaest0s/usbkill" target="_blank">USBkill</a>.
+
+## Принцип работы
+
+В скрипте можно указать белый список ваших USB-устройств, а постоянно запущенный процесс следит за портами USB и если встречает неизвесное устройство - выключает, перезагружает, либо переводит в спящий режим ваш компьютер (на выбор, задаётся в скрипте). Таким образом можно избежать криминалистической экспертизы. Разумеется, при условии что жёсткий диск компьютера предварительно зашифрован.
+
+## Схожий по функционалу аналог
+
+Существует не менее интересный проект на схожу тематику - <a href="https://github.com/defuse/swatd" target="_blank">swatd</a>, позволяющий настроить сенсоры с событиями.
+]]></content:encoded>
+      <dc:date>2015-05-15T20:15:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Рекомендуемые настройки безопасности для Firefox</title>
+      <link>https://cryptopunks.org/article/firefox-secure-tweak/</link>
+      <description><![CDATA[О документе
+]]></description>
+      <pubDate>Thu, 26 Feb 2015 20:15:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/firefox-secure-tweak/</guid>
+      <content:encoded><![CDATA[## О документе
+
+Данный документ взят с сайта <a href="http://pgpru.com" target="_blank">pgpru.com</a>. По каким-то причинам данная статья исчезла на сайте и нашлась лишь в кеше гугла.
+
+Внимание, некоторые переменные ``about:config`` могут быть устаревшими в новых версиях Firefox, но большинство параметров до сих пор доступно и их следует поменять для вашей безопасности.
+
+## Рекомендуемые настройки
+
+ Если вы видите, что какая-то опция стоит в нужном вам значении, помните: поставить ее могло и дополнение. Даже если она стоит по умолчанию, в очередной версии Firefox вполне могут поменяться опции по умолчанию.
+
+Открыть страницу настроек Firefox можно набрав в адресной строке: ``about:config``.
+
+Далее в фильтре нужно набирать название опций и менять их значение. Если опции не существует, то нужно создать опцию с таким же, как в описании названием и типом значения: строка, целое, булевское (кликнуть правой клавишей мыши и выбрать нужный пункт контекстного меню).
+
+**Помните!** Блокировка некоторых опций позволяет выделить вас из массы пользователей путем отслеживания реакций браузера. Поэтому изменять их при использовании TorBrowser или другой подобной сборки нужно обдуманно и с пониманием.
+
+Если нужно отредактировать большое количество настроек и использовать их на других компьютерах, то удобнее использовать файл user.js. Подробнее: <a href="http://kb.mozillazine.org/User.js_file" target="_blank">тут</a>.
+
+**Примечание:** Существуют "скрытые" настройки, если вы введете имя такой настройки в фильтре страницы about:config ничего не отобразится, хотя такая настройка может существовать. Чтобы её изменить нужно создать её из контекстного меню страницы about:config.
+
+### Обновление списков неблагонадежных сайтов
+
+Если эта защита не нужна, ее можно отключить через "Настройки" -> "Защита" -> "Информировать, не подозревается ли посещаемый веб-сайт в имитации другого веб-сайта" и "Информировать, не подозревается ли посещаемый веб-сайт в атаках на компьютеры".
+
+Так же это можно сделать через страницу настроек:
+
+``browser.safebrowsing.enabled``
+
+и
+
+``browser.safebrowsing.malware.enabled``
+
+в about:config должны иметь значение ``false``.
+
+### Отключение встроенной проверки обновлений
+
+ Firefox также периодически проверяет наличие обновлений для самого себя, установленных дополнений и поисковых плагинов.
+
+Проверку обновлений можно отключить через "Настройки" > "Дополнительно" > "Обновления".
+
+Дополнительный канал потребления/генерации трафика — это окно поиска дополнений.
+Убрать пункт "Получить дополнения" можно с помощью стилей.
+
+Стиль:
+
+```
+/* Скрывает пункт "Получить дополнения" в меню дополнений (расширений) */
+
+/* Применять стиль к интерфейсу браузера */
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+/* Скрыть пункт "Получить дополнения" в меню дополнений (расширений)*/
+#category-discover {
+    display:none !important;
+}
+```
+
+### Отключение автоподстановки поисковых запросов в окне поиска
+
+``browser.search.suggest.enabled`` установить значение в ``false``.
+
+### Показывать (не показывать) пароль при использовании альтернативного URL
+
+Т.е. при введении адреса:
+
+
+**http://user:password@website** показывать (значение ``true``) — **http://user:password@(prefix)website(suffix)**
+
+
+или (значение ``false``) — **http://user@(prefix)website(suffix)**
+
+``browser.fixup.hide_user_pass`` установить значение в ``false`` или ``true``, на ваше усмотрение.
+
+### Отключение автозавершение нестандартных адресов (авто подстановки суффиксов/префиксов)
+
+Предотвращение случайного набора неправильного адреса.
+
+``browser.fixup.alternate.enabled`` установить значение в ``false``.
+
+### Отключение проверки закачиваемых файлов антивирусом
+
+``browser.download.manager.scanWhenDone`` установить значение в ``false``.
+
+### Отключение поиска из строки адреса
+
+``keyword.enabled`` установить значение в ``false``.
+
+### Отключение геолокации
+
+Найдите при помощи опции «Фильтр», а затем отредактируйте следующую строку:
+
+``geo.enabled`` установить значение в ``false`` [нажмите на строке правой кнопкой и выберите «переключить»]
+
+### Принудительное транслирование dns-запросов через прокси
+
+ Полезно, например при работе с TOR, чтобы обойти обращения к DNS провайдера.
+
+``network.proxy.socks_remote_dns`` установить значение в ``true``.
+
+### Отключение пинг-трэкинга
+
+
+Пинг-трэкинг позволяет серверу легко отслеживать действия пользователя.
+
+В спецификации HTML5 введен новый атрибут тега <a>, ping. Атрибут может содержать один (или больше) адрес для пинга (отправки POST запроса к) после клика по ссылке. Атрибут может использоваться для отслеживания действий посетителей. Подробнее: <a href="http://kb.mozillazine.org/Browser.send_pings" target="_blank">http://kb.mozillazine.org/Browser.send_pings</a>
+
+Отправлять POST запросы или игнорировать атрибут ping (значения ``true`` и ``false`` соответственно):
+
+``browser.send_pings`` установить значение в ``false``
+
+### Отключение предзагрузки ресурсов
+
+Если включена эта опция, ресурсы, помеченные `rel="prefetch"`, браузер автоматически предзагружает и кэширует после окончания загрузки текущей страницы. Можно также отправить заголовок `Link: <http://example.com>; rel=prefetch` или сделать то же самое через meta-тег: `<meta http-equiv="Link" content="<http://example.com>; rel=prefetch">`
+
+Рекомендуется отключить для предотвращения утечки трафика, также, возможно, имеется угроза атаки.
+
+Значение ``false`` – отключение предзагрузки.
+
+``network.prefetch-next`` установить значение в ``false``.
+
+Так-же полезно отключить предзагрузку при использовании строки поиска.
+
+``network.http.speculative-parallel-limit`` установить значение в ``0``.
+
+### Обновление списка заблокированных дополнений
+
+**Внимание!** Эту опцию не рекомендуется отключать. Эта опция описана в целях ознакомления, чтобы исключить вопросы по утечки трафика. В Firefox и некоторые другие продукты Mozilla встроен черный список для вредоносных и неисправных дополнений. Обновляется он автоматически, с серверов Mozilla.
+
+Существует два варианта уменьшить потребление трафика:
+
+1. Выключить функцию (отрицательно для безопасности): поменять значение ключа ``extensions.blocklist.enabled`` установить значение в ``false``.
+2. Увеличить интервал обновления: установить большее значение ключа ``extensions.blocklist.interval`` (в секундах).
+
+### Отключение упреждающего чтения DNS
+
+
+Эта опция позволяет Firefox запрашивать DNS для каждой ссылки на странице (на всякий случай, если вы решите ее нажать).
+
+``network.dns.disablePrefetch`` установить значение в ``true``
+
+Существует опция ``network.dns.disablePrefetchFromHTTPS`` по умолчанию она отключена (установлена в ``true``).
+
+### Загрузка шрифтов
+
+ css правило @font-face позволяет определить настройки шрифтов, а также загрузить специфичный шрифт на компьютер пользователя.
+
+Существует вероятность отличить пользователя по загрузке/не загрузке шрифтов. За загрузку шрифтов отвечают опции:
+
+``browser.display.use_document_fonts
+gfx.downloadable_fonts.enabled
+gfx.downloadable_fonts.fallback_delay
+gfx.downloadable_fonts.sanitize``
+
+**Внимание:** Если вы имеете описание какой-то из этих опций, просьба поделиться.
+
+**Внимание:** Отключение/включение ``gfx.downloadable_fonts.enabled`` не имеет особого значения, так как и по отключению, и по включению можно получить некоторые данные о пользователе. Установите их на свое усмотрение и по ситуации.
+
+**Примечание:** Удобный контроль возможен с помощью дополнения <a href="https://addons.mozilla.org/ru/firefox/addon/noscript/" target="_blank">NoScript</a>.
+
+
+### Блокировка загрузки незащищённого содержимого на HTTPS-страницах
+
+(Осторожно. Может нарушиться функционал страницы)
+
+Появилась в Firefox 18 и выше. Отключённая по умолчанию. Для её включения установите параметры:
+
+``security.mixed_content.block_active_content``
+
+и
+
+``security.mixed_content.block_display_content``
+
+в ``true``.
+
+
+### API (application programming interfaces)
+
+API – набор функций браузера которые можно вызывать кодом страницы.
+
+### Отключение Network API
+
+Позволяет определить параметры соединение пользователя с сетью.
+
+``dom.network.enabled`` установить значение в ``false``.
+
+### Отключение Battery API
+
+Позволяет отслеживать состояние батареи и тем самым получать информацию.
+
+``dom.battery.enabled`` установить значение в ``false``.
+
+### Отключение Social API
+
+API для интеграции социальных сетей с Firefox.
+
+``social.enabled`` установить значение в ``false``.
+
+### Отключение Vibration API
+
+
+Позволяет использовать вибрацию, если на устройстве установлен вибромотор. Звук или вибрация от него может привлечь внимание.
+
+``dom.vibrator.enabled`` установить значение в ``false``.
+
+### JavaScript
+
+Кроме описанного ниже дополнительные настройки есть в меню "Инструменты" (или "Правка" для linux) -> "Настройка" -> "Содержимое" -> "Дополнительно".
+
+Описаны только опции, которые могут повлиять на безопасность.
+
+Значения соответствуют:
+
+``true`` — да.
+``false`` — нет.
+
+Если параметра нет, то создать (для ``true`` / ``false`` тип создаваемого значения — логический (boolean)). Значение ``true`` / ``false``, если не указано дополнительно.
+
+### Разрешать ли скриптам закрывать окна?
+
+``dom.allow_scripts_to_close_windows`` = ``true``
+
+### Запрещать ли скриптам сворачивать/разворачивать окна?
+
+``dom.disable_window_flip`` = ``true``
+
+### Запрещать ли скриптам изменять размер окон или перемещать их?
+
+(предположительно название в новых версиях Firefox изменилось c 1. на 2.)
+1. ``dom.disable_move_resize`` = ``true``
+2. ``dom.disable_window_move_resize`` = ``true``
+
+### Запрещать ли скриптам отключать кнопку close (закрыть) у окон?
+
+``dom.disable_window_open_feature.close`` = ``true``
+
+### Запрещать ли скриптам открывать/закрывать панель закладок?
+
+``dom.disable_window_open_feature.directories`` = ``true``
+
+### Запрещать ли скриптам отключать строку адреса?
+
+``dom.disable_window_open_feature.location`` = ``true``
+
+### Запрещать ли скриптам скрывать панель меню?
+
+``dom.disable_window_open_feature.menubar`` = ``true``
+
+### Запрещать ли скриптам отключать кнопку minimize (свернуть) у окон?
+
+``dom.disable_window_open_feature.minimizable`` = ``true``
+
+### Запрещать ли скриптам скрывать персональные панели инструментов окна?
+
+(иначе, например, дополнения могут самовольно использовать это)
+
+``dom.disable_window_open_feature.personalbar`` = ``true``
+
+### Запрещать ли скриптам отключать возможность изменения размера окна?
+
+``dom.disable_window_open_feature.resizable`` = ``true``
+
+### Запрещать ли скриптам скрывать полосы прокрутки?
+
+``dom.disable_window_open_feature.scrollbars`` = ``true``
+
+### Запрещать ли скриптам скрывать панель состояния?
+
+``dom.disable_window_open_feature.status`` = ``true``
+
+### Запрещать ли скриптам скрывать заголовок окна?
+
+``dom.disable_window_open_feature.titlebar`` = ``true``
+
+### Запрещать ли менять текст в панели состояния?
+
+`` dom.disable_window_status_change`` = ``true``
+
+### Запрещать ли скриптам скрывать панель инструментов?
+
+``dom.disable_window_open_feature.toolbar`` = ``true``
+
+### Разрешать ли скриптам доступ к событию контекстного меню?
+
+(отключение может нарушить функционал online редакторов, например)
+
+``dom.event.contextmenu.enabled`` = ``true``
+
+### Разрешать ли скриптам доступ к буферу обмена? (изменять скопированный текст, блокировать копирование)
+
+``dom.event.clipboardevents.enabled`` = ``true``
+
+#### Запрещать ли изменять скриптам имя хоста в строке адреса?
+
+(сейчас многие flash-сайты используют эту функцию, для навигации по сайту)
+
+``dom.disable_location.hostname.set`` = ``true``
+
+### Отключить изменение стиля посещенных ссылок
+
+Наблюдатель может увидеть изменения ссылок, кроме того возможно существование скрипта или других возможностей "прочитать стиль CSS" и понять куда входил пользователь.
+
+``layout.css.visited_links_enabled`` поставить в ``false``
+
+Ранее существовал баг, закрыт теперь <a href="http://www.opennet.ru/opennews/art.shtml?num=26038" target="_blank">http://www.opennet.ru/opennews/art.shtml?num=26038</a>
+
+Но **возможно** отключение этой опции будет актуально для других аттак:
+<a href="http://www.xakep.ru/post/61044/" target="_blank">http://www.xakep.ru/post/61044/</a><br>
+<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=711043" target="_blank">https://bugzilla.mozilla.org/show_bug.cgi?id=711043</a> — описание бага.
+
+
+### Отключение WebRTC
+
+<a href="https://ru.wikipedia.org/wiki/WebRTC" target="_blank">WebRTC</a> позволяет просмотреть **внутренний IP** за **NAT** или **VPN**. Для отключения:
+
+``media.peerconnection.enabled`` установить значение в ``false``.
+
+Подробнее:<br>
+<a href="/article/disable-unsecure+webrtc-in-browsers/" target="_blank">/article/disable-unsecure+webrtc-in-browsers/</a><br>
+<a href="https://hacks.mozilla.org/2013/02/hello-chrome-its-firefox-calling/" target="_blank">https://hacks.mozilla.org/2013/02/hello-chrome-its-firefox-calling/</a><br>
+<a href="https://wiki.mozilla.org/Media/WebRTC" target="_blank">https://wiki.mozilla.org/Media/WebRTC</a>
+
+### Отключение предупреждений о закрытии нескольких вкладок
+
+Предупреждение может замедлить экстренный выход из Firefox.
+
+``browser.tabs.warnOnClose`` в ``false`` — предупреждение при закрытии вкладок.
+``browser.warnOnQuit`` в ``false`` — предупреждение при закрытии окна.
+
+### Отключение SPDY
+
+SPDY может хранить идентификатор и держит экстремально долгое открытое соединение.
+
+``network.http.spdy.enabled`` в ``false``.
+]]></content:encoded>
+      <dc:date>2015-02-26T20:15:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Отключение небезопасного WebRTC в браузере</title>
+      <link>https://cryptopunks.org/article/disable-unsecure+webrtc-in-browsers/</link>
+      <description><![CDATA[Краткая информация
+]]></description>
+      <pubDate>Thu, 26 Feb 2015 01:15:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/disable-unsecure+webrtc-in-browsers/</guid>
+      <content:encoded><![CDATA[## Краткая информация
+
+**WebRTC** (Web Real-Time Communication) - технология с открытым исходным кодом, позволяющая передавать потоковые данные между браузерами по технологии "точка-точка" (p2p).
+
+WebRTC встроен по умолчанию в последних версиях Firefox, Chrome/Chromium, Opera и позволяет производить соединение между двумя и более браузерами для видео/аудио-звонков и не только.
+
+## Почему не безопасно?
+
+Дело в том, что для соединения по принципу p2p необходимо знать реальный IP-адрес и WebRTC эту информацию бесстыдно сливает. Даже если вы сидите под **TOR**/**VPN** то не составит особого труда узнать ваш локальный IP-адрес в сети и на стороне, например, VPN-сервера. А с использованием уязвимостей можно определить ваш реальный IP, за которым вы скрываетесь.
+
+## Как проверить
+
+Для проверки локального IP используйте страницу: <a href="https://diafygi.github.io/webrtc-ips/" target="_blank">https://diafygi.github.io/webrtc-ips/</a>
+
+JavaScript-код и описание доступны на следующей странице: <a href="https://github.com/diafygi/webrtc-ips" target="_blank">https://github.com/diafygi/webrtc-ips</a>
+
+Проверить включенность камеры, звука, захвата экрана и т.д. в браузере можно по ссылке: <a href="https://www.browserleaks.com/webrtc" target="_blank">https://www.browserleaks.com/webrtc</a>
+
+## Как отключить
+
+### Firefox
+
+Вызываем скрытые настройки по `about:config` в адресной строке, ищем параметр `media.peerconnection.enabled`, выставляем его в `false`.
+
+### Chrome/Chromium
+
+Отключается лишь установкой небольшого расширения: <a href="https://chrome.google.com/webstore/detail/webrtc-leak-prevent/eiadekoaikejlgdbkbdfeijglgfdalml?hl=en-US" target="_blank">WebRTC Leak Prevent</a>.
+]]></content:encoded>
+      <dc:date>2015-02-26T01:15:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Получение уведомлений от запущенного на удалённом сервере mcabber</title>
+      <link>https://cryptopunks.org/article/remote-mcabber-notify/</link>
+      <description><![CDATA[Краткая информация
+]]></description>
+      <pubDate>Thu, 15 Jan 2015 23:15:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/remote-mcabber-notify/</guid>
+      <content:encoded><![CDATA[## Краткая информация
+
+<a href="http://mcabber.com/" target="_blank">Mcabber</a> - гибкий и удобный консольный jabber-клиент. Вся прелесть в том, что его можно запустить в screen/tmux на удалённом сервере и пользоваться через ssh. Это даёт ряд преимуществ: во-первых вы всегда будете онлайн и никакие перезагрузки, или нестабильный интернет не будет помехой, во-вторых это безопасно, т.к. на локальной машине у вас не будет никаких следов: логов, историй, трафика и т.д.
+
+## Настраиваем уведомления
+
+Не всегда удобно переключаться на консоль с клиентом, чтобы проверять наличие новых сообщений.
+Предлагаю следующий вариант: в конфиг **~/.mcabber/mcabberrc** добавляем строчку:
+
+```
+set statefile = ~/.mcabber/mcabber.state
+```
+
+Далее организовываем на сервер где запущен mcabber <a href="/article/secure+and+comfortable+ssh/" target="_blank">вход по ключам ssh</a> (в том числе не забываем запустить ssh-agent, чтобы выполнение команды не требовало ввода пароля).
+Создаём файл **~/.bin/jabbercheck.sh**:
+
+```
+. ~/.ssh/environment # не забываем подключить переменные среды ssh-agent
+ssh user@host "if [ -f ~/.mcabber/mcabber.state ]; then cat ~/.mcabber/mcabber.state | wc -l; else echo 0; fi
+```
+
+теперь выполнив этот скрипт можно узнать сколько человек вам написало сообщений. Ну и соответственно добавляем его например в conky, либо через notify-send выводим всплывающее сообщение, периодически выполняя скрипт через crontab.
+]]></content:encoded>
+      <dc:date>2015-01-15T23:15:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Меняем MAC-адрес сетевого устройства на случайный</title>
+      <link>https://cryptopunks.org/article/change+random+mac+address/</link>
+      <description><![CDATA[Необходимое ПО
+]]></description>
+      <pubDate>Wed, 31 Dec 2014 12:15:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/change+random+mac+address/</guid>
+      <content:encoded><![CDATA[## Необходимое ПО
+
+Для *смены MAC-адреса* обычно используется macchanger:
+
+```
+$ sudo apt-get install macchanger
+```
+
+## Разовая смена адреса
+
+Можно посмотреть текущие адреса:
+
+```
+$ /sbin/ifconfig | grep HWaddr
+eth0      Link encap:Ethernet  HWaddr c4:ba:e9:45:d0:0b
+wlan0     Link encap:Ethernet  HWaddr e2:0c:b6:44:b6:eb
+```
+
+Перед сменой адреса необходимо убить все процессы, которые используют сетевую карту (возьмём для примера интерфейс eth0). Проще всего выключить временно интерфейс и произвести смену:
+
+```
+$ sudo ifconfig eth0 down
+$ sudo macchanger -r eth0
+$ sudo ifconfig eth0 up
+```
+
+NB! Имейте в виду, если действия производятся по SSH, то вы потеряете связь  с компьютером; при удалённой работе лучше использовать способ со сменой MAC-адреса при загрузке (описан ниже).
+
+Повторно проверяем:
+
+```
+$ /sbin/ifconfig | grep HWaddr
+eth0      Link encap:Ethernet  HWaddr c5:bb:e0:14:d2:1b
+wlan0     Link encap:Ethernet  HWaddr e2:0c:b6:44:b6:eb
+```
+
+адрес должен измениться.
+
+## Смена адреса при каждой загрузке системы
+
+Создадим скрипт **/etc/network/if-pre-up.d/macchanger** со следующим содержимым:
+
+```
+#!/bin/sh
+
+/usr/bin/macchanger -r "$IFACE"
+```
+
+Сделаем скрипт исполняемым:
+
+```
+chmod +x /etc/network/if-pre-up.d/macchanger
+```
+
+Теперь при загрузке системы все сетевые интерфейсы будут иметь не повторяющиеся случайные адреса.
+]]></content:encoded>
+      <dc:date>2014-12-31T12:15:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Не пропускаем трафик мимо OpenVPN</title>
+      <link>https://cryptopunks.org/article/secure+openvpn+connection/</link>
+      <description><![CDATA[OpenVPN - относительно безопасный инструмент, но лишь при его правильном использовании.
+]]></description>
+      <pubDate>Fri, 24 Oct 2014 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/secure+openvpn+connection/</guid>
+      <content:encoded><![CDATA[[OpenVPN](https://openvpn.net/) - относительно безопасный инструмент, но лишь при его правильном использовании.
+
+Дело в том, что запуская OpenVPN он не блокирует (и не шифрует) трафик, который может пройти мимо vpn в случае, если ваш сервер vpn по каким-то причинам стал недоступен, либо у вас временно пропала связь. Для того чтобы обезопасить отправляемую и принимаемую информацию необходимо настроить фаервол на стороне клиента таким образом, дабы ему можно было отправлять и принимать пакеты лишь с одного и на один сервер, то есть лишь на ваш vpn-сервер, все остальные подключения должны отсекаться.
+
+## Настраиваем iptables
+
+Cоздаём файл со следующим содержанием:
+
+```
+*filter
+:INPUT DROP [145:11482]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [18518:3426455]
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -d XXX.XXX.XXX.XXX/32 -p tcp -j ACCEPT
+-A OUTPUT -d XXX.XXX.XXX.XXX/32 -p udp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o tun0 -j ACCEPT
+-A OUTPUT -o tun1 -j ACCEPT
+COMMIT
+```
+Где **XXX.XXX.XXX.XXX** - адрес VPN-сервера.<br>
+
+Кладём его например в **/etc/openvpn/iptables.rules**.
+
+**NB!** обратите внимание на то, нет ли в вашем iptables каких-либо правил по команде `iptables-save`, если есть - добавьте в конфиг, иначе они затрутся; либо перепишите правила командами **iptables**
+
+## Настраиваем ufw
+
+Если вдруг вы вместо iptables [используете ufw](/article/ufw+firewall/), то вам необходимы следующие правила:
+
+```
+# ufw default deny incoming
+# ufw default deny outgoing
+# ufw allow out on XYZ to XXX.XXX.XXX.XXX
+# ufw allow out on tun0
+# ufw enable
+```
+
+Где **XYZ** - виртуальный интерфейс вашей сетевой карты (например **wlp3s0**, или **eth0**), а **XXX.XXX.XXX.XXX** - адрес вашего VPN-сервера.
+
+## Пишем удобные скрипты запуска OpenVPN
+
+По тому же адресу создаём скрипт **/etc/openvpn/vpn_up.sh**:
+
+```bash
+#!/bin/sh
+
+# подгружаем правила
+iptables-restore </etc/openvpn/iptables.rules # если у вас ufw - не пишем эту строчку
+# запускаем openvpn в screen (если его нет, то ставим, либо используем nohup)
+screen -dmS openvpn --config /etc/openvpn/config.ovpn
+```
+
+Где **/etc/openvpn/config.ovpn** - путь к вашему конфигу.
+
+## Запускаем OpenVPN при загрузке системы
+
+Добавляем в файл **/etc/rc.local** запуск скрипта:
+```
+...
+/bin/sh /etc/openvpn/vpn_up.sh
+...
+```
+## Смотрим статус/отключаем OpenVPN
+
+Бывают ситуации когда OpenVPN перестаёт работать и необходимо посмотреть что произошло, либо его вообще необходимо отключить.
+
+Логинимся под root и заходим в screen:
+
+```bash
+$ sudo su
+# screen -x openvpn
+```
+
+Смотрим всё ли в порядке, если что - отключаем по сочетанию Ctrl+C.
+
+Но поскольку фаерволл по-прежнему не пропускает трафик мимо VPN - его необходимо отключить.
+
+Если это **iptables**, то создаём скрипт **~/.bin/iptables_flush**:
+
+```
+#!/bin/sh
+
+echo "Stopping firewall and allowing everyone..."
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+
+```
+
+и выполняем его.
+
+Если это **ufw** - выполняем `ufw disable`.
+]]></content:encoded>
+      <dc:date>2014-10-24T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Tails - дистрибутив для анонимного пребывания в сети</title>
+      <link>https://cryptopunks.org/article/anonymous+secure+linux+distribution+tails/</link>
+      <description><![CDATA[
+]]></description>
+      <pubDate>Sat, 18 Oct 2014 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/anonymous+secure+linux+distribution+tails/</guid>
+      <content:encoded><![CDATA[<a href="https://cryptopunks.org/assets/screenshots/tails.png" target="_blank">![Tails 1.2](https://cryptopunks.org/assets/screenshots/tails.png)</a>
+
+## Общие сведения
+
+[Tails](https://tails.boum.org) (The Amnesic Incognito Live System) - дистрибутив Linux на базе Debian Stable, созданные для анонимного пребывания в сети.
+
+Примечателен тем, что:
+
+* Может загружаться с любого накопителя и работать в режиме livecd;
+* Не сохраняет пользовательских файлов локально и не обращается ни к каким накопителям;
+* При выключении затирает всё содержимое оперативной памяти с помощью **sdmem**;
+* Из коробки **весь** трафик (не только http) идёт через TOR;
+* В качестве браузера выбран Tor-browser с настроенным **noscript**, **tor**, **https everywhere**;
+* Имеются различные инструменты для шифрования информации (**GPG**, **OTR**, **Keepassx**) и программы для удаления служебной информации с фотографий (EXIF-данные);
+* Большинство программ работают через **apparmor**, что увеличивает безопасность;
+* Имеется экранная клавиатура для защиты от кейлоггеров;
+* Умеет маскировать систему под Windows 8, чтобы не привлекать к себе лишнего внимания.
+
+## Как записать на flash-накопитель
+
+Ставим пакет **syslinux** (либо может называться **syslinux-utils**):
+
+`$ sudo apt-get install syslinux`
+
+Качаем последнюю версию [отсюда](https://tails.boum.org/download/index.en.html) и приступаем к записи на флеш-накопитель:
+
+```bash
+$ sudo isohybrid tails-i386-версия.iso -h 255 -s 63
+$ sudo dd if=tails-i386-версия.iso of=/dev/sdX bs=16M
+```
+Всё, флеш-накопитель с Tails готов!
+
+## Запускаем Tails в Qemu
+
+Иногда необходимо запустить Tails в виртуальной машине. С VirtualBox проблем возникнуть не должно, а вот с qemu иногда бывают проблемы с видео-драйвером, либо со скоростью. Предлагаю запускать Tails следующим образом:
+
+`$ qemu-system-i386 -cdrom tails-i386-версия.iso -m 1500 -vga vmware -enable-kvm`
+
+Учтите, что запуск в виртуальной машине может быть не безопасным в том случае, если ваша хост-машина чем-либо заражена. Например, если в ней присутствует кейлоггер, то смысла от запущенного Tails в виртуальной машине не будет. Поэтому используйте этот метод лишь в том случае, если уверены в чистоте основной ОС, либо для освоения Tails.
+
+## Насколько безопасен Tails?
+
+Этим дистрибутивом пользуются люди, жизнь которых на волоске от смерти. Например, Эдвард Сноуден использует Tails и журналист The Guardian Гленн Гринвальд, которому Эдвард когда-то передал секретные документы АНБ.
+
+В технических же вопросах сей дистрибутив не оставляет никаких сомнений в эффективности поставленных задач и рекомендуется к использованию.
+
+Только учтите, что TOR не самое безопасное решение в плане безопасности, особенно если используется протокол HTTP без шифрования и передаётся какой-то пароль. Человек на последней ноде в цепочке между вами, серверами TOR и сервером к которому вы обращаетесь может спокойно такой пароль перехватить. Поэтому относитесь с опаской к сайтам, которые до сих пор не используют HTTPS при этом предлагают какие-либо методы авторизации, либо содержат пользовательскую информацию (например, [cryptopunks.org](/) таким сайтом не является).
+
+## Где я могу просмотреть исходники Tails?
+
+Например вот так:
+
+`$ git clone https://git-tails.immerda.ch/tails`
+
+За дополнительной информацией по исходным текстам обращайтесь к [официальной странице](https://tails.boum.org/contribute/git/).
+]]></content:encoded>
+      <dc:date>2014-10-18T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Автоматически принимаем все критические обновления в Debian/Ubuntu</title>
+      <link>https://cryptopunks.org/article/enabling+automatic+updates+in+debian/</link>
+      <description><![CDATA[Для того чтобы все ваши компьютеры на базе Debian/Ubuntu автоматически принимали критические обновления в безопасности самостоятельно поставьте следующие пакеты:
+]]></description>
+      <pubDate>Tue, 30 Sep 2014 00:00:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/enabling+automatic+updates+in+debian/</guid>
+      <content:encoded><![CDATA[Для того чтобы все ваши компьютеры на базе Debian/Ubuntu автоматически принимали критические обновления в безопасности самостоятельно поставьте следующие пакеты:
+
+```
+$ sudo apt-get install unattended-upgrades apt-listchanges
+```
+
+И ответьте утвердительно на команду:
+
+```
+$ sudo dpkg-reconfigure -plow unattended-upgrades
+```
+]]></content:encoded>
+      <dc:date>2014-09-30T00:00:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Маскируем небезопасные заголовки веб-сервера</title>
+      <link>https://cryptopunks.org/article/mask+the+dangerous+headers+web+server/</link>
+      <description><![CDATA[В большинстве дистрибутивов linux веб-серверы по умолчанию предоставляют очень много данных, которые могут стать отправной точкой для планирования атаки.
+Например, используя curl -I ip_address можно просмотреть служебную информацию о веб-сервере, используемых модулях и их версиях.
+]]></description>
+      <pubDate>Fri, 19 Sep 2014 01:01:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/mask+the+dangerous+headers+web+server/</guid>
+      <content:encoded><![CDATA[В большинстве дистрибутивов linux веб-серверы по умолчанию предоставляют очень много данных, которые могут стать отправной точкой для планирования атаки.<br>
+Например, используя `curl -I ip_address` можно просмотреть служебную информацию о веб-сервере, используемых модулях и их версиях.
+
+В Debian/Ubuntu по умолчанию доступна следующего рода информация:
+
+```
+HTTP/1.1 200 OK
+Date: Fri, 19 Sep 2014 17:11:30 GMT
+Server: Apache/2.2.16 (Debian)
+X-Powered-By: PHP/5.3.28-1~dotdeb.0
+```
+
+После таких сведений в лучшем случае сервер превращается в плацдарм для испытания эксплойтов у хакеров, в худшем - его ломают и используют для своих нужд.
+
+## Маскируем Apache ##
+
+Для начала необходимо поставить пакет **libapache-mod-security** (в Ubuntu он может называться **libapache2-modsecurity**), далее - включить модуль:
+
+`# a2enmod mod-security`
+
+Далее открываем файл **/etc/apache2/conf.d/security** (в Ubuntu **/etc/apache2/conf-enabled/security.conf**), комментируем лишнее, добавив:
+
+```
+ServerSignature Off
+ServerTokens Full
+SecServerSignature "httpd (OpenBSD)"
+```
+После чего перезапускаем apache и проверяем поменлся ли заголовок Server:
+
+```
+# /etc/init.d/apache2 restart
+...
+$ curl -I localhost
+
+HTTP/1.1 200 OK
+Date: Fri, 19 Sep 2014 17:11:30 GMT
+Server: httpd (OpenBSD)
+X-Powered-By: PHP/5.3.28-1~dotdeb.0
+```
+
+## Скрываем версию Nginx ##
+
+Для скрытия версии nginx достаточно создать файл **/etc/nginx/conf.d/nginx.conf** со строчкой:
+
+```
+server_tokens off;
+```
+
+и не забыть перезапустить nginx.
+
+## Скрываем версию PHP ##
+
+Для скрытия версии php необходимо открыть файл **/etc/php5/apache2/php.ini** и поменять значение **expose_php** с **On** на **Off**:
+
+```
+expose_php = Off
+```
+
+И перезапустить apache:
+
+```
+# /etc/init.d/apache2 restart
+...
+$ curl -I localhost
+
+HTTP/1.1 200 OK
+Date: Fri, 19 Sep 2014 17:11:30 GMT
+Server: httpd (OpenBSD)
+```
+]]></content:encoded>
+      <dc:date>2014-09-19T01:01:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Безопасное и удобное использование SSH</title>
+      <link>https://cryptopunks.org/article/secure+and+comfortable+ssh/</link>
+      <description><![CDATA[Настраиваем безопасный сервер
+]]></description>
+      <pubDate>Sun, 14 Sep 2014 12:15:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/secure+and+comfortable+ssh/</guid>
+      <content:encoded><![CDATA[## Настраиваем безопасный сервер
+
+С самого начала мы правильно настроим сервер, конфиг которого обычно находится в файле /etc/ssh/sshd_config.
+
+Одно из самых важных правил - отключить вход под root:
+
+```
+PermitRootLogin no
+```
+
+Следующий вариант для дополнительной безопасности - ограничение на вход определённым пользователям, например (перечисление через пробелы):
+
+```
+AllowUsers user1 user2 user3
+```
+
+Альтернативный вариант - ограничение по группам пользователей:
+
+```
+AllowGroups group1 group2 group3
+```
+<!--more-->
+Существуют так же антонимы **AllowUsers**, **AllowGroups** - **DenyUsers**, **DenyGroups**. если это необходимо.
+
+Можно поменять порт с 22 на какой-нибудь нестандартный:
+
+```
+Port 6622
+```
+
+Следующим немаловажным шагом является запрет входа по паролю и включение возможности входа по ключам:
+
+```
+PasswordAuthentication no
+RSAAuthentication yes
+PubkeyAuthentication yes
+```
+
+## Настраиваем клиент
+
+Для создания ключей на стороне клиента используется утилита `ssh-keygen`. Она создаст связку из открытого и закрытого ключа. Весьма рекомендуется при создании ключей указать пароль, чтобы в случае утери/кражи вашего закрытого ключа третье лицо не воспользовалось им.
+
+Связка ключей находится в каталоге **~/.ssh**, где **id_rsa** - ваш закрытый ключ, с которым вы не должны ни с кем делиться и копия которого у вас должна где-то быть, **id_rsa.pub** - ваш публичный ключ, который необходимо добавить на сервер для входа.
+
+Копируется (хотя как правило - дописывается) он на сервер в файл **~/.ssh/authorized_keys** того пользователя под которым должен осуществляться вход. Но лучше использовать утилиту **ssh-copy-id**, чтобы случайно не затереть чужие открытые ключи и не напортачить с правами доступа. Используется она следующим образом:
+
+
+```
+$ ssh-copy-id user@host
+```
+
+Где user - имя пользователя для которого должен осуществляться вход, а host - адрес ssh-сервера.
+
+Теперь проверьте вход по ключу и если всё хорошо (если нет - не выполняйте следующую команду!), то есть пароль либо не требуется (если вы его не задавали при создании ключа), либо пароль тот что вы ставили на ключ, то перезапустите ssh-сервер, чтобы применились новые настройки:
+
+```
+$ sudo /etc/init.d/ssh restart
+```
+
+Если вы указывали нестандартный порт, то может быть неудобно каждый раз вводить это всё руками, поэтому можно на клиенте создать файл **~/.ssh/config** и вписать в него следующее:
+
+```
+Host host1
+Port 6622
+HostName example.com
+User user1
+```
+
+Теперь можно входить по на сервер по алиасу без имени пользователя и порта:
+
+```
+$ ssh host1
+```
+
+Либо копировать файлы:
+
+```
+$ scp file1 host1:~/
+```
+
+Чтобы не вводить каждый раз пароль от закрытого ключа необходимо воспользоваться функционалом **ssh-agent**, то есть логинясь в систему достаточно выполнить:
+
+```
+$ ssh-add
+```
+
+Ввести один раз пароль после чего все сервера на которые организован вход по ключу ввод пароля требоваться более не будет (как правило до завершения X-сессии, но можно настроить под свои требования).
+]]></content:encoded>
+      <dc:date>2014-09-14T12:15:00+00:00</dc:date>
+    </item>
+    <item>
+      <title>Создание git-репозитория на нестандартном порту SSH</title>
+      <link>https://cryptopunks.org/article/git+create+repo+ssh+non+standart+port/</link>
+      <description><![CDATA[Создаём отдельного пользователя на сервере (если необходимо):
+]]></description>
+      <pubDate>Sat, 13 Sep 2014 01:01:00 +0000</pubDate>
+      <guid>https://cryptopunks.org/article/git+create+repo+ssh+non+standart+port/</guid>
+      <content:encoded><![CDATA[Создаём отдельного пользователя на сервере (если необходимо):
+
+`# useradd -m -s /bin/bash -d /home/git git`
+
+Логинимся:
+
+`# su git`
+
+Создаём каталог для будущего репозитория:
+
+`$ cd; mkdir repo1`
+
+Создаём репозиторий на который будут приходить коммиты:
+
+`$ cd repo1; git --bare init`
+
+На клиенте если репозиторий уже создан в корне выполняем:
+
+`$ git remote add origin ssh://git@XXX.XXX.XXX.XXX:PORT/home/git/repo1`
+
+Если репозитория ещё нет - клонируем его с сервера:
+
+`$ git clone ssh://git@XXX.XXX.XXX.XXX:PORT/home/git/repo1`
+]]></content:encoded>
+      <dc:date>2014-09-13T01:01:00+00:00</dc:date>
+    </item>
+    <dc:date>2019-04-20T00:00:00+00:00</dc:date>
+  </channel>
+</rss>

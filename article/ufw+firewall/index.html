@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title> Межсетевой экран UFW | c r y p t o p u n k s  </title>
+    <meta name="description" content="Описание и настройка межсетевого экрана для Linux на базе iptables" />
+    <meta property="og:title"       content= "Межсетевой экран UFW | c r y p t o p u n k s"  />
+    <meta property="og:description" content= "Описание и настройка межсетевого экрана для Linux на базе iptables"  />
+    <meta property="og:site_name" content="c r y p t o p u n k s" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content= "article"  />
+    <meta property="og:url" content="https://cryptopunks.org/article/ufw+firewall/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="inner">
+            
+            <h1 class="blog-title"><a href='/'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description">  -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='/tags/'>tags</a></li>
+                      <li><a href='/sitemap/'>sitemap</a></li>
+                      <li><a href='/contacts/'>contacts</a></li>
+                      <li><a href='/donate/'>donate</a></li>
+                      <li class="rss"><a href='/rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
+
+
+    <main class="content" role="main">
+    <article class="post">
+        <span class="post-meta">
+        	<time datetime="2016-11-14">14/11/2016</time>
+  
+  <span class="tags">
+    
+    <a href="/tags/#linux" title="linux">#linux</a>
+    
+    <a href="/tags/#ufw" title="ufw">#ufw</a>
+    
+    <a href="/tags/#firewall" title="firewall">#firewall</a>
+    
+    <a href="/tags/#iptables" title="iptables">#iptables</a>
+    
+  </span>
+  
+       	</span>
+
+        <h1 class="post-title">Межсетевой экран UFW</h1>
+
+        <section class="post-content">
+            <p><a href="https://help.ubuntu.com/community/UFW">UFW</a> - межсетевой экран (Firewall) для Linux, который является надстройкой над <strong>iptables</strong>. В отличии от iptables является более интуитивно понятным, т.к. по сути все правила к нему пишутся на английском языке.
+Своим синтаксисом чем-то напоминает <strong>pf</strong> (packet filter) от разработчиков <strong>OpenBSD</strong>.<br>UFW полностью совместим с iptables и его можно совмещать с iptables при необходимости.<br>
+UFW не является полноценной заменой iptables, очень сложные правила на нём не напишешь, но необходимый минимумом, который обычно требуется простому пользователю, он имеет.</p>
+
+<h2>Установка и включение</h2>
+
+<p>Ставится стандартно:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo apt-get install ufw
+</code></pre></figure>
+<p><strong>Внимание!</strong> Если манипуляции производятся на удалённом сервере, то есть смысл сразу же разрешить входящий и исходящий трафик для <strong>SSH</strong>, иначе при включении фаервола можно потерять коннект к машине:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ sudo ufw allow 22 # вместо **22** необходимо вставить ваш порт SSH (если он не стандартный)
+</code></pre></figure>
+<p>Включаем <strong>ufw</strong> (<strong>sudo</strong> опустим, т.к. все команды выполнять будем от root):</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw enable
+</code></pre></figure>
+<p>Выключается он аналогично:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw disable
+</code></pre></figure>
+<h2>Важные моменты</h2>
+
+<p>После включения/выключения <strong>ufw</strong> никаких дополнительных махинаций производить не нужно. Если вы включили фаервол, то после перезагрузки он включится, если выключили - он будет выключен.<br>
+Тоже самое касается и правил. Всё что вы добавили - сохранится и будет работать после перезагрузки.</p>
+
+<p>По умолчанию весь трафик (входящий/исходящий) для всех портов отключен. Поэтому если ранее ничего не разрешали, то можно ничего не и запрещать. Но и разрешения по умолчанию настраивается, обычно в файле <strong>/etc/default/ufw</strong><br></p>
+
+<p>Все пользовательские настройки <strong>ufw</strong> хранятся в каталоге <strong>/etc/ufw</strong>. Поэтому периодически можно делать резервную копию этого каталога для бэкапа правил (либо <strong>sudo iptables-save &gt; iptables.rules</strong>).</p>
+
+<p>UFW обладает весьма внушительным функционалом, ознакомиться с которым можно выполнив <code>ufw help</code>, либо <code>man ufw</code>.</p>
+
+<h2>Примеры настройки</h2>
+
+<p>Откроем входящий и исходящий tcp/udp трафик для порта 80:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw allow 80
+</code></pre></figure>
+<p>Если нужен <strong>только tcp</strong>, а udp нет, тогда правило модифицируется так:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw deny 80/tcp
+</code></pre></figure>
+<p>Открываем порт <strong>3000</strong> на компьютере для определённого IP (127.0.0.1):</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw allow from 127.0.0.1 to any port 3000
+</code></pre></figure>
+<p>Открыть все порты для IP-адреса <strong>192.168.1.6</strong>:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw allow from 192.168.1.6 to any
+</code></pre></figure>
+<p>Аналогичным образом закрываются все порты от неугодного IP-адреса (например, бота который брутфорсит вам SSH):</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw deny from 23.96.52.53 to any
+</code></pre></figure>
+<p>Просмотреть существующие правила можно выполнив:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+443                        ALLOW       Anywhere                  
+80                         ALLOW       Anywhere                  
+22                         ALLOW       Anywhere                  
+666                        ALLOW       Anywhere                  
+81/tcp                     ALLOW       127.0.0.1                 
+81/udp                     ALLOW       127.0.0.1                 
+3000                       ALLOW       127.0.0.1                 
+666/udp                    ALLOW       Anywhere                  
+443 (v6)                   ALLOW       Anywhere (v6)             
+80 (v6)                    ALLOW       Anywhere (v6)             
+22 (v6)                    ALLOW       Anywhere (v6)             
+666 (v6)                   ALLOW       Anywhere (v6)             
+666/udp (v6)               ALLOW       Anywhere (v6)
+</code></pre></figure>
+<p>Удалять правила можно несколькими способами:</p>
+
+<p>1.) Указывая непосредственно введённое правило:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw delete allow 22
+</code></pre></figure>
+<p>2.) Предварительно выводя на экран нумерованный список правил:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw status numbered
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 443                        ALLOW IN    Anywhere                  
+[ 2] 80                         ALLOW IN    Anywhere                  
+[ 3] 22                         ALLOW IN    Anywhere                  
+[ 4] 666                        ALLOW IN    Anywhere                  
+[ 5] 81/tcp                     ALLOW IN    127.0.0.1  
+...
+</code></pre></figure>
+<p>и удаляя по номеру строки:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw delete НОМЕР_СТРОКИ
+</code></pre></figure>
+<p>3.) Либо можно удалить вообще все правила:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">root# ufw reset
+</code></pre></figure>
+<h2>В заключение</h2>
+
+<p>Обязательно используйте межсетевой экран везде где это возможно. Лучше при установке очередной софтины добавить одной строчкой дополнительное правило, чем быть поломанным через какой-нибудь левый сервис, который открыл порт наружу на вашем компьютере не спросив разрешения у вас.</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+        	<!-- If we want to display author's name and bio -->
+            
+
+            <section class="share">
+                <h4>Поделиться</h4>
+                <a class="icon-twitter" href="http://twitter.com/share?text=Межсетевой экран UFW&amp;url=https://cryptopunks.org/article/ufw+firewall/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://cryptopunks.org/article/ufw+firewall/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+            </section>
+            <a href="/contacts" class="dsq-brlink">Оставить комментарий</a>
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="https://cryptopunks.org">c r y p t o p u n k s</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="https://cryptopunks.github.io">cryptopunks.github.io</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>
