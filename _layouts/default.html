@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title>{% if page.title %} {{ page.title }} | {{ site.name }} {% else %} {{ site.name }} {% endif %} </title>
+    <meta name="description" content={% if page.meta_description %}"{{page.meta_description}}"{% else %}"{{site.meta_description}}"{% endif %} />
+    <meta property="og:title"       content={% if page.title %} "{{ page.title }} | {{ site.name }}" {% else %} "{{ site.name }}" {% endif %} />
+    <meta property="og:description" content={% if page.meta_description %} "{{page.meta_description}}" {% else %} "{{site.meta_description}}" {% endif %} />
+    <meta property="og:site_name" content="{{site.name}}" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content={% if page.title %} "article" {% else %} "website" {% endif %} />
+    <meta property="og:url" content="{{site.url}}{{page.url}}" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <!-- This is for syntax highlight -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+</head>
+
+<body>
+
+{% include header.html %}
+
+    {{ content }}
+
+    <footer class="site-footer">
+        <a class="subscribe icon-feed" href="{{ site.baseurl }}rss.xml"><span class="tooltip">Подписаться на RSS</span></a>
+        <div class="inner">
+            <section class="copyright">&copy; 2014-2019 <a href="{{ site.url }}">{{ site.name }}</a></section>
+            <div class="mirrorblock">
+              Mirrors:<br>
+                <a href="https://cryptopunks.org">cryptopunks.org</a><br>
+                <a href="https://cryptopunks.github.io">cryptopunks.github.io</a><br>
+                <a href="http://crptpnkdgddolfag.onion">crptpnkdgddolfag.onion</a>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="text/javascript" src="/assets/js/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+</body>
+</html>

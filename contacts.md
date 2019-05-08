@@ -1,0 +1,73 @@
+---
+layout: page
+title: Contacts
+permalink: contacts/
+meta_description: "При найденных ошибках, с вопросами и предложениями просьба писать по адресам на данной странице"
+---
+
+Пожелания, отзывы и критика приветствуется.
+
+E-mail: <a href="mailto:cryptopunks.org@gmail.com">cryptopunks.org@gmail.com</a><br><br>
+Mirrors:<br>
+<a href="https://cryptopunks.org">https://cryptopunks.org</a><br>
+<a href="https://cryptopunks.github.io">https://cryptopunks.github.io</a><br>
+<a href="http://crptpnkdgddolfag.onion">http://crptpnkdgddolfag.onion</a><br><br>
+Telegram bot: <a href="https://telegram.me/cryptopunksbot" target="_blank">@CryptopunksBot</a><br>
+
+PGP key:
+
+```
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+v0zMfA5j
+=dxR4
+-----END PGP PUBLIC KEY BLOCK-----
+
+```
