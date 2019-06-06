@@ -4,12 +4,14 @@ meta_description: "Всё о компьютерной безопасности �
 markdown: kramdown #redcarpet
 
 plugins:
-- jekyll-feed
+        - jekyll-feed
+        - jekyll-paginate
+        - jekyll-gist
+        - jekyll-sitemap
   
 highlighter: true
 logo: false
 paginate: 15
-gems: [jekyll-paginate, jekyll-gist, jekyll-sitemap]
 permalink: /:categories/:title/
 #relative_permalinks: true
 timezone: 'Europe/Moskow'
@@ -17,4 +19,4 @@ timezone: 'Europe/Moskow'
 # Details for the RSS feed generator
 url:            'https://cryptopunks.org'
 #author:         'soko1'
-baseurl:   'https://cryptopunks.org/'
+baseurl:   '/'
