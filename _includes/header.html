@@ -1,0 +1,25 @@
+<header class="site-head" {% if page.cover %} style="background-image: url({{ page.cover }})"{% endif %}>
+    <div class="vertical">
+        <div class="inner">
+            {% if page.logo %}
+                <a class="blog-logo" href="{{ site.baseurl }}">
+                    <img src="{{ page.logo }}" alt="Blog Logo" />
+                </a>
+            {% endif %}
+            <h1 class="blog-title"><a href='{{ site.baseurl }}'>cryptopunks</a></h1>
+            <!--            <h2 class="blog-description"> {{ site.description }} -->
+                <nav id="site-navigation" class="main-navigation">
+                  <div>
+                    <ul class="menu_top">
+                      <li><a href='{{ site.baseurl }}tags/'>tags</a></li>
+                      <li><a href='{{ site.baseurl }}sitemap/'>sitemap</a></li>
+                      <li><a href='{{ site.baseurl }}contacts/'>contacts</a></li>
+                      <li><a href='{{ site.baseurl }}donate/'>donate</a></li>
+                      <li class="rss"><a href='{{ site.baseurl }}rss.xml'>rss</a></li>
+                    </ul>
+                  </div>
+                </nav>
+                <!--            </h2>-->
+        </div>
+    </div>
+</header>
