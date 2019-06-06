@@ -3,6 +3,9 @@ meta_description: "Всё о компьютерной безопасности �
 
 markdown: kramdown #redcarpet
 
+plugins:
+- jekyll-feed
+  
 highlighter: true
 logo: false
 paginate: 15
