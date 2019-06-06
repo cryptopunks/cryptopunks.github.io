@@ -9,7 +9,7 @@ plugins:
         - jekyll-gist
         - jekyll-sitemap
   
-highlighter: true
+rouge: true
 logo: false 
 paginate: 15
 permalink: /:categories/:title/
