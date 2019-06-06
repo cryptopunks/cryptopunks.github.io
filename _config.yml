@@ -20,4 +20,4 @@ timezone: 'Europe/Moskow'
 # Details for the RSS feed generator
 url:            'https://cryptopunks.org'
 #author:         'soko1'
-baseurl:   '/'
+baseurl:   'https://cryptopunks.org'
