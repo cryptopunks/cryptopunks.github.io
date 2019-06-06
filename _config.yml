@@ -16,6 +16,9 @@ permalink: /:categories/:title/
 #relative_permalinks: true
 timezone: 'Europe/Moskow'
 
+feed:
+  path: rss.xml
+
 # Details for the RSS feed generator
 url:            'https://cryptopunks.org'
 author:         'soko1'
