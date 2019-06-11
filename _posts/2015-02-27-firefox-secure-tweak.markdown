@@ -7,6 +7,10 @@ categories: article
 tags: firefox tweaks secure webrtc pgpru
 ---
 
+## Обновление от 11.06.19
+
+Данный материал немного устарел и лучше пользоваться готовым user.js скриптом с комментариями из репозитория <a href="https://github.com/cryptopunks/firefox_private_profile">firefox_private_profile</a>.
+
 ## О документе
 
 Данный документ взят с сайта <a href="http://pgpru.com" target="_blank">pgpru.com</a>. По каким-то причинам данная статья исчезла на сайте и нашлась лишь в кеше гугла.
