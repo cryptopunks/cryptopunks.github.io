@@ -63,7 +63,7 @@ $ wget -r -l 7 -p -nc http://cryptopunks.org
 $ ping cryptopunks.github.io
 ```
 
-Если домена нет — используем адрес https://cryptopunks.github.io
+Если домена нет — используем адрес [https://cryptopunks.github.io](https://cryptopunks.github.io)
 
 В настройках репозитория не забываем включить HTTPS. 
 
