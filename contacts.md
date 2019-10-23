@@ -12,7 +12,7 @@ Mirrors:<br>
 <a href="https://cryptopunks.org">https://cryptopunks.org</a><br>
 <a href="https://cryptopunks.github.io">https://cryptopunks.github.io</a><br>
 <a href="http://crptpnkdgddolfag.onion">http://crptpnkdgddolfag.onion</a><br><br>
-Telegram bot: <a href="https://telegram.me/cryptopunksbot" target="_blank">@CryptopunksBot</a><br>
+Telegram channel: <a href="https://t.me/cryptopunksorg" target="_blank">@cryptopunksorg</a><br>
 
 PGP key:
 
