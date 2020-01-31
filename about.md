@@ -11,7 +11,7 @@ meta_description: "При найденных ошибках, с вопросам
 
 Телеграм-канал: <a href="https://t.me/cryptopunksorg" target="_blank">@cryptopunksorg</a><br>
 
-Стикеры для распечатки/нарезки (формат А4):
+Наклейки для распечатки/нарезки (формат А4):
 <a href="/assets/images/cryptopunks_stickers_a4.pdf" target="_blank"><img src="/assets/images/cryptopunks_stickers_a4_preview.png" style="width: 20%; margin: 7px 0px;" /></a>
 
 Зеркала:<br>
