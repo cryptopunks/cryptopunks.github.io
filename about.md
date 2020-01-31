@@ -1,20 +1,25 @@
 ---
 layout: page
-title: Contacts
-permalink: contacts/
+title: About
+permalink: about/
 meta_description: "При найденных ошибках, с вопросами и предложениями просьба писать по адресам на данной странице"
 ---
 
-Пожелания, отзывы и критика приветствуется.
+Рад пожеланиям, отзывывам, критике и <a href="/donate">донейтам</a> :)
 
-E-mail: <a href="mailto:cryptopunks.org@gmail.com">cryptopunks.org@gmail.com</a><br><br>
-Mirrors:<br>
+Связь:<br><a href="mailto:cryptopunks.org@gmail.com">cryptopunks.org@gmail.com</a><br><a href="https://t.me/gnupg" target="_blank">@gnupg</a><br>
+
+Телеграм-канал: <a href="https://t.me/cryptopunksorg" target="_blank">@cryptopunksorg</a><br>
+
+Стикеры для распечатки/нарезки (формат А4):
+<a href="/assets/images/cryptopunks_stickers_a4.pdf" target="_blank"><img src="/assets/images/cryptopunks_stickers_a4_preview.png" style="width: 20%; margin: 7px 0px;" /></a>
+
+Зеркала:<br>
 <a href="https://cryptopunks.org">https://cryptopunks.org</a><br>
 <a href="https://cryptopunks.github.io">https://cryptopunks.github.io</a><br>
-<a href="http://crptpnkdgddolfag.onion">http://crptpnkdgddolfag.onion</a><br><br>
-Telegram channel: <a href="https://t.me/cryptopunksorg" target="_blank">@cryptopunksorg</a><br>
+<a href="http://crptpnkdgddolfag.onion">http://crptpnkdgddolfag.onion</a><br>
 
-PGP key:
+Криптоключик:
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
