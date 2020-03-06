@@ -37,7 +37,7 @@ $ wget https://github.com/StevenBlack/hosts/raw/master/hosts
 $ cat hosts | sudo tee -a /etc/hosts
 ```
 
-В случае же с Windows необходимо запустить любой текстовый редактор с правами администратора (обязательно с правами администратора, потому что файл hosts системный!) и открыть в нём скрытый файл **%windir%\system32\drivers\etc\hosts**, дописав в него содержимое файла по [ссылке выше]([https://github.com/StevenBlack/hosts/raw/master/hosts](https://github.com/StevenBlack/hosts/raw/master/hosts)).
+В случае же с Windows необходимо запустить любой текстовый редактор с правами администратора (обязательно с правами администратора, потому что файл hosts системный!) и открыть в нём скрытый файл **%windir%\system32\drivers\etc\hosts**, дописав в него содержимое файла по [ссылке выше](https://github.com/StevenBlack/hosts/raw/master/hosts).
 
 
 
