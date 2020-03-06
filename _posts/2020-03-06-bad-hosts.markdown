@@ -3,7 +3,7 @@ layout: post
 title:  "Избавляемся от рекламы и вредоносных сайтов простым способом"
 meta_description: "Пополняем файл hosts плохими хостами со ссылкой на localhost"
 date: 2020-03-06
-tags: hosts 
+tags: hosts viruses ads 
 categories: article
 author: "soko1"
 ---
