@@ -33,7 +33,7 @@ author: "soko1"
 Если у тебя юникс-система (Linux, MacOS, *BSD), то можно всё сделать двумя командами:
 
 ```
-$ wget https://github.com/StevenBlack/hosts/raw/master/hosts
+$ curl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts --output hosts
 $ cat hosts | sudo tee -a /etc/hosts
 ```
 
