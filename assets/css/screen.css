@@ -1087,7 +1087,8 @@ margin on the iframe, cause it breaks stuff. */
     color: #282828 !important;
     cursor: pointer;
     display: inline-block;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: 'Press Start 2P', sans-serif;
     font-weight: normal;
     height: 30px;
     line-height: 30px;
