@@ -21,7 +21,7 @@ bitcoin:
 
 <a href="bitcoin:1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT" target="_blank">1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT</a>
 
-yandex (RUB): 410013018573049
+yandex money (RUB): 410013018573049
 
 Если желаешь оказать поддержку проекту в другой валюте – <a href="/about">сообщи об этом</a>.
 
