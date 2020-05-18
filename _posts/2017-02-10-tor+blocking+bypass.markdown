@@ -12,7 +12,7 @@ author: "soko1"
 
 ## Использование torbrowser
 
-Если вы используете **torbrowser**, то всё вообще просто - выбираем в настройках соединения **obfs3** как представлено <a href=" https://twitter.com/torproject/status/809792947181023232?ref_src=twsrc%5Etfw" target="_blank">в инструкции</a> в официальном twitter проекта, и браузер продолжает работу без каких-либо проблем.
+Если вы используете **torbrowser**, то обойти блокировку лучше по [этой статье](https://cryptopunks.org/article/how+to+unblock+tor+through+torbrowser/) 
 
 ## Использование демона tor
 
