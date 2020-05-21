@@ -455,7 +455,6 @@ margin on the iframe, cause it breaks stuff. */
     width:80%;
     max-width: 700px;
     margin: 4rem auto;
-    padding-bottom: 4rem;
     border-bottom: #EBF2F6 1px solid;
     word-break: break-word;
     hyphens: auto;
@@ -590,7 +589,6 @@ margin on the iframe, cause it breaks stuff. */
 /* The author credit area after the post */
 .post-footer {
     position: relative;
-    margin: 23rem 0 0 0;
     padding: 4rem 0 0 0;
     border-top: #EBF2F6 1px solid;
 }
@@ -895,8 +893,20 @@ margin on the iframe, cause it breaks stuff. */
 
 }
 
+
 /* ==========================================================================
-   10. Media Queries - Smaller than 500px
+   10. Media Queries - Smaller than 768px
+   ========================================================================== */
+
+@media only screen and (max-width: 768px) {
+    .blog-title a {
+        font-size: 24px;
+    }
+}
+
+
+/* ==========================================================================
+   12. Media Queries - Smaller than 500px
    ========================================================================== */
 
 
@@ -927,6 +937,11 @@ margin on the iframe, cause it breaks stuff. */
 
     .blog-title {
         font-size: 3rem;
+    }
+
+    .blog-title a {
+        font-size: 20px;
+        letter-spacing: 8px;
     }
 
     .blog-description {
@@ -996,6 +1011,19 @@ margin on the iframe, cause it breaks stuff. */
     }
 
 }
+
+
+/* ==========================================================================
+   12. Media Queries - Smaller than 370px
+   ========================================================================== */
+
+@media only screen and (max-width: 370px) {
+    .blog-title a {
+        font-size: 16px;
+    }
+}
+
+
 .tags {
     font-family: 'Open Sans', sans-serif;
     font-size: 1.5rem;
@@ -1016,9 +1044,7 @@ margin on the iframe, cause it breaks stuff. */
 }
 .main-navigation > div {
     margin: 0 auto;
-    max-width: 395px;
     padding: 0;
-    width: 80%;
 }
 .main-navigation ul {
     float: inherit;
@@ -1028,8 +1054,7 @@ margin on the iframe, cause it breaks stuff. */
     padding: 0;
 }
 .main-navigation li {
-    float: left;
-    position: relative;
+    display: inline-block;
 }
 .main-navigation a {
     background-color: rgba(0, 0, 0, 0);
