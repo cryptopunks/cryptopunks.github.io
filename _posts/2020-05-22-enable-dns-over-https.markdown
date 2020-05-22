@@ -2,7 +2,7 @@
 layout: post
 title:  "Включаем в браузерах DNS over HTTPS"
 meta_description: "DNS over HTTPS это легкий способ получить относительную безопасность, приватность и прирост в скорости при открытии сайтов"
-date: 2020-05-20
+date: 2020-05-22
 tags: firefox chrome chromium https dns
 categories: article
 author: "soko1"
