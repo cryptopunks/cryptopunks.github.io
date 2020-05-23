@@ -21,7 +21,7 @@ DNS over HTTPS (DoH) — экспериментальный протокол, к
 
 ## Браузеры на компьютерах
 
-Если у тебя Google Chrome (Chromium), то скопируй и вставь в адресную строку браузера **chrome://flags/#dns-over-https**, после активируй **Secure DNS lookups**:
+Если у тебя Google Chrome (Chromium), то скопируй и вставь в его адресную строку **chrome://flags/#dns-over-https**, после активируй **Secure DNS lookups**:
 
 <img src="/uploads/chrome_dns_over_https_enable.png" />
 
@@ -35,7 +35,7 @@ DNS over HTTPS (DoH) — экспериментальный протокол, к
 
 ## Мобильные платформы
 
-Под Android/iOS существует несколько способов заворачивания DNS в HTTPS и все они на данный момент работают не с определенным браузером, а для всего трафика в целом, что даже лучше. Потому что работа в интернете, это не только браузер. 
+Под Android/iOS существует несколько способов заворачивания DNS в HTTPS и все они на данный момент работают не с определенным браузером, а для всего трафика в целом, что даже лучше. 
 
 Одним из решений является программа [1.1.1.1: Faster Internet](https://1.1.1.1/) от небезысветного Cloudflare (версия под [Android](https://play.google.com/store/apps/details?id=com.cloudflare.onedotonedotonedotone), а вот под [iOS](https://itunes.apple.com/us/app/1-1-1-1-faster-internet/id1423538627?mt=8)). 
 
