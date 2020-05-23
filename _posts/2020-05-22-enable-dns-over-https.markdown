@@ -37,7 +37,7 @@ DNS over HTTPS (DoH) — экспериментальный протокол, к
 
 Под Android/iOS существует несколько способов заворачивания DNS в HTTPS и все они на данный момент работают не с определенным браузером, а для всего трафика в целом, что даже лучше. Потому что работа в интернете, это не только браузер. 
 
-Одним из решений является программа **1.1.1.1: Faster Internet** от небезысветного Cloudflare (версия под [Android](https://play.google.com/store/apps/details?id=com.cloudflare.onedotonedotonedotone), а вот под [iOS](https://itunes.apple.com/us/app/1-1-1-1-faster-internet/id1423538627?mt=8)). 
+Одним из решений является программа [1.1.1.1: Faster Internet](https://1.1.1.1/) от небезысветного Cloudflare (версия под [Android](https://play.google.com/store/apps/details?id=com.cloudflare.onedotonedotonedotone), а вот под [iOS](https://itunes.apple.com/us/app/1-1-1-1-faster-internet/id1423538627?mt=8)). 
 
 Смысл программы очень прост. Она создаёт псевдо-VPN подключение на локалхост и шлёт все запросы на cloudflare через DoH, при этом весь остальной трафик идёт по обычному маршруту, минуя сервера cloudflare.
 
