@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Создаем socks-прокси с помощью openssh"
+title:  "Создаем socks прокси-сервер с помощью openssh"
 meta_description: "Создаем проксик и делимся им с друзьями и знакомыми для обхода блокировок"
 date: 2020-08-22
 tags: ssh socks proxy
