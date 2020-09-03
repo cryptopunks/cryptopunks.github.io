@@ -7,8 +7,13 @@ meta_description: "Принимаем добровольные пожертво�
 
 С радостью приму любую сумму на дальнейшее развитие проекта.<br>
 
-paypal:
+#### tinkoff
+<a href="https://www.tinkoff.ru/sl/2zSzK9RrO9M" target="_blank">https://www.tinkoff.ru/sl/2zSzK9RrO9M</a>
 
+#### patreon
+<a href="https://www.patreon.com/cryptopunks" target="_blank">https://www.patreon.com/cryptopunks</a>
+
+#### paypal
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick" />
 <input type="hidden" name="hosted_button_id" value="5ZGDRJA7VXCBQ" />
@@ -16,10 +21,10 @@ paypal:
 <img alt="" border="0" src="https://www.paypal.com/en_BY/i/scr/pixel.gif" width="1" height="1" />
 </form>
 
-
-bitcoin:
-
+#### bitcoin
 <a href="bitcoin:1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT" target="_blank">1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT</a>
+
+#### etc
 
 Если желаешь оказать поддержку проекту в другой валюте – <a href="/about">сообщи об этом</a>.
 
