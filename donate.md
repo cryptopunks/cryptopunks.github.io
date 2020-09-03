@@ -10,9 +10,6 @@ meta_description: "Принимаем добровольные пожертво�
 #### tinkoff
 <a href="https://www.tinkoff.ru/sl/2zSzK9RrO9M" target="_blank">https://www.tinkoff.ru/sl/2zSzK9RrO9M</a>
 
-#### patreon
-<a href="https://www.patreon.com/cryptopunks" target="_blank">https://www.patreon.com/cryptopunks</a>
-
 #### paypal
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick" />
@@ -23,6 +20,9 @@ meta_description: "Принимаем добровольные пожертво�
 
 #### bitcoin
 <a href="bitcoin:1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT" target="_blank">1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT</a>
+
+#### patreon
+<a href="https://www.patreon.com/cryptopunks" target="_blank">https://www.patreon.com/cryptopunks</a>
 
 #### etc
 
