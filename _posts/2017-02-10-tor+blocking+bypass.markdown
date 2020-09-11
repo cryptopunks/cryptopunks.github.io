@@ -16,12 +16,12 @@ author: "soko1"
 
 ## Использование демона tor
 
-Если планируется использовать демон tor, то необходимо получить у torproject адреса ретрансляторов <a href="https://bridges.torproject.org/bridges?transport=obfs3" target="_blank">на этой странице</a> (необходимо будет ввести капчу).
+Если планируется использовать демон tor, то необходимо получить у torproject адреса ретрансляторов <a href="https://bridges.torproject.org/bridges?transport=obfs4" target="_blank">на этой странице</a> (необходимо будет ввести капчу).
 
 После чего поставить прокси-сервер, чтобы обфусцировать (замаскировать) передаваемый трафик (скрыть, что используется сеть TOR). Например, можно использовать для этого **obfsproxy**:
 
 ```
-$ sudo apt install obfsproxy
+$ sudo apt install obfs4proxy
 ```
 
 Далее необходимо отредактировать **torrc**, включив полученные адреса:
@@ -31,13 +31,13 @@ UseBridges 1
 TransPort 9040
 Exitpolicy reject *:*
 ExtORPort auto
-ClientTransportPlugin obfs3 exec /usr/bin/obfsproxy managed
+ClientTransportPlugin obfs4 exec /usr/bin/obfs4proxy managed
 
 ## тут вписываем полученные ранее на сайте адреса
 ## дописав вначале каждой строки bridge (!)
-bridge obfs3 АДРЕС1:ПОРТ1 ХЕШ1
-bridge obfs3 АДРЕС2:ПОРТ2 ХЕШ2
-bridge obfs3 АДРЕС3:ПОРТ3 ХЕШ3
+bridge obfs4 АДРЕС1:ПОРТ1 ХЕШ1
+bridge obfs4 АДРЕС2:ПОРТ2 ХЕШ2
+bridge obfs4 АДРЕС3:ПОРТ3 ХЕШ3
 ...
 ```
 
