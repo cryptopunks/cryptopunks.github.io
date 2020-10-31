@@ -46,3 +46,8 @@ firefox.exe
 Далее вводим в адресной строке **about:config** и меняем зачение переменной **network.dns.disabled** на  **False**.
 
 Всё, torbrowser должен работать без tor. Проверить можно перейдя по ссылке <a href="https://check.torproject.org/" target="_blank">https://check.torproject.org</a>.
+
+## А что со смартфонами?
+
+На смартфонах я бы рекомендовал использовать **DuckDuckGo Privacy Browser**. <br>
+Вот <a href="https://apps.apple.com/us/app/duckduckgo-privacy-browser/id663592361" target="_blank">версия под iOS</a>, а вот <a href="https://play.google.com/store/apps/details?id=com.duckduckgo.mobile.android&hl=en_US&gl=US" target="_blank">под Android</a>.
