@@ -49,5 +49,5 @@ firefox.exe
 
 ## А что со смартфонами?
 
-На смартфонах я бы рекомендовал использовать **DuckDuckGo Privacy Browser**. <br>
+На смартфонах я бы рекомендовал не запариваться с torbrowser, а использовать **DuckDuckGo Privacy Browser**. <br>
 Вот <a href="https://apps.apple.com/us/app/duckduckgo-privacy-browser/id663592361" target="_blank">версия под iOS</a>, а вот <a href="https://play.google.com/store/apps/details?id=com.duckduckgo.mobile.android&hl=en_US&gl=US" target="_blank">под Android</a>.
