@@ -176,7 +176,7 @@ fi
 У них, кстати, неплохой код, его очень интересно изучать. Хотя и не без грубых косяков!
 Например, можно было бы сделать его присутствие менее паливным. Как минимум, не нужно было его пихать сразу во все места, ну и дату создания файла можно же поменять у ФС для созданных и модифицированных файлов. А так, по сути, они все **find**'ом ищутся через опцию **atime**. Ну чуваки, ну камон)
 
-Зато обрати внимание как он лихо скрывает своё присутствие в **ps**:
+Зато обрати внимание, как он лихо скрывает своё присутствие в **ps**:
 
 ```bash
 ...
@@ -190,7 +190,7 @@ ${CHATTR} +i /bin/ps
 
 Если интересно (не забудь [написать](/about/)) — могу разобрать их в следующей статье.
 
-Так, вернемся к зараженной машине и посмотрим, что в **/var/tmp/** (этот пусть я нашел в ранее упомянутом файлике **a.sh**):
+Так, вернемся к зараженной машине и посмотрим, что в **/var/tmp/** (этот путь я нашел в ранее упомянутом файлике **a.sh**):
 
 ```console
 root@rescue /mnt/var/tmp # ls -la
@@ -286,7 +286,7 @@ root@rescue /mnt/var/tmp/.crypto/... # cat .pid
 ...
 ```
 
-Пробую гуглить какие-нибудь уникальные строчки и выхожу на файлик [https://github.com/xmrig/xmrig/blob/master/src/config.json](). Смотрим описание [https://github.com/xmrig/xmrig]() и видим, что это майнер:
+Пробую гуглить какие-нибудь уникальные строчки и выхожу на файлик [https://github.com/xmrig/xmrig/blob/master/src/config.json](https://github.com/xmrig/xmrig/blob/master/src/config.json). Смотрим описание [https://github.com/xmrig/xmrig](https://github.com/xmrig/xmrig) и видим, что это майнер:
 
 >XMRig is a high performance, open source, cross platform RandomX, KawPow, CryptoNight, AstroBWT and [GhostRider](https://github.com/xmrig/xmrig/tree/master/src/crypto/ghostrider#readme) unified CPU/GPU miner and [RandomX benchmark](https://xmrig.com/benchmark). Official binaries are available for Windows, Linux, macOS and FreeBSD.
 
