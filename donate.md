@@ -18,7 +18,7 @@ meta_description: "Принимаем добровольные пожертво�
 <a href="bitcoin:1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT" target="_blank">1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT</a>
 
 #### monero
-<code>4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX</code>
+<a href="monero:4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX">4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX</a>
 
 #### patreon
 <a href="https://www.patreon.com/cryptopunks" target="_blank">https://www.patreon.com/cryptopunks</a>
