@@ -7,9 +7,6 @@ meta_description: "Принимаем добровольные пожертво�
 
 С радостью приму любую сумму на дальнейшее развитие проекта.<br>
 
-#### tinkoff
-<a href="https://www.tinkoff.ru/sl/2zSzK9RrO9M" target="_blank">https://www.tinkoff.ru/sl/2zSzK9RrO9M</a>
-
 #### paypal
 <form action="https://www.paypal.com/donate" method="post" target="_top">
 <input type="hidden" name="hosted_button_id" value="32CNVDKMJ9GFG" />
@@ -19,6 +16,9 @@ meta_description: "Принимаем добровольные пожертво�
 
 #### bitcoin
 <a href="bitcoin:1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT" target="_blank">1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT</a>
+
+#### monero
+<code>4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX</code>
 
 #### patreon
 <a href="https://www.patreon.com/cryptopunks" target="_blank">https://www.patreon.com/cryptopunks</a>
