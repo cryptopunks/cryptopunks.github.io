@@ -78,7 +78,7 @@ postgres=#
 На примере того же PostgreSQL:
 
 ```
-docker run -e POSTGRES_PASSWORD=bohz5aa9aetoh1Iapedo -p 127.0.0.1:5432:5432 postgres:10
+$ docker run -e POSTGRES_PASSWORD=bohz5aa9aetoh1Iapedo -p 127.0.0.1:5432:5432 postgres:10
 ```
 
 Никогда, слышишь, НИКОГДА не используй 0.0.0.0 (**-p 5432:5432**), пускай все свои приложения сугубо на локалхосте, вот так: **-p 127.0.0.1:5432:5432**. 
