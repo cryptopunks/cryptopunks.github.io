@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "SSH доступ в chroot-окружении"
+title:  "SSH доступ в chroot-окружение"
 meta_description: "Создаём для пользователя доступ к ssh в изолированном от основной системы chroot-окружении. Сначала максимально урезанный вариант, потом раскатим туда gentoo linux"
 date: 2022-10-15
 tags: linux ssh chroot 
