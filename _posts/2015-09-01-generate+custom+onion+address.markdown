@@ -96,7 +96,7 @@ HiddenServicePort 80 localhost:80
 $ sudo /etc/init.d/tor restart
 ```
 
-Естественно, сервис тоже должен быть уже запущен на нужном хосте/порту (в нашем примере это localhost:80). 
+Естественно, сервис тоже должен быть уже запущен на нужном хосте/порту (в нашем примере это **localhost:80**). 
 
 Пробуй зайти из браузера на **cryptqax2bfsch4asiq6diwgcqjahyojbr7awjih3vjmn7fcfui3tjid.onion**. 
 
