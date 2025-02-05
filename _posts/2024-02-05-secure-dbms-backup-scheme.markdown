@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Безопасная схема бэкапов СУБД"
-meta_description: "Рассказываю о том как создать безопасную и удобную инфраструктуру для снятия бэкапов с СУБД"
+meta_description: "Создаем удобную инфраструктуру для снятия бэкапов с СУБД и шифрованием баз GnuPG"
 date: 2025-02-05
 tags: linux backups gpg postgresql mysql
 categories: article
