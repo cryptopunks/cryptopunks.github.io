@@ -7,7 +7,7 @@ meta_description: "При найденных ошибках, с вопросам
 
 Рад пожеланиям, отзывывам, критике и <a href="/donate">донейтам</a> :)
 
-Связь:<br><a href="mailto:cryptopunks.org@gmail.com">cryptopunks.org@gmail.com</a><br><a href="https://t.me/gnupg" target="_blank">@gnupg</a><br>
+Связь:<br><a href="mailto:cryptopunks.org@gmail.com">cryptopunks.org@gmail.com</a><br>
 
 Телеграм-канал: <a href="https://t.me/cryptopunksorg" target="_blank">@cryptopunksorg</a><br>
 
