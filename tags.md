@@ -5,7 +5,8 @@ permalink: tags/
 meta_description: "Сортировка записей по тегам"
 ---
 
-<br><div id='tag_cloud'>
+
+<div id='tag_cloud'>
 {% for tag in site.tags %}
 <a href="#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">{{ tag[0] }}</a>
 {% endfor %}
