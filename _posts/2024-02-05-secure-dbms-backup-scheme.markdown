@@ -82,7 +82,7 @@ $ gpg --export -a 09C4C85DFC551EA1C582849AD2E40C9B90FA7366 > public.key
 
 Чтобы далее не запутаться давай введем обозначения:
 
-**backups-vps** - это машина, которая будет ходить на сервера и собирать бэкапы. На ней же будут публичные ключи GPG для шифрования дампов.
+**backups-vps** - это машина, которая будет ходить на сервера и собирать бэкапы. На ней же будут публичные ключи GPG для шифрования дампов.<br>
 **prod** - пример сервера с PostgreSQL на который будет ходить наша машинка backups-vps и собирать бэкапы.
 
 
@@ -201,7 +201,7 @@ Ok
 Коннект рано или поздно отвалится, поэтому вызов скрипта нужно добавить в crontab:
 
 ```
-backups-vps # cronta -e
+backups-vps # crontab -e
 */5 * * * * /root/tunnel.sh
 ```
 
@@ -210,7 +210,7 @@ backups-vps # cronta -e
 Можно попробовать снять дамп и зашифровать его ключами GPG:
 
 ```
-pg_dump -h127.0.0.1 -p6661 -Upostgres -d finance |  gpg -e -r cryptopunks -r myfriend -o finance.gpg
+backups-vps $ pg_dump -h127.0.0.1 -p6661 -Upostgres -d finance |  gpg -e -r cryptopunks -r myfriend -o finance.gpg
 ```
 
 Таким образом я сниму базу **finance** с сервера **prod** через сервер **backups-vps**, сожму ее и зашифрую ключами GPG **cryptopunks** и **myfriend**.
