@@ -48,8 +48,8 @@ $ sudo systemctl disable tor
 В iptables на **vpn out** помимо необходимых для работы OpenVPN правил (освещено в статьях приведённых выше) необходимо добавить 2 следующих правила:
 
 ```
-$ sudo iptables -A PREROUTING -s 10.8.0.0/24 -p udp -m udp --dport 53 -j REDIRECT --to-ports 5353
-$ sudo iptables -A PREROUTING -s 10.8.0.0/24 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
+$ sudo iptables -t nat -A PREROUTING -s 10.8.0.0/24 -p udp -m udp --dport 53 -j REDIRECT --to-ports 5353
+$ sudo iptables -t nat -A PREROUTING -s 10.8.0.0/24 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
 ```
 
 Первое правило задаёт использование DNS через сеть TOR, второе перенаправляет весь трафик из подсети 10.8.0.0 на порт 9040 демона tor.<br><br>
