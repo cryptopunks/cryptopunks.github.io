@@ -17,7 +17,7 @@ meta_description: "При найденных ошибках, с вопросам
 Зеркала:<br>
 <a href="https://cryptopunks.org">https://cryptopunks.org</a><br>
 <a href="https://cryptopunks.github.io">https://cryptopunks.github.io</a><br>
-<a href="http://crptpnkdgddolfag.onion">http://crptpnkdgddolfag.onion</a><br>
+<a href="http://crptpnkdl67cnztiwmjgdw37jsslkybmd2kohftmjfirz2xlnioudbid.onion">http://crptpnkdl67cnztiwmjgdw37jsslkybmd2kohftmjfirz2xlnioudbid.onion</a><br>
 
 Криптоключик:
 

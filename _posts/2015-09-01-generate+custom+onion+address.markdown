@@ -35,101 +35,70 @@ meta_description: "Подбираем необходимые варианты и
 |        14  |   2.6 млн. лет     |
 
 
-## Использование eschalot
+## Использование mkp224o
 
 Получаем последнюю версию:
 
 ```
-$ git clone https://github.com/ReclaimYourPrivacy/eschalot
+$ git clone https://github.com/cathugger/mkp224o
 ```
 
 Собираем:
 
 ```
-$ cd eschalot
+$ sudo apt install gcc libc6-dev libsodium-dev make autoconf
+$ cd mkp224o
+$ ./autogen.sh
+$ ./configure
 $ make
 ```
 
-Далее запускаем `./eschalot` без аргументов чтобы ознакомиться со справкой по аргументам (более подробная на странице проекта).<br><br>
+Далее запускаем `./mkp224o` без аргументов чтобы ознакомиться со справкой по аргументам (более подробная на странице проекта).<br><br>
 
-Например найдём ключ с хешем "crypt" в начале адреса:
-
-```
-$ ./eschalot -t4 -r "^test"
-----------------------------------------------------------------
-cryptll6ahbkealh.onion
------BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgQDGDXVrSOdNFsua8tdERD+gcUMMjuGwpamV/p/+6dFBCwVJkO1H
-syBmgitGPDztMVYhuos0HYooR+NFMuenbQN6UCdn6IzZU970IJDxRtvqvUg5DU3e
-U/R1EKGxGI3OFkpou6QUen5u8PC4A3IqTAEmXlD8mwu9n4248XtNt2ZB+QIEAQqU
-jwKBgDAu2g3kDsP2vnGjbs7VC3FMY8hpSQ4C30BbNJahzshOE959/oLC3Kg4vic/
-ZDJ2rzozyJPhsyVxFWZJhMFRlUT2+l7Yu0VXFLSaf2Y6iCfjPirq0es5Wrc5NxZj
-Vv+ggk5dHu1DvtWi6pAoEivoIV8iVhUybMWWzB03az2/7LjHAkEA+BM8P8+S41DI
-/Xq5aKdcEkQKUTlAY2QD3tBbsahANELWOK8Pn1xyOAFQA4bymoIPDmu07NPp3fR6
-VmPMUVgPdQJBAMxhIzWjJU8A/TMLw0i4PQdITxfr/D8Ph5NUUFfGDl9aLxWtFsDp
-mM2uJcIbNZ7H7F/hnq69SBAd9s16ZYHhu/UCQQCJHT5H6c0rdYxV4o4alT8lY64U
-SvxVaMbj9kKLHx90OBEt0ocV/dteF9w4Me7GTc74W1aI+UcAPs+goX7ZGrKjAkBn
-GZA9nRfz9QdLhvVmC2049+Ucc4EsmoOPmbj5LCXWOBzmS1mr82EsgDZpYJcQt+03
-fbCf8PHq55w07DjWooHjAkB2ax9z6aOJ3mTLqzVr7P3oCxLQ90bZJrbsbKhZKCjS
-Wx+eQQr4ZsSx5DB/7bsOLiC8EAl3gK/5LBouyuoJadm3
------END RSA PRIVATE KEY-----
-```
-
-или "punk" в конце:
+Теперь сгенерируем ключи с адресом **crypt** в начале:
 
 ```
-$ ./eschalot -t4 -r "punk$"
-----------------------------------------------------------------
-ghb6lbhn3v6zpunk.onion
------BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgQCmD/2NmwEf2r8oJbTOhsmo1vetaoS0RTGiNqpph+rWR4rPbph/
-3ACoHbznp9HEEWkiURZ9dmctZnc3PNfUl0laZA1TIKHXKASORhx4n4HqDk17TyU8
-DdL9d5992SwJbFwrJRqI1SOjJUNeZrBU7p6rfSYbWtKUL/QtEOFDNyiFWwIEAQGC
-XwKBgEDe1ENmpSEyVmuG4mkucKewTiIJLKbhUiuQjdWdEmWD4MVwKphZa8p3C0B1
-Iq5cTLbyXkOCpj08bVsjTn3mr02XmryG/bEjvIcyx6eVGpWOLV4GqWB7kq6y76EO
-QRDEH8Fn0E29HUn9i5h3QbiwW+MDDrFjK5iOcGn+Ci2C9FRTAkEA1X7vNiv77To9
-VhMj/PrW4z/y6+QQCr+6zdVfwtLKByd3372tMhIrkeMLa2aED6zQV9mLI0CBzPvQ
-WLk53V44NQJBAMcfjvhapiOPwI3wi+BBCnck06rorj/SnsOEAoBy0w560OCLqk7g
-XgOlz9vUxaGpP3olNFb+TTrM+Rn0tMg4GU8CQH3ACezJRD3Ayh2hTAK+yrjENRjy
-njNOJcROb8RQ2UZw7zdFFQOk9brO9+2EihLfRwKHws9sjwAHQaQQt0BCIIcCQEgE
-z5qPSiFwN6ihvfq88DQsaK8SdkBSiDNgd5zptKcWJ94C74X1gXRLT51suQKSuxzN
-ePhjmBcJOkYnqDe96OcCQQCrmMvqOnAIQrrs5RhOCWSyJDruDbFcpYGNh3SU5lYW
-aBumHPUzqi6rEgYaTJPp2e93puOasc3SH0Q1JWdDRDUM
------END RSA PRIVATE KEY-----
+$ ./mkp224o crypt
+sorting filters... done.
+filters:
+	crypt
+in total, 1 filter
+using 16 threads
+cryptqax2bfsch4asiq6diwgcqjahyojbr7awjih3vjmn7fcfui3tjid.onion
+cryptyklb2ik3xmfsi5sz2leojzwesbgtcnvhqdm3j3hr6grtnobkdid.onion
+cryptslp3iqcjwnkkhfkjvtoilj3bwnky4n572od23f33ilowwe56jyd.onion
+cryptgotxkfltnxtssnmj6fxhajggzaczgczyj34jhek2tevphvbhlqd.onion
+cryptkyv5fjd6mhwxnd5x347esjpnmmh5zk6hrnrq323kqeljv6xtdid.onion
+cryptrie6y4iywq3ckkse3n5dli7ezgpp77h7fk7z2htepvdg6tj4did.onion
+crypt7eq6e267jwtua2og55jatfpdvp4xaaa6s2nc46usw7cupisktad.onion
+cryptni6j5beqdsi3mqo46lqnuucihbb7h22cc3p6grmyprr2vz5cqid.onion
+...
 ```
 
-Работают все регулярные выражения.
+Все варианты по умолчанию записываются в текущий каталог.
 
-Ключ `-c` позволяет выводить бесконечное кол-во результатов до завершения выполнения по Ctrl+c. Удобно перенаправить в файл и потом выбрать лучшие варианты.<br>
-Помимо этого программа умеет делать выборки по словарю.<br><br>
-Далее нам необходимо скопировать ключ понравившегося домена и заменить им основной ключ. То есть открываем к примеру **/var/lib/tor/site1/private_key**, стираем содержимое и вставляем:
+Далее необходимо скопировать ключи понравившегося домена в рабочий каталог TOR-сервиса. Например:
 
 ```
------BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgQCmD/2NmwEf2r8oJbTOhsmo1vetaoS0RTGiNqpph+rWR4rPbph/
-3ACoHbznp9HEEWkiURZ9dmctZnc3PNfUl0laZA1TIKHXKASORhx4n4HqDk17TyU8
-DdL9d5992SwJbFwrJRqI1SOjJUNeZrBU7p6rfSYbWtKUL/QtEOFDNyiFWwIEAQGC
-XwKBgEDe1ENmpSEyVmuG4mkucKewTiIJLKbhUiuQjdWdEmWD4MVwKphZa8p3C0B1
-Iq5cTLbyXkOCpj08bVsjTn3mr02XmryG/bEjvIcyx6eVGpWOLV4GqWB7kq6y76EO
-QRDEH8Fn0E29HUn9i5h3QbiwW+MDDrFjK5iOcGn+Ci2C9FRTAkEA1X7vNiv77To9
-VhMj/PrW4z/y6+QQCr+6zdVfwtLKByd3372tMhIrkeMLa2aED6zQV9mLI0CBzPvQ
-WLk53V44NQJBAMcfjvhapiOPwI3wi+BBCnck06rorj/SnsOEAoBy0w560OCLqk7g
-XgOlz9vUxaGpP3olNFb+TTrM+Rn0tMg4GU8CQH3ACezJRD3Ayh2hTAK+yrjENRjy
-njNOJcROb8RQ2UZw7zdFFQOk9brO9+2EihLfRwKHws9sjwAHQaQQt0BCIIcCQEgE
-z5qPSiFwN6ihvfq88DQsaK8SdkBSiDNgd5zptKcWJ94C74X1gXRLT51suQKSuxzN
-ePhjmBcJOkYnqDe96OcCQQCrmMvqOnAIQrrs5RhOCWSyJDruDbFcpYGNh3SU5lYW
-aBumHPUzqi6rEgYaTJPp2e93puOasc3SH0Q1JWdDRDUM
------END RSA PRIVATE KEY-----
+$ sudo cp -r cryptqax2bfsch4asiq6diwgcqjahyojbr7awjih3vjmn7fcfui3tjid.onion /var/lib/tor/site1
 ```
 
-После чего перезапускаем TOR:
+Прописывай в **/etc/tor/torrc**:
+
+```
+HiddenserviceDir /var/lib/tor/site1
+HiddenServicePort 80 localhost:80
+```
+
+После чего перезапускай TOR:
 
 ```
 $ sudo /etc/init.d/tor restart
 ```
 
-проверяем **/var/lib/tor/site1/hostname**, если он поменялся на нужный адрес, значит всё прошло успешно. Если же по каким-то причинам что-то пошло не так - проверьте правильно ли скопировали ключ и верно ли выставлены права доступа к ключу. В случае проблем удалите каталог **/var/lib/tor/site1/**, перезапустите TOR и попробуйте ещё раз.
+Естественно, сервис тоже должен быть уже запущен на нужном хосте/порту (в нашем примере это **localhost:80**). 
 
-## Аналоги
+Пробуй зайти из браузера на **cryptqax2bfsch4asiq6diwgcqjahyojbr7awjih3vjmn7fcfui3tjid.onion**. 
 
-В случае если **eschalot** чем-то не понравился можно попробовать воспользоваться его программой-родителем - <a href="https://github.com/katmagic/Shallot" target="_blank">Shallot</a>.
+Если по каким-то причинам что-то пошло не так - проверь правильно ли скопировался ключ и верно ли выставлены права доступа к нему. 
+
