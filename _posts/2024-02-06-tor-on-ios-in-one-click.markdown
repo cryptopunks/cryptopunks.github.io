@@ -42,7 +42,9 @@ author: "soko1"
 
 ### Где скачать
 
-Скачать его можно по следующей ссылке: [https://onionbrowser.com/](https://onionbrowser.com/)
+Скачать его можно на официальном сайте: [https://onionbrowser.com/](https://onionbrowser.com/)
+
+Там же находятся ссылки на магазин App Store.
 
 ### Режимы работы и обход блокировок Tor
 
