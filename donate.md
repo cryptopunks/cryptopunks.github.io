@@ -8,7 +8,9 @@ meta_description: "Принимаем добровольные пожертво�
 С радостью приму любую сумму на дальнейшее развитие проекта.<br>
 
 #### bitcoin
-<a href="bitcoin:1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT" target="_blank">1NYYFoJiRPnkmFbcv5kYLqwsweix1cVmBT</a>
+<a href="bitcoin:bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz" target="_blank">bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz</a>
+
+<img src="uploads/donate_bitcoin.png" />
 
 #### monero
 <a href="monero:4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX">4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX</a>
