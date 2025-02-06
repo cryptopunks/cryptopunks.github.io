@@ -42,7 +42,7 @@ author: "soko1"
 
 ### Где скачать
 
-Скачать его можно по следующей ссылке: (https://onionbrowser.com/)[https://onionbrowser.com/]
+Скачать его можно по следующей ссылке: [https://onionbrowser.com/](https://onionbrowser.com/)
 
 ### Режимы работы и обход цензуры
 
