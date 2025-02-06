@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Создаем свой собственный холодный кошелек bitcoin"
-meta_description: "Пример на основе electrum и компьютера не подключенного к Интернет, либо флешки с Tails"
+meta_description: "Учимся работать с криптой безопасно с оффлайн-компьютером (либо флешкой Tails) и electrum"
 date: 2025-02-07
 tags: bitcoin offline wallet electrum
 categories: article
