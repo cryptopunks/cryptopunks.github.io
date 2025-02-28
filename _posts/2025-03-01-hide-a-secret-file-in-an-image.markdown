@@ -59,7 +59,7 @@ $ ls -l image.jpg secret.gpg
 
 **9880935** — это размер в байтах файла image.jpg, соответственно **2981978** — размер secret.gpg.
 
-Теперь спрячем файл secret.gpg в конец image.jpg:
+Теперь спрячем файл **secret.gpg** в конец **image.jpg**:
 
 ```
 $ cat secret.gpg >>image.jpg
@@ -74,14 +74,14 @@ ls -l image.jpg
 
 Считаем: 9880935 (image.jpg) + 2981978 (secret.gpg) = 12862913 байт. Всё верно.
 
-Заодно можем повторно проверить тип файла и убедиться что он не изменился:
+Заодно можем повторно проверить тип файла:
 
 ```
 $ file image.jpg
 image.jpg: JPEG image data, Exif standard: [TIFF image data, big-endian, direntries=11, manufacturer=NIKON CORPORATION, model=NIKON D3100, orientation=upper-left, xresolution=180, yresolution=188, resolutionunit=2, software=Ver.1.01 , datetime=2025:01:26 16:28:02, GPS-Data], baseline, precision 8, 4608x3072, components 3
 ```
 
-И обязательно запусти этот файл, убедись что открылась прежняя картинка и что никаких ошибок не возникло.
+Как видишь - он не поменялся. Обязательно запусти его, убедись что открылась прежняя картинка и что никаких ошибок не возникло.
 
 ### Ещё раз важное про размер файлов
 
