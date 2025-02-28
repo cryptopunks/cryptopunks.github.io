@@ -68,7 +68,7 @@ $ cat secret.gpg >>image.jpg
 Открой файл image.jpg и убедись, что картинка открывается как и ранее, только её размер увеличился на размер байт файла secret.gpg:
 
 ```
-ls -l image.jpg
+$ ls -l image.jpg
 -rw-r--r--@ 1 user  user  12862913 Feb 27 22:57 image.jpg
 ```
 
@@ -94,7 +94,7 @@ image.jpg: JPEG image data, Exif standard: [TIFF image data, big-endian, direntr
 Запускаем её так:
 
 ```
-dd if=image.jpg of=secret_new.gpg bs=1 count=2981978 skip=9880935
+$ dd if=image.jpg of=secret_new.gpg bs=1 count=2981978 skip=9880935
 ```
 
 Здесь **count** — это размер в байтах извлекаемого файла (secret.gpg), а **skip** (пропустить количество байт) — размер нашей картинки до её модификации.
