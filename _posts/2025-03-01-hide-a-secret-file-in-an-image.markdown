@@ -2,7 +2,7 @@
 layout: post  
 title:  "Прячем секретный файл в картинку/фильм"  
 meta_description: "Замаскируем GPG-файл внутри картинки с использованием cat/dd/ls"  
-date: 2025-02-28  
+date: 2025-03-01  
 tags: steganography gpg
 categories: article  
 author: "soko1"  
