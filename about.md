@@ -7,7 +7,8 @@ meta_description: "При найденных ошибках, с вопросам
 
 Рад пожеланиям, отзывывам, критике и <a href="/donate">донейтам</a> :)
 
-Связь:<br><a href="mailto:cryptopunks.org@gmail.com">cryptopunks.org@gmail.com</a><br>
+Связь:<br><a href="mailto:cryptopunks.org@gmail.com">почта</a><br>
+<a href="https://i.delta.chat/#AE84006D743FF86B6E19BBD90814CD209B4BA251&a=lvxvq03ft%40nine.testrun.org&n=cryptopunks&i=-AJLT9K2TuLllhjAQQ6yDi17&s=HIZ1BRY96E3VwlkCRd9jL_s1" target="_blank">delta chat</a>
 
 Телеграм-канал: <a href="https://t.me/cryptopunksorg" target="_blank">@cryptopunksorg</a><br>
 
