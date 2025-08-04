@@ -7,6 +7,10 @@ meta_description: "Принимаем добровольные пожертво�
 
 С радостью приму любую сумму на дальнейшее развитие проекта.<br>
 
+#### telegram
+[@cryptopunksorg](https://t.me/cryptopunksorg) - через группу мне можно прислать [звёзды telegram](https://telegram.org/blog/telegram-stars/ru) (самый простой метод доната)
+
+
 #### bitcoin
 <a href="bitcoin:bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz" target="_blank">bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz</a>
 
