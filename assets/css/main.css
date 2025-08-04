@@ -70,7 +70,6 @@ img.profile {
 
 .tooltip {
   position: absolute;
-  bottom: -22px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #666;
