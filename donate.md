@@ -10,8 +10,6 @@ meta_description: "Принимаем добровольные пожертво�
 #### TON (telegram)
 <a href="ton:UQDbb89zFXw8sDo5lH0RaF2XABohuYq5eusEPtV-hJs5s-ki" target="_blank">UQDbb89zFXw8sDo5lH0RaF2XABohuYq5eusEPtV-hJs5s-ki</a>
 
-<img src="/uploads/donate_ton.png" style="width: 20%; display: block; margin-left: 0;" />
-
 #### bitcoin
 <a href="bitcoin:bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz" target="_blank">bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz</a>
 
