@@ -8,15 +8,30 @@ meta_description: "Принимаем добровольные пожертво�
 С радостью приму любую сумму на дальнейшее развитие проекта.<br>
 
 #### TON (telegram)
-<a href="ton:UQDbb89zFXw8sDo5lH0RaF2XABohuYq5eusEPtV-hJs5s-ki" target="_blank">UQDbb89zFXw8sDo5lH0RaF2XABohuYq5eusEPtV-hJs5s-ki</a>
+<div class="address-container">
+    <div class="address-block" onclick="copyAddress(this)">
+        UQDbb89zFXw8sDo5lH0RaF2XABohuYq5eusEPtV-hJs5s-ki
+      <div class="tooltip">Скопировано!</div>
+    </div>
+</div>
 
 #### bitcoin
-<a href="bitcoin:bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz" target="_blank">bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz</a>
+<div class="address-container">
+    <div class="address-block" onclick="copyAddress(this)">
+      bc1q34vcv3u66hf5q50d77y9lvvsfmn4evdjekd2uz
+      <div class="tooltip">Скопировано!</div>
+    </div>
+</div>
 
 <img src="/uploads/donate_bitcoin.png" style="width: 20%; display: block; margin-left: 0;" />
 
 #### monero
-<a href="monero:4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX">4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX</a>
+<div class="address-container">
+    <div class="address-block" onclick="copyAddress(this)">
+        4Ar1sEcrepNfKGMxEwRCpRgePcLuezVJeBgSQTUxArBhZwYWJogiLLGP1qZXioKzz4DSiSGMv2iJ2VqD4Bj78oHJEgrUSPX
+      <div class="tooltip">Скопировано!</div>
+    </div>
+</div>
 
 #### etc
 
