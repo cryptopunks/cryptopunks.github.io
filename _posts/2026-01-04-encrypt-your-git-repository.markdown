@@ -67,6 +67,7 @@ git-crypt export-key secret_key
 * Требует базового понимания работы GPG.
 
 **Добавление пользователя**
+
 Узнай свой **USER_ID** (Email или отпечаток) через `gpg --list-keys` и выполни:
 
 ```bash
