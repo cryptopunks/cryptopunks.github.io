@@ -25,21 +25,21 @@ author: "soko1"
 Давай создадим файл размером 1Гб, заполненный случайными числами и дадим ему какое-нибудь неподозрительное название:
 
 ```bash
- # dd if=/dev/urandom of=~/temp_blob bs=1M count=1024
+$ dd if=/dev/urandom of=~/temp_blob bs=1M count=1024
 ```
 
 Далее инициализируй LUKS-контейнер, используя ключевую опцию `--header` (вынос заголовка в отдельный файл):
 
 ```bash
- # cryptsetup luksFormat --header /tmp/head.file ~/temp_blob
+$ sudo cryptsetup luksFormat --header /tmp/head.file ~/temp_blob
 ```
 
 Теперь расшифруй контейнер, создай на нём файловую систему и закрой его:
 
 ```bash
- # cryptsetup luksOpen --header /tmp/head.file ~/temp_blob my_container
- # mkfs.ext4 /dev/mapper/my_container
- # cryptsetup luksClose my_container
+$ sudo cryptsetup luksOpen --header /tmp/head.file ~/temp_blob my_container
+$ sudo mkfs.ext4 /dev/mapper/my_container
+$ sudo cryptsetup luksClose my_container
 ```
 
 ## Как это работает
@@ -49,20 +49,20 @@ author: "soko1"
 Давай посмотрим, что скажет утилита `file` об этих объектах:
 
 ```bash
- # file /tmp/head.file
+$ file /tmp/head.file
 head.file: LUKS encrypted file, ver 2, header size 16384...
 
- # file ~/temp_blob
+$ file ~/temp_blob
 temp_blob: data
 ```
 
 А теперь обрати внимание на их размеры:
 
 ```bash
- # ls -lh /tmp/head.file
+$ ls -lh /tmp/head.file
 -rw------- 1 root root 16M Jan  4 18:04 head.file
- # ls -lh ~/temp_blob
--rw-r--r-- 1 root root 1.0G Jan  4 18:03 temp_blob
+$ ls -lh ~/temp_blob
+-rw-r--r-- 1 user user 1.0G Jan  4 18:03 temp_blob
 ```
 
 Как видишь, `head.file` занимает всего 16 мегабайт и однозначно определяется как заголовок какого-то криптоконтейнера, но какого именно — известно только тебе. Файл `head.file` нужно сохранить в надёжном месте и по возможности на компьютере не хранить, чтобы не привлекать лишнего внимания. 
@@ -70,7 +70,7 @@ temp_blob: data
 Сохрани его, например, в каком нибудь облаке, а с компьютера удали:
 
 ```bash
- # shred -u /tmp/head.file
+$ sudo shred -u /tmp/head.file
 ```
 
 Файл `temp_blob` при этом выглядит как обычный бинарный файл, который не вызовет подозрений у автоматизированных систем, так как у него отсутствуют сигнатуры. Поэтому его можно хранить где угодно. Хоть на общедоступном файловом сервере у всех на виду. 
@@ -82,16 +82,16 @@ temp_blob: data
 Открываешь контейнер:
 
 ```bash
- # cryptsetup luksOpen --header /tmp/head.file ~/temp_blob my_container
- # mount /dev/mapper/my_container /mnt
+$ sudo cryptsetup luksOpen --header /tmp/head.file ~/temp_blob my_container
+$ sudo mount /dev/mapper/my_container /mnt
 ```
 
 После работы размонтируй ФС, закрой контейнер и уничтожь заголовок:
 
 ```bash
- # umount /mnt
- # cryptsetup luksClose my_container
- # shred -u /tmp/head.file
+$ sudo umount /mnt
+$ sudo cryptsetup luksClose my_container
+$ sudo shred -u /tmp/head.file
 ```
 
 ## О чём тебе важно помнить
